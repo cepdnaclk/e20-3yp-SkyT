@@ -3,7 +3,7 @@ layout: home
 permalink: index.html
 
 # Please update this with your repository name and project title
-repository-name: e20-3yp-SkyTea
+repository-name: e20-3yp-SkyT
 title: SkyTea
 ---
 
