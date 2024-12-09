@@ -4,7 +4,7 @@ permalink: index.html
 
 # Please update this with your repository name and project title
 repository-name: eYY-3yp-project-template
-title: Project Template
+title: SkyTea
 ---
 
 [comment]: # "This is the standard layout for the project, but you can clean this and use your own template"
@@ -14,9 +14,11 @@ title: Project Template
 ---
 
 ## Team
--  eNumber, Name, [email](mailto:name@email.com)
--  eNumber, Name, [email](mailto:name@email.com)
--  eNumber, Name, [email](mailto:name@email.com)
+-  e20032, Bandara A.M.N.C., [e20032@eng.pdn.ac.lk](mailto:e20032@eng.pdn.ac.lk)
+-  e20034, Bandara G.M.M.R., [e20034@eng.pdn.ac.lk](mailto:e20032@eng.pdn.ac.lk)
+-  e20157, Janakatha S.M.B.G., [e20157@eng.pdn.ac.lk](mailto:e20032@eng.pdn.ac.lk)
+-  e20173, Jayasooriya P.A.S.V., [e20173@eng.pdn.ac.lk](mailto:e20032@eng.pdn.ac.lk)
+
 
 <!-- Image (photo/drawing of the final hardware) should be here -->
 
