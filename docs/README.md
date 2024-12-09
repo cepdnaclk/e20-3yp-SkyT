@@ -14,10 +14,10 @@ title: SkyTea
 ---
 
 ## Team
--  e20032, Bandara A.M.N.C., [e20032@eng.pdn.ac.lk]
--  e20034, Bandara G.M.M.R., [e20034@eng.pdn.ac.lk]
--  e20157, Janakatha S.M.B.G., [e20157@eng.pdn.ac.lk]
--  e20173, Jayasooriya P.A.S.V., [e20173@eng.pdn.ac.lk]
+-  e20032, Bandara A.M.N.C.
+-  e20034, Bandara G.M.M.R.
+-  e20157, Janakatha S.M.B.G.
+-  e20173, Jayasooriya P.A.S.V.
 
 
 <!-- Image (photo/drawing of the final hardware) should be here -->
