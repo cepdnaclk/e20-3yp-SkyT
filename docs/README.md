@@ -4,12 +4,12 @@ permalink: index.html
 
 # Please update this with your repository name and project title
 repository-name: e20-3yp-SkyT
-title: SkyTea
+title: SkyT
 ---
 
 [comment]: # "This is the standard layout for the project, but you can clean this and use your own template"
 
-# SkyTea - Drone Based Crop Management System
+# SkyT - Drone Based Crop Management System
 
 ---
 
@@ -66,8 +66,8 @@ What was achieved, future developments, commercialization plans
 
 ## Links
 
-- [Project Repository](https://github.com/cepdnaclk/e20-3yp-SkyTea)
-- [Project Page](https://cepdnaclk.github.io/e30-3yp-SkyTea)
+- [Project Repository](https://github.com/cepdnaclk/e20-3yp-SkyT)
+- [Project Page](https://cepdnaclk.github.io/e30-3yp-SkyT)
 - [Department of Computer Engineering](http://www.ce.pdn.ac.lk/)
 - [University of Peradeniya](https://eng.pdn.ac.lk/)
 
