@@ -58,7 +58,19 @@ All items and costs
 
 | Item          | Quantity  | Unit Cost  | Total  |
 | ------------- |:---------:|:----------:|-------:|
-| Sample item   | 5         | 10 LKR     | 50 LKR |
+| NodeMCU       | 2         | 2000 LKR | 4000 LKR |
+| RS508 Soil Sensor | 1 | 11000 LKR | 11000 LKR |
+| DHT 11 Humidity Sensor | 1 | 400 LKR | 400 LKR |
+| 3300mAh Li-Po Battery | 2 | 3300 LKR | 6600 LKR |
+| Drone | 1 | 30000 LKR | 30000 LKR | 
+| Raspberry Pi Zero | 1 | 3500 LKR | 3500 LKR |
+| 5MP Raspi Camera Module | 1 | 2500 LKR | 2500 LKR |
+| RA02 Lora Module | 2 | 3000 LKR | 6000 LKR |
+| 32GB Storage Device | 2 | 1790 LKR | 3580 LKR |
+| 4G Dongle | 1 | 3690 LKR | 3690 LKR |
+| Miscellaneous | N/A | N/A | 3000 LKR |
+| **SUB TOTAL** | **14** | **N/A** | **74270 LKR** |
+
 
 ## Conclusion
 
