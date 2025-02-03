@@ -8,7 +8,15 @@ import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { isHttpError } from "http-errors";
 
 // Routes
-import todoRoutes from "./routes";
+import galleryRouter from "./routes/gallery";
+import feedbackRouter from "./routes/feedbacks";
+import adminRouter from "./routes/admin";
+import newsRouter from "./routes/news";
+import highlightRouter from "./routes/highlights";
+import teacherRouter from "./routes/teacher";
+import donerRouter from "./routes/doner";
+import siteAdminRouter from "./routes/siteAdmin";
+import protectedRouter from "./routes/protected";
 
 const app = express();
 
@@ -35,8 +43,32 @@ app.get("/", (req, res) => {
   res.send("Hello, World! I'm Node App. I can hear you!");
 });
 
-// Routes
-app.use("/api/todos", todoRoutes);
+// Protected Routers
+app.use("/api/authenticate", protectedRouter);
+
+// Verification connection
+app.use("/api/verify", siteAdminRouter);
+
+// Gallery connection
+app.use("/api/gallery", galleryRouter);
+
+// Feedback connection
+app.use("/api/feedback", feedbackRouter);
+
+// Admin connection
+app.use("/api/admin", adminRouter);
+
+// News connection
+app.use("/api/news", newsRouter);
+
+// Highlight connection
+app.use("/api/highlights", highlightRouter);
+
+// Teacher connection
+app.use("/api/teacher", teacherRouter);
+
+// Blood Donation Connection
+app.use("/api/doner", donerRouter);
 
 // End point not found error
 app.use((req, res, next) => {

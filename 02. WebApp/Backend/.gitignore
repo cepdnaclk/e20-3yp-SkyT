@@ -1,0 +1,8 @@
+node_modules
+
+# Build directory
+dist
+
+# File Types
+.env
+.zip
