@@ -37,16 +37,25 @@ title: SkyT
 
 ## Introduction
 
-Description of the real world problem and solution, impact
+Tea plantation management faces significant challenges due to inefficient monitoring of vast tea lots, leading to suboptimal crop health and reduced yields. **Sky T**, a smart drone-based crop management system, addresses these challenges by introducing a real-time monitoring system for tea plantations. This system leverages advanced IoT devices to track ***soil quality, temperature, and humidity***, ensuring optimal growing conditions. **Drones** play a crucial role by *capturing high-resolution images* and *collecting sensor data* from designated nodes, enabling real-time field monitoring. This allows for the early detection of potential issues, improving decision-making and enhancing overall plantation productivity. By integrating smart technologies, Sky T offers a data-driven approach to revolutionizing tea plantation management.
 
 
 ## Solution Architecture
 
-High level diagram + description
+To be done
 
 ## Hardware and Software Designs
 
-Detailed designs with many sub-sections
+### Software Design
+Our software solution is a web-based dashboard built using the following technology stack
+
+1. Front End - React + Bootstrap
+2. Back End - Typescript
+3. Database - Mongo DB, MySQL
+4. Cloud Service Provider - Azure
+
+#### Front End Designs
+To ensure a seamless user experience that balances simplicity, ease of use, and professionalism, we have developed a fully customizable dashboard with dynamic role-based access control. The system includes secure login and signup validation, adapting the interface dynamically based on the user’s role to enhance usability. Additionally, the design has undergone UI/UX testing, focusing on learnability, usability, and overall user experience, ensuring an intuitive and efficient platform for users.
 
 ## Testing
 
@@ -73,8 +82,7 @@ All items and costs
 
 
 ## Conclusion
-
-What was achieved, future developments, commercialization plans
+Sky T has successfully reached the proof-of-concept stage, marking a significant milestone before full-scale product development. The complete data path—from collecting sensor data and capturing images using a manually flown drone to processing and visualizing the information on a web dashboard—has been fully implemented. This achievement validates the system’s feasibility and lays a strong foundation for further enhancements, including automation and scalability. With this progress, Sky T is now poised for the next phase of development, bringing smart, data-driven solutions to tea plantation management.
 
 ## Links
 
