@@ -82,7 +82,7 @@ All items and costs
 
 
 ## Conclusion
-Sky T has successfully reached the proof-of-concept stage, marking a significant milestone before full-scale product development. The complete data path—from collecting sensor data and capturing images using a manually flown drone to processing and visualizing the information on a web dashboard—has been fully implemented. This achievement validates the system’s feasibility and lays a strong foundation for further enhancements, including automation and scalability. With this progress, Sky T is now poised for the next phase of development, bringing smart, data-driven solutions to tea plantation management.
+Sky T has successfully reached the proof-of-concept stage, marking a significant milestone before full-scale product development. The complete data path from collecting sensor data and capturing images using a manually flown drone to processing and visualizing the information on a web dashboard has been fully implemented. This achievement validates the system’s feasibility and lays a strong foundation for further enhancements, including automation and scalability. With this progress, Sky T is now poised for the next phase of development, bringing smart, data-driven solutions to tea plantation management.
 
 ## Links
 
