@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for setting up a Raspberry Pi with LoRa capabilities.
 
+Last update: 2025 March 01
+
 ## Prerequisites
 
 - Raspberry Pi board (Zero, Zero W, Zero WH, Zero 2W, ... , 4B+)
@@ -18,16 +20,30 @@ The current implementation works specifically with **Raspberry Pi Buster 2020 OS
 
 > **Note:** `RPi.GPIO` is a required dependency for the LoRa library used in this project.
 
-### Step 2: Installing Required Libraries
+### Step 2: Checking avalabilty of the required Libraries
+
+Since we're using Raspberry Pi Buster 2020, we can check all installed packages directly using pip3:
+
+```bash
+# Check availability of the SPI device library
+pip3 show spidev
+
+# Check availability of the RPi.GPIO library
+pip3 show RPi.GPIO
+```
+
+> **Note:** We can check all installed libraries by using the `pip3 list` command.
+
+### Step 3: Installing Required Libraries
 
 Since we're using Raspberry Pi Buster 2020, we can install all packages directly using pip3:
 
 ```bash
-# Install SPI device library
-pip3 install spidev
+# Install SPI device library (if it is not installed)
+sudo pip3 install spidev
 
-# Install RPi.GPIO library
-pip3 install RPi.GPIO
+# Install RPi.GPIO library (if it is not installed)
+sudo pip3 install RPi.GPIO
 
 # Install LoRa library
 sudo pip3 install adafruit-circuitpython-rfm9x
@@ -35,7 +51,7 @@ sudo pip3 install adafruit-circuitpython-rfm9x
 
 > **Important:** Always use `pip3` instead of `pip` because Buster OS comes with both Python 2 and Python 3 installed by default.
 
-### Step 3: Hardware Connection
+### Step 4: Hardware Connection
 
 Connect your LoRa module to the Raspberry Pi's SPI interface:
 
@@ -48,9 +64,9 @@ Connect your LoRa module to the Raspberry Pi's SPI interface:
 | SCK      | GPIO 11 (SCLK)   |
 | NSS      | GPIO 8 (CE0)     |
 | RESET    | GPIO 22          |
-| DIO0     | GPIO 17          |
+| DIO0     | GPIO 0           |
 
-### Step 4: Enabling SPI Interface
+### Step 5: Enabling SPI Interface
 
 Enable the SPI interface on your Raspberry Pi:
 
@@ -60,7 +76,9 @@ Enable the SPI interface on your Raspberry Pi:
 4. Choose "Yes" to enable the SPI interface
 5. Select "Finish" and reboot your Raspberry Pi
 
-### Step 5: Testing Your Setup
+> **Note:** You can use `sudo reboot now` command to reboot your Raspberry Pi Board
+
+### Step 6: Testing Your Setup
 
 To verify your LoRa module is working correctly, run the included test script:
 
@@ -79,8 +97,4 @@ If you encounter any issues:
 
 ## Further Documentation
 
-For more detailed information about the LoRa library and its API, refer to the documentation included in the `docs` folder.
-
-## License
-
-[Insert your license information here]
+For more detailed information about the LoRa library and its API, refer to the documentation for the used library `https://github.com/adafruit/Adafruit_CircuitPython_RFM9x`.
