@@ -80,11 +80,7 @@ Enable the SPI interface on your Raspberry Pi:
 
 ### Step 6: Testing Your Setup
 
-To verify your LoRa module is working correctly, run the included test script:
-
-```bash
-python3 test_lora.py
-```
+To verify your LoRa module is working correctly, run the tests in the test directory.
 
 ## Troubleshooting
 
