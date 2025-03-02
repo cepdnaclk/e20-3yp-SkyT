@@ -12,6 +12,8 @@ title: SkyT
 # SkyT - Drone Based Crop Management System
 
 ---
+## Product Introduction
+[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/QwvF9oJGE9Y)
 
 ## Team
 -  e20032, Bandara A.M.N.C.
