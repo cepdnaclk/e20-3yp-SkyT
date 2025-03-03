@@ -66,7 +66,10 @@ try:
     print("Waiting for node notifications...")
     while True:
         if ble_client.wait_for_notifications():
+
+            # Get BLE packets
             data = ble_client.get_received_data()
+            
             if data:
                 # Print the data returned by the function
                 print(f"Recieved Data From Node: {list(data)}")  
