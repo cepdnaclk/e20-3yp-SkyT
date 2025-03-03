@@ -55,15 +55,15 @@ try:
     #sendByteArray(byteData)  # Send data with a 1-second delay
 
     # Example data to send        
-    #sendStrings(stringData)  # Send data with a 1-second delay
+    sendStrings(stringData)  # Send data with a 1-second delay
         
     # Send the large dataset - String
     #senderID = "DronePi"
     #sendLargeData(Large_String, senderID)
 
     # Send the large dataset - Image
-    Image = loadImage("image1.webp")
-    sendImage(Image)
+    #Image = loadImage("image1.webp")
+    #sendImage(Image)
         
         
 except KeyboardInterrupt:
