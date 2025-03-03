@@ -21,7 +21,7 @@ def load_payload_data(filename):
     byte_data = []
     for line in lines:
         # Match lines like "Packet:<number>:DATA:<hex values>"
-        match = re.match(r"Packet:\d+:DATA:(.+)", line.strip())
+        match = re.match(r"PKT:\d+:DATA:(.+)", line.strip())
         if match:
             hex_string = match.group(1)
             # Split hex values by spaces and filter out empty strings
