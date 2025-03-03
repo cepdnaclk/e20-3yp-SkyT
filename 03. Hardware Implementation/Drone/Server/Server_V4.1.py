@@ -1,0 +1,105 @@
+"""
+Created by Bimsara Gawesh
+Last update on 02 March 2025
+Server for LoRa communication
+This module requires a Sender for the communication
+This is currenty support for the one way communication between two devices
+Work for Sender_V3.0 and newer
+Work for BLE_Reciever_V3.1 and newer
+Version 4.1
+
+Required Helper Files
+Sender.py, Imager.py BLE_Reciever.py
+"""
+# Import System Libaries
+import time
+
+# Import Sender
+from Sender import sendStrings, sendByteArray, sendLargeData, sendImage
+
+# Import Imager
+from Imager import loadImage
+
+# Import BLE_Reciever
+from BLE_Reciever import BLEClient
+
+# ESP32's BLE address
+ESP32_ADDRESS = "78:21:84:88:58:a6"
+
+# Replace the Client ID
+RPI_ID = "DronePi"
+
+# Create an instance of the BLE client
+ble_client = BLEClient(ESP32_ADDRESS)
+
+# Dummy data set
+count = 0
+
+byteData = bytes([0x01, 0x02, 0x03, 0x04])
+
+stringData = "Hello World"
+
+Large_String = """**The Importance of Computers in Modern Society**  
+
+Computers have become an essential part of modern life, transforming the way we work, communicate, and access information. From personal use to large-scale industries, computers play a crucial role in various aspects of our daily activities. They have revolutionized education, business, healthcare, and entertainment, making tasks more efficient and accessible. As technology continues to evolve, computers are becoming even more powerful, influencing every sector of society.  
+
+One of the most significant impacts of computers is in the field of education. With the advent of digital learning, students can now access a wealth of information at their fingertips. Online courses, e-books, and educational videos provide opportunities for people worldwide to learn new skills without attending traditional classrooms. Additionally, computers help educators create engaging content, automate administrative tasks, and conduct virtual classes, making education more interactive and efficient.  
+
+In business, computers have streamlined operations, increasing productivity and efficiency. Companies rely on computers for data management, communication, marketing, and financial transactions. With the rise of e-commerce, businesses can reach a global audience, allowing customers to purchase products and services online. Computer software also helps companies analyze market trends, manage supply chains, and improve customer service. As a result, businesses can operate more effectively and compete in a rapidly evolving marketplace.  
+
+Healthcare has also greatly benefited from the advancements in computer technology. Medical professionals use computers for diagnosing diseases, managing patient records, and conducting research. Hospitals and clinics rely on specialized software to track patient histories, schedule appointments, and store critical medical data. Moreover, cutting-edge technologies such as artificial intelligence and machine learning are assisting in the development of new treatments, improving the accuracy of medical diagnoses, and even predicting potential health risks. Telemedicine, made possible by computers and the internet, enables doctors to consult with patients remotely, increasing access to healthcare services.  
+
+Computers have also revolutionized communication, allowing people to connect instantly across the globe. Social media platforms, emails, and video conferencing have made it easier for individuals and businesses to stay connected. The internet, powered by computers, has created a digital world where people can share ideas, collaborate on projects, and engage in discussions regardless of their geographical location. This has not only strengthened personal relationships but has also enhanced professional networking, enabling businesses and organizations to work together efficiently.  
+
+Entertainment has seen a significant transformation with the advent of computers. From streaming services and video games to digital art and music production, computers provide endless possibilities for creative expression. High-quality graphics, virtual reality, and artificial intelligence have pushed the boundaries of what is possible in gaming and film production. Additionally, content creators use computers to edit videos, compose music, and develop software applications, shaping the future of entertainment and digital media.  
+
+Despite their numerous benefits, computers also pose challenges, such as cybersecurity threats, data privacy concerns, and digital addiction. Hackers and cybercriminals exploit vulnerabilities to steal sensitive information, leading to financial losses and privacy breaches. To address these issues, cybersecurity measures, including firewalls, encryption, and antivirus software, are essential to protect personal and organizational data. Furthermore, excessive screen time can lead to health issues, such as eye strain and decreased physical activity, highlighting the importance of balanced computer usage.  
+
+In conclusion, computers have become an indispensable part of modern society, impacting education, business, healthcare, communication, and entertainment. Their ability to process vast amounts of information quickly and efficiently has made life more convenient and productive. While computers present challenges, proper usage and security measures can mitigate risks. As technology continues to advance, computers will play an even greater role in shaping the future, making them one of the most important inventions in human history.
+"""
+
+
+# Server Code
+try:
+    print("LoRa Server Started...")
+
+    # Connect to the BLE device
+    ble_client.connect()
+
+    # Verification
+    if ble_client.verifyClient(RPI_ID):
+        print("Client verified successfully!")
+        
+        # Wait for notifications and print received data
+        print("Waiting for notifications...")
+
+        for i in range(10):
+            if ble_client.wait_for_notifications():
+
+                # Get BLE packets
+                data = ble_client.get_received_data()
+
+                if data:
+                    # Print the data returned by the function
+                    print(f"Recieved Data From Node: {list(data)}")  
+
+                    # Forward to the LoRa
+                    sendByteArray(data, RPI_ID)
+                    print("Forward to the LoRa Successfully.")
+
+                if data:
+                    print(f"Data returned by function: {list(data)}")  # Print the data returned by the function
+            else:
+                print("Waiting...")  # Timeout occurred, no notifications received
+            
+            time.sleep(1)  # Add a small delay to avoid busy-waiting
+
+    else:
+        print("Client verification failed.")
+        ble_client.disconnect()       
+                    
+except KeyboardInterrupt:
+    print("\nProgram interrupted")
+finally:
+    # Clean up
+    print("GPIO cleaned up and program terminated.")
