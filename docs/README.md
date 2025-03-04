@@ -43,9 +43,23 @@ Tea plantation management faces significant challenges due to inefficient monito
 
 
 ## Solution Architecture
+Our solution architecture comprises both IoT devices and a cloud-based web application. The high-level overview of the system, as depicted in the accompanying diagram, consists of the following key components
 
-To be done
+1. Sensor Node 
+2. Drone
+3. Docking station
+4. Cloud backend
+5. Web dashboard
+   
+### 1.Sensor Node
+The sensor node is a compact environmental monitoring unit installed within a designated tea plantation area, typically covering a perimeter of approximately 500 meters. This unit is designed to collect essential soil and atmospheric data, including pH levels, nutrient content (NPK), temperature, and humidity.
 
+The sensor node operates on either solar power or a rechargeable battery, depending on its location. It remains in a low-power state and is activated only upon receiving a triggering signal from the drone via Bluetooth Low Energy (BLE) communication.
+
+**Hardware Components**
+1. *ESP32 Microcontroller* – Handles data acquisition and wireless communication.
+2. *RS485 NPK Sensor* – Measures nitrogen (N), phosphorus (P), and potassium (K) levels in the soil.
+3. *AHT10 Humidity Sensor* – Monitors temperature and humidity conditions.
 ## Hardware and Software Designs
 
 ### Software Design
@@ -54,7 +68,7 @@ Our software solution is a web-based dashboard built using the following technol
 1. Front End - React + Bootstrap
 2. Back End - Typescript
 3. Database - Mongo DB, MySQL
-4. Cloud Service Provider - Azure
+4. Cloud Service Provider - AWS
 
 #### Front End Designs
 To ensure a seamless user experience that balances simplicity, ease of use, and professionalism, we have developed a fully customizable dashboard with dynamic role-based access control. The system includes secure login and signup validation, adapting the interface dynamically based on the user’s role to enhance usability. Additionally, the design has undergone UI/UX testing, focusing on learnability, usability, and overall user experience, ensuring an intuitive and efficient platform for users.
