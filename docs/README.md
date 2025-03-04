@@ -43,15 +43,18 @@ Tea plantation management faces significant challenges due to inefficient monito
 
 
 ## Solution Architecture
-Our solution architecture comprises both IoT devices and a cloud-based web application. The high-level overview of the system, as depicted in the accompanying diagram, consists of the following key components
+Our solution architecture comprises both IoT devices and a cloud-based web application. 
+![Sample Image](./images/solution architecture.png)
+
+The high-level overview of the system, as depicted in the accompanying diagram, consists of the following key components.
 
 1. Sensor Node 
 2. Drone
 3. Docking station
-4. Cloud backend
+4. Cloud-Based Backend
 5. Web dashboard
    
-### 1.Sensor Node
+### 1. Sensor Node
 The sensor node is a compact environmental monitoring unit installed within a designated tea plantation area, typically covering a perimeter of approximately 500 meters. This unit is designed to collect essential soil and atmospheric data, including pH levels, nutrient content (NPK), temperature, and humidity.
 
 The sensor node operates on either solar power or a rechargeable battery, depending on its location. It remains in a low-power state and is activated only upon receiving a triggering signal from the drone via Bluetooth Low Energy (BLE) communication.
@@ -60,6 +63,45 @@ The sensor node operates on either solar power or a rechargeable battery, depend
 1. *ESP32 Microcontroller* – Handles data acquisition and wireless communication.
 2. *RS485 NPK Sensor* – Measures nitrogen (N), phosphorus (P), and potassium (K) levels in the soil.
 3. *AHT10 Humidity Sensor* – Monitors temperature and humidity conditions.
+
+### 2. Drone
+The drone serves as the primary data acquisition unit within the system, collecting environmental data from the sensor node while simultaneously capturing aerial images of the tea plantation. These high-resolution images are processed in the cloud backend to support critical decision-making processes, such as determining the optimal timing for tea harvesting.
+
+To ensure seamless communication with the sensor node and docking station, the drone is equipped with specialized hardware components.
+
+**Hardware Components**
+1. *LoRa Transceiver* – Enables long-range, low-power communication between the drone and docking station.
+2. *Raspberry Pi Zero Microcontroller* – Manages data processing and communication tasks.
+3. *Raspberry Pi Camera Module V1.3* – Captures aerial imagery for analysis and decision-making
+
+### 3. Docking Station
+The docking station serves as a critical communication hub within the system, acting as an intermediary between the drone and the cloud platform. Its primary function is to receive data from the drone via a LoRa transceiver and transmit it to the cloud-hosted backend for processing and storage in the database. This ensures seamless data integration and real-time accessibility for analysis and decision-making.
+
+**Hardware Components**
+1. *ESP32 Microcontroller* - Manages data transmission and communication processes.
+2. *LoRa Transceiver* - Facilitates long-range wireless communication between the drone and docking station.
+3. *4G Wifi Dongle* - Enables internet connectivity for cloud data transfer.
+
+### 4. Cloud-Based Backend
+The backend infrastructure is hosted on a cloud platform, leveraging Amazon Web Services (AWS) as the cloud service provider. To ensure security and efficiency, the solution is designed with two separate backend systems, one dedicated to processing IoT data and another for managing the web dashboard. Both backends are connected to a centralized database, facilitating seamless data integration while maintaining system security.
+
+**Backend Technologies**
+1. *IoT Server - Implemented using Python Flask, optimized for handling real-time IoT data processing.
+2. Web Dashboard Server - Developed using TypeScript, ensuring a scalable and maintainable architecture.
+
+**Database Management**
+1. MongoDB - Used for storing high-resolution aerial images.
+2. MySQL- Handles sensor data storage and user information.
+
+### 5. Web Dashboard
+The web dashboard serves as the user-facing interface, providing real-time insights derived from sensor data analysis. It is designed to support role-based access control, ensuring that users receive dynamic content relevant to their specific roles. This interface enables efficient decision-making by presenting processed data in an intuitive and interactive manner.
+
+**Technologies Used**
+1. React.js – A modular and scalable framework for building dynamic, responsive user interfaces.
+2. Bootstrap – Enhances the dashboard’s design with a flexible and modern UI framework.
+
+The proposed solution architecture integrates IoT technology, aerial imaging, and cloud computing to create a smart, data-driven crop management system for tea plantations. By leveraging sensor nodes, drones, a docking station, a cloud-based backend, and a web dashboard, the system ensures efficient data collection, processing, and visualization.
+
 ## Hardware and Software Designs
 
 ### Software Design
