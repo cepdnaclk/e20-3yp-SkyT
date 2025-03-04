@@ -44,7 +44,7 @@ Tea plantation management faces significant challenges due to inefficient monito
 
 ## Solution Architecture
 Our solution architecture comprises both IoT devices and a cloud-based web application. 
-![Sample Image](./images/solution architecture.png)
+![Sample Image](./images/solutionarchitecture.png)
 
 The high-level overview of the system, as depicted in the accompanying diagram, consists of the following key components.
 
