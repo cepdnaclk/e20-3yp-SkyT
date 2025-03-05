@@ -47,10 +47,10 @@ app.get("/", (req, res) => {
 app.use("/api/authenticate", protectedRouter);
 
 // Verification connection
-app.use("/api/verify", siteAdminRouter);
+app.use("/api/login", siteAdminRouter);
 
 // Gallery connection
-app.use("/api/gallery", galleryRouter);
+app.use("/api/data", galleryRouter);
 
 // Feedback connection
 app.use("/api/feedback", feedbackRouter);

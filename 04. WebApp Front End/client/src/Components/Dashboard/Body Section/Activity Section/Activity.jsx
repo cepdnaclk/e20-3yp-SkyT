@@ -1,4 +1,3 @@
-import React from "react";
 import MapChart from "./MapChart"; // Ensure correct import
 
 const Activity = () => {

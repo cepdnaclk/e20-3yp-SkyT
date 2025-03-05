@@ -1,4 +1,3 @@
-import React from "react";
 import Sidebar from "./SideBar Section/SideBar";
 import Body from "./Body Section/Body";
 import "./Dashboard.css";

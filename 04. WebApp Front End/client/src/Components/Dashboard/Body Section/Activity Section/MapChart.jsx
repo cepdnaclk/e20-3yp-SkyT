@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet"; // Import Leaflet for custom icons
@@ -25,7 +25,11 @@ const MapChart = ({ searchQuery }) => {
         );
         const data = await response.json();
         if (data.length > 0) {
-          setLocation({ lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), name: searchQuery });
+          setLocation({
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+            name: searchQuery,
+          });
         } else {
           console.error("Location not found");
         }
@@ -41,7 +45,11 @@ const MapChart = ({ searchQuery }) => {
     <div className="mapCard">
       <div className="mapCardBody">
         {location ? (
-          <MapContainer center={[location.lat, location.lng]} zoom={12} className="h-64 w-full">
+          <MapContainer
+            center={[location.lat, location.lng]}
+            zoom={12}
+            className="h-64 w-full"
+          >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[location.lat, location.lng]} icon={customIcon}>
               <Popup>{location.name}</Popup>
