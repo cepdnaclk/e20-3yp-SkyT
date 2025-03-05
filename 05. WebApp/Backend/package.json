@@ -18,7 +18,8 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
-    "mssql": "^11.0.1"
+    "mssql": "^11.0.1",
+    "skyt_backend": "file:"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

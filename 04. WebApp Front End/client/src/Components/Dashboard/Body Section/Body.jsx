@@ -12,9 +12,9 @@ const Body = () => {
         <Listing />
       </div>
 
-      {/* <div className="bottom flex">
-      <Activity />
-      </div> */}
+      <div className="bottom flex">
+        <Activity />
+      </div>
     </div>
   )
 }

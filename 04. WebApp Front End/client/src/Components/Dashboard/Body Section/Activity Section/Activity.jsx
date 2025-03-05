@@ -1,13 +1,12 @@
-import React from "react";
-import MapChart from "./MapChart"; // Ensure correct import
-
-const Activity = () => {
+import React from 'react'
+import Card from '../../../widgets/card'
+import dronecapture from '../../../../Assets/droneimage.jpeg'
+function Activity() {
   return (
-    <div className="activityContainer">
-      <h2 className="activityTitle">Location Map</h2>
-      <MapChart searchQuery="Kandy" />
+    <div>
+      <Card timestamp="10:58:22AM 05/03/2025" lotNo="Node A" imageSrc={dronecapture}/>
     </div>
-  );
-};
+  )
+}
 
-export default Activity;
+export default Activity

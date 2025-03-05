@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './Login.css'
 import '../../App.css'
 
@@ -7,9 +7,19 @@ import logo from '../../LoginAssets/logotr.png'
 import { FaUserShield } from "react-icons/fa6"
 import { BsFillShieldLockFill } from "react-icons/bs"
 import { AiOutlineSwapRight } from "react-icons/ai";
-import {Link,NavLink} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 const Login = () => {
+  const [username,loginUsername]=useState('')
+  const [password,loginPassword]=useState('')
+  const readUser=()=>{
+    Axios.post('http://localhost:5000/login',{
+      loginUsername:username,
+      loginPassword:password
+    }).then(()=>{
+      console.log(response)
+    })
+}
   return (
     <div className='loginPage flex'>
       <div className='container flex'>
@@ -43,7 +53,7 @@ const Login = () => {
 
                 <div className="input flex">
                   <FaUserShield className="icon" />
-                  <input type="text" id='username' placeholder='Username' />
+                  <input type="text" id='username' placeholder='Username'onChange={(event)=>loginUsername(event.target.value)}/>
                 </div>
               </div>
 
@@ -52,7 +62,7 @@ const Login = () => {
 
                 <div className="input flex">
                   <BsFillShieldLockFill className="icon" />
-                  <input type="password" id='Password' placeholder='Password' />
+                  <input type="password" id='password' placeholder='Password' onChange={(event)=>loginPassword(event.target.value)}/>
                 </div>
               </div>
 
