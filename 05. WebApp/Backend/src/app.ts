@@ -11,8 +11,8 @@ import createHttpError, { isHttpError } from "http-errors";
 import sensorDataRouter from "./routes/sensorData";
 import imageRouter from "./routes/nodeImages";
 import testRouter from "./routes/test";
-/*import newsRouter from "./routes/news";
-import highlightRouter from "./routes/highlights";
+import downloadRouter from "./routes/downloads";
+/*import highlightRouter from "./routes/highlights";
 import teacherRouter from "./routes/teacher";
 import siteAdminRouter from "./routes/siteAdmin";
 import protectedRouter from "./routes/protected";
@@ -58,6 +58,9 @@ app.use("/api/images", imageRouter);
 
 // Admin connection
 app.use("/api/test", testRouter);
+
+// Downloads connection
+app.use("/downloads", downloadRouter);
 
 // News connection
 /* app.use("/api/news", newsRouter);

@@ -11,7 +11,7 @@ function Activity() {
     // Fetch data once on mount
     const fetchImages = async () => {
       try {
-        const data = await getData("images"); // Fetch JSON data
+        const data = await getData("images?lotId=1"); // Fetch JSON data
         console.log("Images: ", data.data);
         if (data.data && Array.isArray(data.data)) {
           setImageCards(data.data);
@@ -25,10 +25,10 @@ function Activity() {
   }, []); // Empty dependency array ensures it runs only once
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} width={"100%"}>
       {imageCards.length > 0 ? (
         imageCards.map((item) => (
-          <Grid key={item.id} size={{ xs: 12, md: 6, lg: 3, xl: 4 }}>
+          <Grid key={item.id} size={{ xs: 12, md: 6, lg: 3 }}>
             <Card
               timestamp={item.timestamp || "Unknown Time"}
               lotNo={item.lotNo || "Unknown Lot"}

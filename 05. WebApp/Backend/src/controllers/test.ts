@@ -8,6 +8,7 @@ export const test: RequestHandler = async (req, res, next) => {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.query(query);
+    connection.release();
 
     console.log("Test OK", rows);
     res.status(200).json({ result: rows });
