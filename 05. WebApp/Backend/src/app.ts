@@ -10,8 +10,8 @@ import createHttpError, { isHttpError } from "http-errors";
 // Routes
 import sensorDataRouter from "./routes/sensorData";
 import imageRouter from "./routes/nodeImages";
-/*import adminRouter from "./routes/admin";
-import newsRouter from "./routes/news";
+import testRouter from "./routes/test";
+/*import newsRouter from "./routes/news";
 import highlightRouter from "./routes/highlights";
 import teacherRouter from "./routes/teacher";
 import siteAdminRouter from "./routes/siteAdmin";
@@ -56,12 +56,11 @@ app.use("/api/data", sensorDataRouter);
 // Image connection
 app.use("/api/images", imageRouter);
 
-/* Not Connected */
 // Admin connection
-/*app.use("/api/admin", adminRouter);
+app.use("/api/test", testRouter);
 
 // News connection
-app.use("/api/news", newsRouter);
+/* app.use("/api/news", newsRouter);
 
 // Highlight connection
 app.use("/api/highlights", highlightRouter);
