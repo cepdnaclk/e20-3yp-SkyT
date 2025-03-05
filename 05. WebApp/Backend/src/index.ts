@@ -1,4 +1,4 @@
-import { azureDB as connectToAzureSQL } from "./database/azureDbConfig";
+import { awsMySQLDB as connectToMySQL } from "./database/awsDBConfig";
 import "./database/mongoDbConfig";
 import "dotenv/config";
 import env from "./util/validateEnv";
@@ -9,7 +9,7 @@ const port = env.MYNODEPORT;
 const startServer = async () => {
   try {
     // Connect to Azure SQL Database
-    await connectToAzureSQL();
+    await connectToMySQL();
 
     // MongoDB connection is already established when importing mongoDbConfig
     // MongoDB will log connection status in its config file

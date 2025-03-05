@@ -8,16 +8,15 @@ import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { isHttpError } from "http-errors";
 
 // Routes
-import galleryRouter from "./routes/gallery";
-import feedbackRouter from "./routes/feedbacks";
-import adminRouter from "./routes/admin";
+import sensorDataRouter from "./routes/sensorData";
+import imageRouter from "./routes/nodeImages";
+/*import adminRouter from "./routes/admin";
 import newsRouter from "./routes/news";
 import highlightRouter from "./routes/highlights";
 import teacherRouter from "./routes/teacher";
-import donerRouter from "./routes/doner";
 import siteAdminRouter from "./routes/siteAdmin";
 import protectedRouter from "./routes/protected";
-
+*/
 const app = express();
 
 app.use(
@@ -43,20 +42,23 @@ app.get("/", (req, res) => {
   res.send("Hello, World! I'm Node App. I can hear you!");
 });
 
+/* Default APIs */
 // Protected Routers
-app.use("/api/authenticate", protectedRouter);
+/*app.use("/api/authenticate", protectedRouter);
 
 // Verification connection
 app.use("/api/login", siteAdminRouter);
 
-// Gallery connection
-app.use("/api/data", galleryRouter);
+/* Configured APIs */
+// Data connection
+app.use("/api/data", sensorDataRouter);
 
-// Feedback connection
-app.use("/api/feedback", feedbackRouter);
+// Image connection
+app.use("/api/images", imageRouter);
 
+/* Not Connected */
 // Admin connection
-app.use("/api/admin", adminRouter);
+/*app.use("/api/admin", adminRouter);
 
 // News connection
 app.use("/api/news", newsRouter);
@@ -66,10 +68,7 @@ app.use("/api/highlights", highlightRouter);
 
 // Teacher connection
 app.use("/api/teacher", teacherRouter);
-
-// Blood Donation Connection
-app.use("/api/doner", donerRouter);
-
+*/
 // End point not found error
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found!"));

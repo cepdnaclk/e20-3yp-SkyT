@@ -46,12 +46,13 @@ const Listing = () => {
     // Function to fetch and update sensor data
     const fetchAndUpdateData = async () => {
       const newData = await getData("data");
-      if (newData.length > 0) {
+      //console.log("Data: ", newData.data);
+      if (newData.data.length > 0) {
         // Map new values to cardParams
         setCardParams((prevParams) =>
           prevParams.map((card, index) => ({
             ...card,
-            value: newData[index]?.value || "N/A", // Assign new value if available
+            value: newData.data[index]?.value || "N/A", // Assign new value if available
           }))
         );
       }
