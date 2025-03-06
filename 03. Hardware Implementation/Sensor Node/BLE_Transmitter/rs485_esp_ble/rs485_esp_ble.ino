@@ -140,6 +140,7 @@ void loop() {
 void readSensorData() {
   // Read DHT11 humidity
   float dhtHumidity = dht.readHumidity();
+  float dhtTemperature = dht.readTemperature();
   
   // Send read command
   digitalWrite(RE_DE, HIGH);  // Set to transmit mode
@@ -188,11 +189,11 @@ void readSensorData() {
     int nitrogen = (receivedData[11] << 8 | receivedData[12]);
     int phosphorus = (receivedData[13] << 8 | receivedData[14]);
     int potassium = (receivedData[15] << 8 | receivedData[16]);
-    
+    int dhtTemperatureInt = (int)(dhtTemperature * 10);
     // Copy raw data to transmitData array for BLE transmission
     
-    transmitData[0] = receivedData[5];  // Temperature MSB
-    transmitData[1] = receivedData[6];  // Temperature LSB
+    transmitData[0] = (dhtTemperature >> 8) & 0xFF;  // DHT Temperature MSB
+    transmitData[1] = dhtTemperature & 0xFF;         // DHT Temperature LSB
     transmitData[2] = receivedData[9];  // pH MSB
     transmitData[3] = receivedData[10]; // pH LSB
     transmitData[4] = receivedData[11]; // Nitrogen MSB
