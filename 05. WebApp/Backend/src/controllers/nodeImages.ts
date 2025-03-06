@@ -26,10 +26,8 @@ const connectMongoDB = async () => {
 };
 connectMongoDB(); // Run the connection on startup
 
-// Function to fetch image ID from MySQL
-const getImageIdFromMySQL = async (
-  lotNumber: number
-): Promise<string | null> => {
+// Function to fetch all image IDs for a given lot number
+const getImageIdsFromMySQL = async (lotNumber: number): Promise<string[]> => {
   try {
     const connection = await pool.getConnection();
     const [rows]: any = await connection.query(
@@ -38,20 +36,17 @@ const getImageIdFromMySQL = async (
     );
     connection.release();
 
-    if (rows.length > 0) {
-      return rows[0].image_ID; // Return only the image ID
-    } else {
-      console.log(`Error: No image found for lot_number ${lotNumber}`);
-      return null;
-    }
+    return rows.map((row: any) => row.image_ID); // Return all image IDs as an array
   } catch (error) {
     console.error("MySQL Error:", error);
-    return null;
+    return [];
   }
 };
 
-// Function to retrieve and save image from GridFS
-const retrieveImage = async (imageId: string): Promise<string | null> => {
+// Function to retrieve and save image from GridFS along with uploadDate
+const retrieveImage = async (
+  imageId: string
+): Promise<{ path: string; uploadDate: string } | null> => {
   try {
     const objectId = new ObjectId(imageId);
     const cursor = bucket.find({ _id: objectId });
@@ -68,14 +63,18 @@ const retrieveImage = async (imageId: string): Promise<string | null> => {
 
     await pipeline(downloadStream, fileStream);
     console.log(`Image retrieved and saved as ${savePath}`);
-    return savePath;
+
+    return {
+      path: savePath,
+      uploadDate: file.uploadDate.toISOString(), // Convert uploadDate to ISO string
+    };
   } catch (error) {
     console.error("Error retrieving image:", error);
     return null;
   }
 };
 
-// Controller to Get Images
+// **Controller to Get Images**
 export const getImages: RequestHandler = async (req, res, next) => {
   try {
     console.log("Lot_ID: ", req.query.lotId);
@@ -84,34 +83,37 @@ export const getImages: RequestHandler = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid lotId parameter" });
     }
 
-    // Get image ID from MySQL
-    const imageId = await getImageIdFromMySQL(lotId);
-    if (!imageId) {
-      return res.status(404).json({ error: "Image not found in MySQL" });
+    // Get all image IDs from MySQL
+    const imageIds = await getImageIdsFromMySQL(lotId);
+    if (imageIds.length === 0) {
+      return res.status(404).json({ error: "No images found for this lot" });
     }
 
-    console.log("Lot images", imageId);
+    console.log("Lot images", imageIds);
 
-    // Retrieve image from MongoDB
-    const imagePath = await retrieveImage(imageId);
-    if (!imagePath) {
-      return res.status(404).json({ error: "Image not found in MongoDB" });
-    }
+    // Retrieve each image from MongoDB
+    const imagesData = await Promise.all(
+      imageIds.map(async (imageId) => {
+        const imageData = await retrieveImage(imageId);
+        if (!imageData) return null;
 
-    // Create response format
-    const response = [
-      {
-        id: lotId,
-        timestamp:
-          new Date().toLocaleTimeString() +
-          " " +
-          new Date().toLocaleDateString(),
-        lotNo: `Node ${lotId}`,
-        imageSrc: `${req.protocol}://${req.get(
-          "host"
-        )}/downloads/${imageId}.jpg`,
-      },
-    ];
+        return {
+          id: lotId,
+          timestamp:
+            new Date().toLocaleTimeString() +
+            " " +
+            new Date().toLocaleDateString(),
+          lotNo: `Node ${lotId}`,
+          imageSrc: `${req.protocol}://${req.get(
+            "host"
+          )}/downloads/${imageId}.jpg`,
+          uploadDate: imageData.uploadDate, // Include upload date in response
+        };
+      })
+    );
+
+    // Remove any failed image retrievals
+    const response = imagesData.filter((image) => image !== null);
 
     console.log("Response: ", response);
     res.status(200).json(response);
