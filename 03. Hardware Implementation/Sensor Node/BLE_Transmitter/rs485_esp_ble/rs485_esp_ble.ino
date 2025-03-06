@@ -2,16 +2,19 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <DHT.h>   // Include DHT library
 
 // Pin definitions
 #define RE_DE 4     // RS485 Direction control pin
 #define RX_PIN 16   // ESP32 RX2 pin
 #define TX_PIN 17   // ESP32 TX2 pin
+#define DHT_PIN 23  // DHT11 data pin
+#define DHT_TYPE DHT11  // Define the DHT sensor type
 
 // Modbus frame to read 7 registers starting from address 0x0000
 byte readData[] = {0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08};
 byte receivedData[20];
-byte transmitData[10]; // 10-byte array for BLE transmission
+byte transmitData[12]; // Increased to 12 bytes to include DHT11 humidity
 
 // BLE related variables
 BLEServer* pServer = NULL;
@@ -28,6 +31,7 @@ uint32_t value = 0;
 #define CHARACTERISTIC_UUID_2 "b4b6b8a6-5286-4b49-9074-a89f96a0637e"
 
 HardwareSerial sensorSerial(2); // UART2
+DHT dht(DHT_PIN, DHT_TYPE);  // Initialize DHT sensor
 
 class MyServerCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -46,6 +50,9 @@ void setup() {
   // Start serial communications
   Serial.begin(115200);     // Main serial for debug output on USB
   sensorSerial.begin(4800, SERIAL_8N1, RX_PIN, TX_PIN); // Default sensor baud rate
+  
+  // Initialize DHT sensor
+  dht.begin();
   
   // Configure RE_DE pin for direction control
   pinMode(RE_DE, OUTPUT);
@@ -103,7 +110,7 @@ void loop() {
   // Step 2: Transmit data via BLE if connected
   if (deviceConnected) {
     // Send sensor data through the first characteristic
-    pCharacteristic->setValue(transmitData, 10);
+    pCharacteristic->setValue(transmitData, 12);
     pCharacteristic->notify();
     Serial.println("Soil sensor data transmitted via BLE");
     
@@ -131,6 +138,9 @@ void loop() {
 }
 
 void readSensorData() {
+  // Read DHT11 humidity
+  float dhtHumidity = dht.readHumidity();
+  
   // Send read command
   digitalWrite(RE_DE, HIGH);  // Set to transmit mode
   delay(10);
@@ -170,6 +180,7 @@ void readSensorData() {
   // Process and print the data if we received a valid response
   if(receivedData[0] == 0x01) {
     // Calculate values from received data
+    
     float humidity = (receivedData[3] << 8 | receivedData[4]) * 0.1;
     float temperature = (receivedData[5] << 8 | receivedData[6]) * 0.1;
     int conductivity = (receivedData[7] << 8 | receivedData[8]);
@@ -179,6 +190,7 @@ void readSensorData() {
     int potassium = (receivedData[15] << 8 | receivedData[16]);
     
     // Copy raw data to transmitData array for BLE transmission
+    
     transmitData[0] = receivedData[5];  // Temperature MSB
     transmitData[1] = receivedData[6];  // Temperature LSB
     transmitData[2] = receivedData[9];  // pH MSB
@@ -190,16 +202,22 @@ void readSensorData() {
     transmitData[8] = receivedData[15]; // Potassium MSB
     transmitData[9] = receivedData[16]; // Potassium LSB
     
+    // Add DHT11 humidity to transmitData (converting to 16-bit integer)
+    int dhtHumidityInt = (int)(dhtHumidity * 10);
+    transmitData[10] = (dhtHumidityInt >> 8) & 0xFF; // DHT Humidity MSB
+    transmitData[11] = dhtHumidityInt & 0xFF;        // DHT Humidity LSB
+    
     // Print values to serial monitor
     Serial.println("\n--- Soil Sensor Readings ---");
     Serial.print("Temperature: "); Serial.print(temperature); Serial.println(" °C");
-    Serial.print("Humidity: "); Serial.print(humidity); Serial.println(" %RH");
+    Serial.print("Humidity (Modbus): "); Serial.print(humidity); Serial.println(" %RH");
+    Serial.print("DHT11 Humidity: "); Serial.print(dhtHumidity); Serial.println(" %RH");
     Serial.print("Conductivity: "); Serial.print(conductivity); Serial.println(" us/cm");
     Serial.print("pH: "); Serial.println(ph);
     Serial.print("Nitrogen: "); Serial.print(nitrogen); Serial.println(" mg/kg");
     Serial.print("Phosphorus: "); Serial.print(phosphorus); Serial.println(" mg/kg");
     Serial.print("Potassium: "); Serial.print(potassium); Serial.println(" mg/kg");
   } else {
-    Serial.println("Error: Invalid response or no data received");
+   Serial.println("Error: Invalid response or no data received");
   }
 }
