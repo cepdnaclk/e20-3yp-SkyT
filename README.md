@@ -44,14 +44,14 @@ This project demonstrates using multiple communication protocols:
 
 ## Wiring Diagram
 
-GPIO16 (RX2) --- TX
-GPIO17 (TX2) --- RX
-GPIO4        --- RE/DE
-A            --- A
-B            --- B
-GPIO23       --- DATA
-3.3V         --- VCC
-GND          --- GND
+- GPIO16 (RX2) --- TX
+- GPIO17 (TX2) --- RX
+- GPIO4        --- RE/DE
+- A            --- A
+- B            --- B
+- GPIO23       --- DATA
+- 3.3V         --- VCC
+- GND          --- GND
 
 ## Installation
 
@@ -74,4 +74,3 @@ Once the code is running on your ESP32, the device will advertise itself via BLE
 - No data from soil sensor: Check RS-485 wiring and ensure correct baud rate (typically 4800)
 - DHT11 readings not appearing: Verify DHT11 wiring and library installation
 - BLE not advertising: Check that BLE is properly initialized in setup()
-- Data decoding issues: Use the debug version of the decoder to inspect raw bytes
