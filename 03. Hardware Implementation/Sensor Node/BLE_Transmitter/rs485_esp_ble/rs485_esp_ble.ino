@@ -192,8 +192,8 @@ void readSensorData() {
     int dhtTemperatureInt = (int)(dhtTemperature * 10);
     // Copy raw data to transmitData array for BLE transmission
     
-    transmitData[0] = (dhtTemperature >> 8) & 0xFF;  // DHT Temperature MSB
-    transmitData[1] = dhtTemperature & 0xFF;         // DHT Temperature LSB
+    transmitData[0] = (dhtTemperatureInt >> 8) & 0xFF;  // DHT Temperature MSB
+    transmitData[1] = dhtTemperatureInt & 0xFF;         // DHT Temperature LSB
     transmitData[2] = receivedData[9];  // pH MSB
     transmitData[3] = receivedData[10]; // pH LSB
     transmitData[4] = receivedData[11]; // Nitrogen MSB
@@ -210,7 +210,7 @@ void readSensorData() {
     
     // Print values to serial monitor
     Serial.println("\n--- Soil Sensor Readings ---");
-    Serial.print("Temperature: "); Serial.print(temperature); Serial.println(" °C");
+    Serial.print("Temperature: "); Serial.print(dhtTemperature); Serial.println(" °C");
     Serial.print("Humidity (Modbus): "); Serial.print(humidity); Serial.println(" %RH");
     Serial.print("DHT11 Humidity: "); Serial.print(dhtHumidity); Serial.println(" %RH");
     Serial.print("Conductivity: "); Serial.print(conductivity); Serial.println(" us/cm");
