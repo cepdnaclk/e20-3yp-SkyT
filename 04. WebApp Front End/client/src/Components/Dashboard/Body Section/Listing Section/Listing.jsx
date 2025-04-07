@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './listing.css';
@@ -86,6 +87,52 @@ const Listing = () => {
     },
   ]);
 
+=======
+import { useEffect, useState } from "react";
+import "./listing.css";
+import SmallCard from "../../../widgets/smallCard";
+import { Box, Grid2 as Grid } from "@mui/material";
+
+// Icons
+import { LiaTemperatureHighSolid } from "react-icons/lia";
+import { getData } from "../../../../Api/Api";
+import { WiHumidity } from "react-icons/wi";
+import { IoMdSpeedometer } from "react-icons/io";
+import { TbCircleLetterNFilled } from "react-icons/tb";
+import { TbCircleLetterKFilled } from "react-icons/tb";
+import { TbCircleLetterPFilled } from "react-icons/tb";
+
+const Listing = () => {
+  const [cardParams, setCardParams] = useState([
+    {
+      id: 1,
+      title: "Temperature",
+      value: "Loading...",
+      Icon: LiaTemperatureHighSolid,
+    },
+    { id: 2, title: "Humidity", value: "Loading...", Icon: WiHumidity },
+    { id: 3, title: "PH", value: "Loading...", Icon: IoMdSpeedometer },
+    {
+      id: 4,
+      title: "Nitrogen",
+      value: "Loading...",
+      Icon: TbCircleLetterNFilled,
+    },
+    {
+      id: 5,
+      title: "Phosphorus",
+      value: "Loading...",
+      Icon: TbCircleLetterPFilled,
+    },
+    {
+      id: 6,
+      title: "Potassium",
+      value: "Loading...",
+      Icon: TbCircleLetterKFilled,
+    },
+  ]);
+
+>>>>>>> Stashed changes
   useEffect(() => {
     // Function to fetch and update sensor data
     const fetchAndUpdateData = async () => {
@@ -128,5 +175,8 @@ const Listing = () => {
   );
 };
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 export default Listing;

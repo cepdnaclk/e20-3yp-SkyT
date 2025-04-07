@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from "../../../widgets/card";
@@ -45,6 +46,10 @@ function Activity() {
 =======
 import MapChart from "./MapChart"; // Ensure correct import
 
+=======
+import MapChart from "./MapChart"; // Ensure correct import
+
+>>>>>>> Stashed changes
 const Activity = () => {
   return (
     <div className="activityContainer">
@@ -54,5 +59,8 @@ const Activity = () => {
   );
 };
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 export default Activity;
