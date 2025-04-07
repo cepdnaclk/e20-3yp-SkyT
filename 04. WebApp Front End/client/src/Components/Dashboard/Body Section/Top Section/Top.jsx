@@ -1,17 +1,15 @@
-import React from 'react'
-
 //css
-import './Top.css'
+import "./Top.css";
 // Icons
 import { BiSearchAlt } from "react-icons/bi";
 import { FiMessageCircle } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 
 //Assets
-import userProfile from '../../../../Assets/user.png'
+import userProfile from "../../../../Assets/user.png";
 const Top = () => {
   return (
-    <div className='topSection'>
+    <div className="topSection">
       <div className="headerSection flex">
         <div className="title">
           <h1>Welcome to Sky T</h1>
@@ -19,22 +17,20 @@ const Top = () => {
         </div>
 
         <div className="searchBar flex">
-            <input type="text" placeholder="Search" />
-            <BiSearchAlt  className='icon'/>
+          <input type="text" placeholder="Search" />
+          <BiSearchAlt className="icon" />
         </div>
 
         <div className="adminDiv flex">
-          <FiMessageCircle className='icon'/>
-          <IoMdNotificationsOutline className='icon'/>
+          <FiMessageCircle className="icon" />
+          <IoMdNotificationsOutline className="icon" />
           <div className="adminImage">
             <img src={userProfile} alt="Admin" />
           </div>
         </div>
       </div>
-    
-    
     </div>
-  )
-}
+  );
+};
 
-export default Top
+export default Top;

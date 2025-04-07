@@ -32,4 +32,5 @@
   gap: 2rem;
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
 }/*# sourceMappingURL=listing.css.map */

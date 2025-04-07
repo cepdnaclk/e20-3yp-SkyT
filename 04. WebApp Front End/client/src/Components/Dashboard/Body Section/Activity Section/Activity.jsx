@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from "../../../widgets/card";
@@ -41,4 +42,17 @@ function Activity() {
   );
 }
 
+=======
+import MapChart from "./MapChart"; // Ensure correct import
+
+const Activity = () => {
+  return (
+    <div className="activityContainer">
+      <h2 className="activityTitle">Location Map</h2>
+      <MapChart searchQuery="Kandy" />
+    </div>
+  );
+};
+
+>>>>>>> Stashed changes
 export default Activity;
