@@ -380,7 +380,7 @@ export function LoginFormXS() {
       </Grid>
 
       {/* Bottom */}
-      <Grid size={12} p={2}>
+      <Grid size={12} p={2} display={"flex"} justifyContent={"center"}>
         <Box
           sx={{
             padding: "0 1rem",
@@ -391,7 +391,7 @@ export function LoginFormXS() {
             justifyContent: "space-between",
             backdropFilter: "blur(1px)",
             borderRadius: "10px",
-            width: "calc(100% - 30px)",
+            width: "80%",
             color: "white ",
           }}
         >
