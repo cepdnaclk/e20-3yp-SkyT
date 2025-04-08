@@ -1,7 +1,8 @@
 import axios from "axios";
 
 // Base API of the server
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+//const API_BASE_URL = import.meta.env.VITE_VERCEL_BACKEND;
 
 // Get data from backend
 export async function getData(page: string) {
@@ -12,6 +13,19 @@ export async function getData(page: string) {
     return response;
   } catch (error) {
     console.error("There was an error fetching the data!", error);
+    throw error;
+  }
+}
+
+// Update data in backend
+export async function updateData(sendData: object, page: string) {
+  try {
+    const destination = `${API_BASE_URL}/api/${page}`;
+    //console.log(`Updating data in: ${destination}`);
+    const response = await axios.patch(destination, sendData);
+    return response;
+  } catch (error) {
+    console.error("Updating data error!", error);
     throw error;
   }
 }
@@ -29,16 +43,34 @@ export async function addData(sendData: object, page: string) {
   }
 }
 
-// Delete data in backend
+// Add new data in backend -- Need to midify
 export async function deleteData(sendData: object, page: string) {
   try {
     const destination = `${API_BASE_URL}/api/${page}`;
     //console.log(`Deleting excisting data in: ${destination}`);
     const response = await axios.delete(destination, { data: sendData });
-    console.log("Response: ", response);
     return response;
   } catch (error) {
     console.error("Deleting data error!", error);
+    throw error;
+  }
+}
+
+// Function to validate access
+export async function ValidateData(token: string, page: string) {
+  try {
+    const destination = `${API_BASE_URL}/api/${page}`;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.get(destination, config);
+    return response.data; // Return only the data instead of the whole response object
+  } catch (error) {
+    console.error("There was an error fetching the data!", error);
     throw error;
   }
 }
