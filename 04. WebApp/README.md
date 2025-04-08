@@ -1,36 +1,40 @@
-# TODO_APP
-A simple full stack todo web app with testing using Typescript. 
-This is used to demonstrate the Cypress end-to-end testing framework. 
+# Sky Tea
 
+The offcial website for project skyTea.
 
 ---
 
 ## Cypress Setup for a React Project
 
 ### Prerequisites
+
 1. A React project initialized using `create-react-app` or other setups.
 2. Node.js and npm/yarn installed on your system.
 
 ### Installation
+
 1. Redirect to the working directory.
 2. Run the following command to add Cypress
-``` powershell
+
+```powershell
 npm install cypress --save-dev
 ```
 
 ### Open Cypress
+
 After installation, open Cypress for the first time to initialize its configuration
-``` powershell
+
+```powershell
 npx cypress open
 ```
 
 This command creates a cypress folder in your project and adds a default `cypress.config.ts` file.
 
-### Update Cypress Config 
+### Update Cypress Config
+
 Edit cypress.config.ts to customize the base URL for the React app:
 
 ```typescript
-
 import { defineConfig } from "cypress";
 
 export default defineConfig({
@@ -40,8 +44,10 @@ export default defineConfig({
 });
 ```
 
-### Update `package.json` 
+### Update `package.json`
+
 Update the `package.json` file with the following script.
+
 ```json
 "scripts": {
     "cy:open": "cypress open"
@@ -49,6 +55,7 @@ Update the `package.json` file with the following script.
 ```
 
 Make sure to remove the following part from the `package.json` file.
+
 ```json
 {
   "type": "module"
@@ -56,40 +63,45 @@ Make sure to remove the following part from the `package.json` file.
 ```
 
 ### Start Frontend Server
+
 We can use the following CLI to start the frontend server
-``` powershell
+
+```powershell
 npm start
 ```
 
 ### Start Backend Server
+
 We can use the following CLI to start the backend server
-``` powershell
+
+```powershell
 npm start
 ```
 
 ### Start Cypress
+
 We can use the following CLI to start the Cypress
-``` powershell
+
+```powershell
 npm run cy:open
 ```
 
-
 ---
-## Technology Stack 
-### * FrontEnd - React + Vite
 
-  ![image](https://github.com/user-attachments/assets/6caa40a9-46a6-46fe-b51c-c4263d96a76d)
+## Technology Stack
 
+### \* FrontEnd - React + Vite
 
-### * BackEnd  - Node + Express
+![image](https://github.com/user-attachments/assets/6caa40a9-46a6-46fe-b51c-c4263d96a76d)
 
-  ![image](https://github.com/user-attachments/assets/bdf7c9e8-e941-462c-a321-bc425751b793)
+### \* BackEnd - Node + Express
 
+![image](https://github.com/user-attachments/assets/bdf7c9e8-e941-462c-a321-bc425751b793)
 
-### * Database - MongoDB
+### \* Database - MongoDB
 
-  ![image](https://github.com/user-attachments/assets/f9fb4f2b-e9f8-409c-a030-0b18154277af)
+![image](https://github.com/user-attachments/assets/f9fb4f2b-e9f8-409c-a030-0b18154277af)
 
-### * Testing  - Cypress
+### \* Testing - Cypress
 
-  ![image](https://github.com/user-attachments/assets/7b2a572d-903d-436c-bc5d-06861e9ccc71)
+![image](https://github.com/user-attachments/assets/7b2a572d-903d-436c-bc5d-06861e9ccc71)
