@@ -1,11 +1,10 @@
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { LoginFormMD, LoginFormXS } from "../components/LoginForm";
 
 import video from "../assets/login_asserts/login.mp4";
 
 function Login() {
-  const theme = useTheme();
-  const isMediumUp = useMediaQuery(theme.breakpoints.up("md"));
+  const isMediumUp = useMediaQuery("(min-width:570px)");
 
   return (
     <Box
