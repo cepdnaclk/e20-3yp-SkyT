@@ -12,8 +12,8 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { FaUserShield } from "react-icons/fa6";
 import { BsFillShieldLockFill } from "react-icons/bs";
-import logo from "../assets/login_asserts/Logotr.png";
 import { AiOutlineSwapRight } from "react-icons/ai";
+import logo from "../assets/login_asserts/Logotr.png";
 
 interface credentials {
   username: string | null;
