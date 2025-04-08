@@ -288,7 +288,8 @@ export function LoginFormXS() {
         <Container
           sx={{
             bgcolor: "hsl(0,0%,95%)",
-            width: "380px",
+            width: "80%",
+            minWidth: "320px",
             borderRadius: "10px",
             p: 3,
           }}
