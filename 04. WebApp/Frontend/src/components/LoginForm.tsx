@@ -56,7 +56,7 @@ export function LoginFormMD() {
   return (
     <Grid container width={"100%"} height={"100%"} bgcolor={"rgb(0,0,0,0.1)"}>
       {/* Left side */}
-      <Grid size={{ xs: 12, md: 6 }} p={2}>
+      <Grid size={6} p={2}>
         <Box
           color={"white"}
           textAlign={"center"}
@@ -123,7 +123,7 @@ export function LoginFormMD() {
 
       {/* Right side */}
       <Grid
-        size={{ xs: 12, md: 6 }}
+        size={6}
         bgcolor={"hsl(0,0%,95%)"}
         height={"100%"}
         overflow={"auto"}
