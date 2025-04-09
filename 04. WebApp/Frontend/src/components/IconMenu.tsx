@@ -53,13 +53,11 @@ export default function IconMenu() {
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        sx={{
-          cursor: "pointer",
-        }}
         slotProps={{
           paper: {
             elevation: 0,
             sx: {
+              width: "120px",
               overflow: "visible",
               filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
               mt: 1.5,
