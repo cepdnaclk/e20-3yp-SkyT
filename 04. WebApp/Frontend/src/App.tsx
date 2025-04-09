@@ -1,10 +1,13 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Box } from "@mui/material";
+
+// Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { Box } from "@mui/material";
 import PageNotFound from "./pages/PageNotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -14,7 +17,7 @@ function App() {
           {/* Login */}
           <Route path="/login" element={<Login />} />
           <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset" element={<ForgotPassword />} />
+          <Route path="/reset" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route path="/" element={<Navigate to={"/home"} />} />
