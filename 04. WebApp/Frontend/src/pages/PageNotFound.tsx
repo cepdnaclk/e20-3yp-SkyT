@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 export default function PageNotFound() {
   return (
     <Box
-      width={"100%"}
+      width={"calc(100% - 40px)"}
       height={"100%"}
       display={"flex"}
       flexDirection={"column"}
@@ -12,6 +12,8 @@ export default function PageNotFound() {
       alignItems={"center"}
       color="#00796b"
       fontFamily={"Montserrat"}
+      textAlign={"center"}
+      px={"20px"}
     >
       <Typography variant="h1" fontWeight={800} fontFamily={"inherit"}>
         404

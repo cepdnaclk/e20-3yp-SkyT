@@ -1,5 +1,20 @@
 import { Box, Paper } from "@mui/material";
 import SideBar from "../components/SideBar";
+import AppBar from "../components/AppBar";
+import { IoNotifications, IoSpeedometer } from "react-icons/io5";
+import { IoMdSettings } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
+
+const menuItems = [
+  { label: "Dashboard", icon: <IoSpeedometer />, path: "/home" },
+  {
+    label: "Notifications",
+    icon: <IoNotifications />,
+    path: "/notifications",
+  },
+  { label: "Settings", icon: <IoMdSettings />, path: "/settings" },
+  { label: "Profile", icon: <FaUserCircle />, path: "/profile" },
+];
 
 function DesktopView() {
   return (
@@ -13,7 +28,7 @@ function DesktopView() {
       }}
     >
       {/* Sidebar */}
-      <SideBar />
+      <SideBar menu={menuItems} />
 
       {/* Body */}
       <Box
@@ -38,6 +53,8 @@ function MobileView() {
       height={"100%"}
     >
       {/* App bar */}
+      <AppBar menu={menuItems} />
+
       {/* Body */}
     </Box>
   );

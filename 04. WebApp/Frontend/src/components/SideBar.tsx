@@ -1,10 +1,9 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider } from "@mui/material";
 import logo from "../assets/login_asserts/Logotr.png";
-import { IoPower, IoSpeedometer } from "react-icons/io5";
-import { IoMdSettings } from "react-icons/io";
-import { FaUserCircle } from "react-icons/fa";
+import { IoPower } from "react-icons/io5";
+import { NavLink, useNavigate } from "react-router-dom";
+import MenuItem from "./MenuItem";
 import { ReactElement } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 interface ItemProps {
   label: string;
@@ -12,54 +11,7 @@ interface ItemProps {
   path: string;
 }
 
-const menuItems = [
-  { label: "Dashboard", icon: <IoSpeedometer />, path: "/home" },
-  { label: "Settings", icon: <IoMdSettings />, path: "/settings" },
-  { label: "Profile", icon: <FaUserCircle />, path: "/profile" },
-];
-
-function MenuItem({ label, icon, path }: ItemProps) {
-  const isActive = useLocation().pathname == path;
-
-  return (
-    <Box
-      component={NavLink}
-      to={path}
-      display="flex"
-      alignItems="center"
-      gap={1}
-      mb={1}
-      padding="10px 16px"
-      width="70%"
-      color={isActive ? "rgb(0,0,0)" : "rgb(0,0,0,0.5)"}
-      sx={{
-        cursor: "pointer",
-        "&:hover": {
-          color: "rgb(0,0,0)",
-        },
-        textDecoration: "none",
-      }}
-    >
-      <Box
-        bgcolor={"rgb(34, 197, 94)"}
-        width={"5px"}
-        height={"100%"}
-        mr={1.5}
-        borderRadius={"0px 10px 10px 0"}
-      />
-      {icon}
-      <Typography
-        fontFamily={"Montserrat"}
-        variant="subtitle1"
-        fontWeight={600}
-      >
-        {label}
-      </Typography>
-    </Box>
-  );
-}
-
-function SideBar() {
+function SideBar({ menu }: { menu: ItemProps[] }) {
   const navigator = useNavigate();
   return (
     <Box
@@ -83,7 +35,7 @@ function SideBar() {
         sx={{ cursor: "pointer" }}
       />
 
-      {menuItems.map((item, index) => (
+      {menu.map((item, index) => (
         <MenuItem
           key={index}
           path={item.path}
