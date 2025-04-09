@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import { Box } from "@mui/material";
 import PageNotFound from "./pages/PageNotFound";
 import ForgotPassword from "./pages/ForgotPassword";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           {/* Protected Routes */}
           <Route path="/" element={<Navigate to={"/home"} />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />}></Route>
 
           {/* All other routes */}
           <Route path="/*" element={<PageNotFound />} />
