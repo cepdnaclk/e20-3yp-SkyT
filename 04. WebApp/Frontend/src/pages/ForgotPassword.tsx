@@ -54,8 +54,8 @@ const ForgotPassword = () => {
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          width: "100%",
-          maxWidth: 380,
+          width: "calc(100% - 100px)",
+          maxWidth: "390px",
           p: 4,
           borderRadius: 2,
           boxShadow: 3,
