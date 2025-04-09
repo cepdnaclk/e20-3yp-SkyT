@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import { Box } from "@mui/material";
 import PageNotFound from "./pages/PageNotFound";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           {/* Login */}
           <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<ForgotPassword />} />
 
           {/* Protected Routes */}
           <Route path="/" element={<Navigate to={"/home"} />} />
