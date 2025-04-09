@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import logo from "../assets/login_asserts/Logotr.png";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>("");
@@ -64,6 +65,7 @@ const ForgotPassword = () => {
           fontFamily: "Montserrat",
         }}
       >
+        <Box component="img" src={logo} alt="logo" width={"70px"} />
         <Typography variant="h5" mb={2} fontFamily={"inherit"} fontWeight={700}>
           Forgot Password
         </Typography>
