@@ -13,6 +13,7 @@ function App() {
         <Routes>
           {/* Login */}
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="/reset" element={<ForgotPassword />} />
 
           {/* Protected Routes */}
