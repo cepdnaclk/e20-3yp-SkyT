@@ -228,7 +228,7 @@ export function LoginFormMD() {
             </Button>
 
             <Typography variant="body2" align="center" mt={2}>
-              Forgot your password? <NavLink to={"/reset"}>Click here</NavLink>
+              Forgot your password? <NavLink to={"/forgot"}>Click here</NavLink>
             </Typography>
           </form>
         </Container>
@@ -371,7 +371,7 @@ export function LoginFormXS() {
             </Button>
 
             <Typography variant="body2" align="center" mt={2}>
-              Forgot your password? <NavLink to={"/reset"}>Click here</NavLink>
+              Forgot your password? <NavLink to={"/forgot"}>Click here</NavLink>
             </Typography>
           </form>
         </Container>
