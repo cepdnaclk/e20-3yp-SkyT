@@ -47,7 +47,6 @@ const ForgotPassword = () => {
         height: "100%",
         display: "flex",
         alignItems: "center",
-        bgcolor: "hsl(0,0%,95%)",
         justifyContent: "center",
       }}
     >

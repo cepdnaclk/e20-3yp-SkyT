@@ -11,7 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
-    <Box width={"100vw"} height={"100vh"} bgcolor={"ghostwhite"}>
+    <Box width={"100vw"} height={"100vh"} bgcolor={"hsl(0,0%,95%)"}>
       <BrowserRouter>
         <Routes>
           {/* Login */}
