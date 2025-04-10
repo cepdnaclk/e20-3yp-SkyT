@@ -4,6 +4,7 @@ import AppBar from "../components/AppBar";
 import { IoNotifications, IoSpeedometer } from "react-icons/io5";
 import { IoMdSettings } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
+import { Outlet } from "react-router-dom";
 
 const menuItems = [
   { label: "Dashboard", icon: <IoSpeedometer />, path: "/home" },
@@ -33,13 +34,12 @@ function DesktopView() {
       {/* Body */}
       <Box
         height={"100%"}
-        bgcolor={"rebeccapurple"}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
         width={"calc(100%)"}
       >
-        body
+        <Outlet />
       </Box>
     </Paper>
   );
@@ -56,6 +56,7 @@ function MobileView() {
       <AppBar menu={menuItems} />
 
       {/* Body */}
+      <Outlet />
     </Box>
   );
 }
