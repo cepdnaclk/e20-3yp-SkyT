@@ -2,9 +2,9 @@ import { Box, Paper } from "@mui/material";
 import SideBar from "../components/SideBar";
 import AppBar from "../components/AppBar";
 import { IoNotifications, IoSpeedometer } from "react-icons/io5";
-import { IoMdSettings } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { Outlet } from "react-router-dom";
+import { MdPeopleAlt } from "react-icons/md";
 
 const menuItems = [
   { label: "Dashboard", icon: <IoSpeedometer />, path: "/home" },
@@ -13,7 +13,7 @@ const menuItems = [
     icon: <IoNotifications />,
     path: "/notifications",
   },
-  { label: "Settings", icon: <IoMdSettings />, path: "/settings" },
+  { label: "People", icon: <MdPeopleAlt />, path: "/people" },
   { label: "Profile", icon: <FaUserCircle />, path: "/profile" },
 ];
 

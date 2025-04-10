@@ -14,6 +14,8 @@ import { FaUserShield } from "react-icons/fa6";
 import { BsFillShieldLockFill } from "react-icons/bs";
 import { AiOutlineSwapRight } from "react-icons/ai";
 import logo from "../assets/login_asserts/Logotr.png";
+import FillButton from "./FillButton";
+import TextBox from "./TextBox";
 
 interface credentials {
   username: string | null;
@@ -315,7 +317,7 @@ export function LoginFormXS() {
               </Alert>
             )}
 
-            <TextField
+            <TextBox
               fullWidth
               label="Username"
               value={username}
@@ -350,25 +352,14 @@ export function LoginFormXS() {
               }}
             />
 
-            <Button
+            <FillButton
               fullWidth
               type="submit"
               variant="contained"
               endIcon={<AiOutlineSwapRight />}
-              sx={{
-                mt: 1,
-                backgroundColor: "#00796b",
-                borderRadius: "10px",
-                padding: "0.8rem",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#004d40",
-                  color: "#fff",
-                },
-              }}
             >
               Login
-            </Button>
+            </FillButton>
 
             <Typography variant="body2" align="center" mt={2}>
               Forgot your password? <NavLink to={"/forgot"}>Click here</NavLink>

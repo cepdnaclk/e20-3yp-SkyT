@@ -1,16 +1,11 @@
 // src/pages/ResetPassword.tsx
 
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import logo from "../assets/login_asserts/Logotr.png";
+import FillButton from "../components/FillButton";
+import TextBox from "../components/TextBox";
 
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState<string>("");
@@ -104,7 +99,7 @@ export default function ResetPassword() {
           </Alert>
         ) : (
           <>
-            <TextField
+            <TextBox
               fullWidth
               label="New Password"
               type="password"
@@ -116,7 +111,7 @@ export default function ResetPassword() {
               error={!!error}
             />
 
-            <TextField
+            <TextBox
               fullWidth
               label="Confirm Password"
               type="password"
@@ -128,22 +123,14 @@ export default function ResetPassword() {
               error={!!error}
             />
 
-            <Button
+            <FillButton
               type="submit"
               fullWidth
               variant="contained"
               disabled={loading}
               sx={{
-                mt: 3,
-                backgroundColor: "#00796b",
-                borderRadius: "10px",
+                mt: 2,
                 padding: "0.8rem",
-                color: "#fff",
-                fontWeight: "700",
-                "&:hover": {
-                  backgroundColor: "#004d40",
-                  color: "#fff",
-                },
               }}
             >
               {loading ? (
@@ -151,7 +138,7 @@ export default function ResetPassword() {
               ) : (
                 "Change Password"
               )}
-            </Button>
+            </FillButton>
           </>
         )}
       </Box>

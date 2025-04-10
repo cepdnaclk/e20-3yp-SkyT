@@ -1,12 +1,8 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
 import logo from "../assets/login_asserts/Logotr.png";
+import FillButton from "../components/FillButton";
+import TextBox from "../components/TextBox";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>("");
@@ -78,7 +74,7 @@ const ForgotPassword = () => {
           reset link.
         </Typography>
 
-        <TextField
+        <TextBox
           fullWidth
           label="username or email address"
           variant="outlined"
@@ -89,22 +85,14 @@ const ForgotPassword = () => {
           helperText={err && "Invalid email or username. Try again!"}
         />
 
-        <Button
+        <FillButton
           type="submit"
           fullWidth
           variant="contained"
           disabled={loading}
           sx={{
             mt: 3,
-            backgroundColor: "#00796b",
-            borderRadius: "10px",
             padding: "0.8rem",
-            color: "#fff",
-            fontWeight: "700",
-            "&:hover": {
-              backgroundColor: "#004d40",
-              color: "#fff",
-            },
           }}
         >
           {loading ? (
@@ -112,7 +100,7 @@ const ForgotPassword = () => {
           ) : (
             "Send Reset Link"
           )}
-        </Button>
+        </FillButton>
 
         {submitted && (
           <Typography variant="body2" color="success.main" mt={2}>

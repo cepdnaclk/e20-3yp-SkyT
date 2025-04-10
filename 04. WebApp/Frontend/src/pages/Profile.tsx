@@ -1,7 +1,5 @@
 import {
   Typography,
-  TextField,
-  Button,
   Grid,
   Divider,
   CircularProgress,
@@ -10,6 +8,8 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import AvatarButton from "../components/AvatarButton";
+import TextBox from "../components/TextBox";
+import FillButton from "../components/FillButton";
 
 interface userInfoProps {
   username: string;
@@ -62,6 +62,7 @@ function Profile() {
   const [error, setError] = useState<errorProps>(errInit);
   const [pwdError, setPwdError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [image, setImage] = useState<string>("");
 
   const handleSubmit = () => {
     // Input Validation
@@ -132,7 +133,8 @@ function Profile() {
           alignItems={"center"}
           gap={1}
         >
-          <AvatarButton />
+          <AvatarButton image={image} setImage={setImage} />
+
           <Typography
             variant="h4"
             color="textSecondary"
@@ -176,7 +178,7 @@ function Profile() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <TextField
+          <TextBox
             name="fname"
             label="First Name"
             value={userInfo.fname}
@@ -189,7 +191,7 @@ function Profile() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <TextField
+          <TextBox
             name="lname"
             label="Last Name"
             value={userInfo.lname}
@@ -199,7 +201,7 @@ function Profile() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <TextField
+          <TextBox
             name="email"
             label="Email Address"
             type="email"
@@ -233,7 +235,7 @@ function Profile() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <TextField
+          <TextBox
             name="currentPwd"
             label="Current Password"
             type="password"
@@ -245,7 +247,7 @@ function Profile() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <TextField
+          <TextBox
             name="newPwd"
             label="New Password"
             type="password"
@@ -257,7 +259,7 @@ function Profile() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <TextField
+          <TextBox
             name="confirmPwd"
             label="Confirm Password"
             type="password"
@@ -269,19 +271,12 @@ function Profile() {
         </Grid>
 
         <Grid size={12}>
-          <Button
+          <FillButton
             onClick={handleSubmit}
             variant="contained"
             disabled={loading}
             sx={{
-              backgroundColor: "#00796b",
               borderRadius: "5px",
-              color: "#fff",
-              fontWeight: "700",
-              "&:hover": {
-                backgroundColor: "#004d40",
-                color: "#fff",
-              },
             }}
           >
             {loading ? (
@@ -289,7 +284,7 @@ function Profile() {
             ) : (
               "Update Profile"
             )}
-          </Button>
+          </FillButton>
         </Grid>
       </Grid>
     </Grid>
