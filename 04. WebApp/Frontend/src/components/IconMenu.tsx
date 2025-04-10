@@ -85,11 +85,17 @@ export default function IconMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={() => navigator("/profile")}>
+        <MenuItem
+          onClick={() => navigator("/profile")}
+          sx={{ fontFamily: "Montserrat", fontWeight: 500 }}
+        >
           <FaUserCircle style={{ marginRight: 8 }} /> Profile
         </MenuItem>
 
-        <MenuItem onClick={handleLogout}>
+        <MenuItem
+          onClick={handleLogout}
+          sx={{ fontFamily: "Montserrat", fontWeight: 500 }}
+        >
           <IoPower style={{ marginRight: 8 }} /> Logout
         </MenuItem>
       </Menu>
