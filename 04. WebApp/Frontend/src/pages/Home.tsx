@@ -33,11 +33,9 @@ function DesktopView() {
 
       {/* Body */}
       <Box
-        height={"100%"}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        width={"calc(100%)"}
+        width={"calc(100% - 340px)"}
+        height={"calc(100% - 50px)"}
+        padding={"25px"}
       >
         <Outlet />
       </Box>
@@ -56,7 +54,14 @@ function MobileView() {
       <AppBar menu={menuItems} />
 
       {/* Body */}
-      <Outlet />
+      <Box
+        width={"calc(100% - 50px)"}
+        height={"calc(100% - 150px)"}
+        padding={"25px"}
+        overflow={"auto"}
+      >
+        <Outlet />
+      </Box>
     </Box>
   );
 }
