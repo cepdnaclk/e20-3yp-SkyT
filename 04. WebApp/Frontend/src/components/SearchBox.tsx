@@ -3,9 +3,10 @@ import SearchIcon from "@mui/icons-material/Search";
 
 function SearchBox({ value, ...rest }: TextFieldProps) {
   return (
-    <Card elevation={3} sx={{ width: "250px", py: "0.2rem" }}>
+    <Card elevation={3} sx={{ py: "0.2rem" }}>
       <TextField
         variant="outlined"
+        fullWidth
         value={value}
         {...rest}
         slotProps={{
@@ -28,7 +29,6 @@ function SearchBox({ value, ...rest }: TextFieldProps) {
         }}
         sx={{
           width: "100%",
-          maxWidth: "250px",
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
               border: "none",
