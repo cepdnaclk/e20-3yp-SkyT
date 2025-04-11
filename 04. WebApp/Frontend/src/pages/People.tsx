@@ -175,6 +175,16 @@ function People() {
     getMembers();
   }, []);
 
+  const filteredMembers = memberList?.filter(
+    (member) =>
+      member.fname.toLowerCase().includes(searchName.toLowerCase()) ||
+      member.lname.toLowerCase().includes(searchName.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchName.toLowerCase()) ||
+      member.estates.some((estate) =>
+        estate.toLowerCase().includes(searchName.toLowerCase())
+      )
+  );
+
   return (
     <Grid container spacing={3} fontFamily={"Montserrat"}>
       {/* Top Section */}
@@ -273,8 +283,8 @@ function People() {
             </TableHead>
 
             <TableBody>
-              {memberList &&
-                memberList.map((member) => (
+              {filteredMembers &&
+                filteredMembers.map((member) => (
                   <TableRow key={member.id}>
                     <TableCell>
                       <Box display="flex" alignItems="center">
