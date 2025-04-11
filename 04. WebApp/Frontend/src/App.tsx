@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import People from "./pages/People";
+import Message from "./pages/Message";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />}>
             <Route path="/" element={<Navigate to={"/home"} />} />
             <Route path="/home" element={<Dashboard />} />
+            <Route path="/notifications" element={<Message />} />
             <Route path="/people" element={<People />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
