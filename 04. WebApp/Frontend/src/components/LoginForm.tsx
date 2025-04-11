@@ -18,16 +18,18 @@ import FillButton from "./FillButton";
 import TextBox from "./TextBox";
 
 interface credentials {
-  username: string | null;
-  password: string | null;
+  email: string;
+  password: string;
 }
 
-function validateLogin({ username, password }: credentials) {
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function validateLogin({ email, password }: credentials) {
   let err = false;
 
-  if (username == null || username.length < 3) err = true;
+  if (!emailPattern.test(email)) err = true;
 
-  if (password == null || password.length < 6) err = true;
+  if (!password || password.length < 6) err = true;
 
   return err;
 }
@@ -38,14 +40,14 @@ function login() {
 
 export function LoginFormMD() {
   const [error, setError] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Checking credentials");
 
-    const err = validateLogin({ username, password });
+    const err = validateLogin({ email, password });
 
     if (err) {
       setError("Invalid credentials!");
@@ -62,7 +64,8 @@ export function LoginFormMD() {
         <Box
           color={"white"}
           textAlign={"center"}
-          height={"calc(100% - 60px)"}
+          //height={"calc(100% - 60px)"}
+          height={"100%"}
           display={"flex"}
           flexDirection={"column"}
           justifyContent={"center"}
@@ -85,7 +88,7 @@ export function LoginFormMD() {
           </Typography>
         </Box>
 
-        <Box
+        {/* <Box
           sx={{
             padding: "0 1rem",
             height: "60px",
@@ -119,8 +122,8 @@ export function LoginFormMD() {
             }}
           >
             Sign Up
-          </Button>
-        </Box>
+          </Button> 
+        </Box> */}
       </Grid>
 
       {/* Right side */}
@@ -176,9 +179,9 @@ export function LoginFormMD() {
 
             <TextField
               fullWidth
-              label="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              label="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               margin="normal"
               slotProps={{
                 input: {
@@ -241,14 +244,14 @@ export function LoginFormMD() {
 
 export function LoginFormXS() {
   const [error, setError] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Checking credentials");
 
-    const err = validateLogin({ username, password });
+    const err = validateLogin({ email, password });
 
     if (err) {
       setError("Invalid credentials!");
@@ -319,9 +322,9 @@ export function LoginFormXS() {
 
             <TextBox
               fullWidth
-              label="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              label="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               margin="normal"
               slotProps={{
                 input: {
@@ -369,7 +372,7 @@ export function LoginFormXS() {
       </Grid>
 
       {/* Bottom */}
-      <Grid size={12} p={2} display={"flex"} justifyContent={"center"}>
+      {/* <Grid size={12} p={2} display={"flex"} justifyContent={"center"}>
         <Box
           sx={{
             padding: "0 1rem",
@@ -406,7 +409,7 @@ export function LoginFormXS() {
             Sign Up
           </Button>
         </Box>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }

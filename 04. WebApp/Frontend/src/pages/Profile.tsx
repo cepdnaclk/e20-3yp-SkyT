@@ -12,7 +12,6 @@ import TextBox from "../components/TextBox";
 import FillButton from "../components/FillButton";
 
 interface userInfoProps {
-  username: string;
   role: string;
   email: string;
   fname: string;
@@ -33,8 +32,7 @@ interface errorProps {
 }
 
 // Example user data - ideally should come from auth context or API
-const user = {
-  username: "john_doe",
+const user: userInfoProps = {
   role: "Admin",
   email: "john@example.com",
   fname: "John",
@@ -143,15 +141,6 @@ function Profile() {
             mt={2}
           >
             {userInfo.fname} {userInfo.lname}
-          </Typography>
-
-          <Typography
-            variant="h5"
-            color="textSecondary"
-            fontFamily={"inherit"}
-            fontWeight={600}
-          >
-            {userInfo.username}
           </Typography>
 
           <Typography

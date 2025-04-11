@@ -4,6 +4,8 @@ import logo from "../assets/login_asserts/Logotr.png";
 import FillButton from "../components/FillButton";
 import TextBox from "../components/TextBox";
 
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -14,7 +16,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     console.log("Verifying...");
 
-    if (!email || email.length < 3) {
+    if (!emailPattern.test(email)) {
       setErr(true);
     } else {
       sendLink(email);
@@ -70,19 +72,19 @@ const ForgotPassword = () => {
           fontFamily={"inherit"}
           fontWeight={500}
         >
-          Enter your username or registered email address. We'll send you a
-          reset link.
+          Enter your registered email address. We'll send you a reset link.
         </Typography>
 
         <TextBox
           fullWidth
-          label="username or email address"
+          label="Email address"
           variant="outlined"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           error={err}
-          helperText={err && "Invalid email or username. Try again!"}
+          helperText={err && "Invalid email. Try again!"}
         />
 
         <FillButton
