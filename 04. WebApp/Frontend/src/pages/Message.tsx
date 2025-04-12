@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 import MessageCard from "../components/MessageCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBox from "../components/SearchBox";
 import MessageDialog from "../components/MessageDialog";
 import AlertDialog from "../components/AlertDialog";
@@ -153,6 +153,10 @@ function Message() {
   const updateState = async (messageId: string) => {
     console.log("Mark as read", messageId);
   };
+
+  useEffect(() => {
+    console.log("geting info");
+  }, []);
 
   return (
     <Grid container spacing={3}>

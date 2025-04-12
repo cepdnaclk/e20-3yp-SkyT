@@ -20,6 +20,11 @@ interface estateCardProps {
   estate: estateProps;
 }
 
+interface savedProps {
+  id: string;
+  estate: string;
+}
+
 const ESTATES: estateProps[] = [
   {
     id: "1",
@@ -113,6 +118,12 @@ function Dashboard({ search }: { search: string }) {
 
   const getInfo = async () => {
     setEstates(ESTATES);
+    const savedList: savedProps[] = [];
+    ESTATES.map((estate) => {
+      const item = { id: estate.id, estate: estate.estate };
+      savedList.push(item);
+    });
+    sessionStorage.setItem("estates", JSON.stringify(savedList));
   };
 
   useEffect(() => {

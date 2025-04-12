@@ -1,5 +1,6 @@
 import {
   Badge,
+  Breadcrumbs,
   Grid,
   IconButton,
   Stack,
@@ -9,18 +10,66 @@ import {
 import { useEffect, useState } from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import IconMenu from "../components/IconMenu";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SearchBox from "../components/SearchBox";
+import Link from "@mui/material/Link";
 
 interface DashboardAreaProps {
   search: string;
   setSearch: (text: string) => void;
 }
 
+interface estateProps {
+  id: string;
+  estate: string;
+}
+
 const USER = "John";
 
 function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   const navigator = useNavigate();
+
+  // Get the path and split it
+  const path = useLocation().pathname;
+  const allSections = path.split("/").filter(Boolean); // remove empty strings
+
+  // Separate into links and breadcrumbs
+  const links: string[] = [];
+  const breadcrumbs: string[] = [];
+  const estateList: string | null = sessionStorage.getItem("estates");
+
+  if (estateList) {
+    try {
+      const estates: estateProps[] = JSON.parse(estateList);
+
+      allSections.forEach((section, index) => {
+        // Home section (first section)
+        if (index === 0) {
+          breadcrumbs.push("Home"); // Push 'Home' breadcrumb
+          links.push(section); // Push 'Home' link
+        } else {
+          // Subdirectories - sections after the first one
+          if (index % 2 === 0) {
+            const matchedEstate = estates.find(
+              (estate) => estate.id === section
+            );
+
+            if (matchedEstate) {
+              // If an estate with matching ID is found
+              breadcrumbs.push(matchedEstate.estate);
+              const link = allSections.slice(0, index + 1).join("/");
+              links.push(link);
+            }
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error parsing estate list from sessionStorage:", error);
+    }
+  } else {
+    console.warn("No estate list found in sessionStorage.");
+  }
+
   const [user, setUser] = useState<string>();
 
   const [msgCount, setMsgCount] = useState<number>();
@@ -41,7 +90,21 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
         <Typography fontWeight={700} fontFamily={"inherit"} variant="h5" noWrap>
           Welcome {user}
         </Typography>
-        <Typography>Home/ Logie Estate/ Lot LD5</Typography>
+
+        <Breadcrumbs aria-label="breadcrumb">
+          {breadcrumbs?.slice(0, -1).map((section, index) => {
+            const goto = "/" + links[index];
+            return (
+              <Link key={index} underline="hover" color="inherit" href={goto}>
+                {section}
+              </Link>
+            );
+          })}
+
+          <Typography sx={{ color: "text.primary" }} fontFamily={"Montserrat"}>
+            {breadcrumbs?.[breadcrumbs.length - 1]}
+          </Typography>
+        </Breadcrumbs>
       </Grid>
 
       {/* Quick Links */}
