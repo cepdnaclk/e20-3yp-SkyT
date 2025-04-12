@@ -119,13 +119,14 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
           justifyContent={{ xs: "start", md: "end" }}
           width={"100%"}
         >
-          <SearchBox
-            placeholder="Search"
-            value={search}
-            fullWidth
-            onChange={(e) => setSearch(e.target.value)}
-          />
-
+          {allSections.length < 4 && (
+            <SearchBox
+              placeholder="Search"
+              value={search}
+              fullWidth
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          )}
           <Stack direction={"row"} display={{ xs: "none", md: "flex" }}>
             <Tooltip title={"Notifications"} sx={{ ml: 2 }}>
               <IconButton
