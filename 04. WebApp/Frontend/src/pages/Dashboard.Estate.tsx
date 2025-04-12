@@ -20,6 +20,11 @@ interface LotSummaryProps {
   k: number;
 }
 
+interface savedProps {
+  id: string;
+  lot: string;
+}
+
 const PeraCom: [number, number] = [7.254670434402384, 80.5912347236105];
 
 const LOTS: LotSummaryProps[] = [
@@ -156,6 +161,14 @@ function Estate({ search }: EstateProps) {
     console.log("Find info on estate: ", estateId);
     setCenter(PeraCom);
     setEstateInfo(LOTS);
+
+    const savedList: savedProps[] = [];
+    LOTS.map((l) => {
+      const item = { id: l.id, lot: l.lotId };
+      savedList.push(item);
+    });
+
+    sessionStorage.setItem("lots", JSON.stringify(savedList));
   };
 
   useEffect(() => {

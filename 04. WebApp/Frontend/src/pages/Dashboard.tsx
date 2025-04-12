@@ -24,6 +24,11 @@ interface estateProps {
   estate: string;
 }
 
+interface lotProps {
+  id: string;
+  lot: string;
+}
+
 const USER = "John";
 
 function DashboardArea({ search, setSearch }: DashboardAreaProps) {
@@ -37,37 +42,48 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   const links: string[] = [];
   const breadcrumbs: string[] = [];
   const estateList: string | null = sessionStorage.getItem("estates");
+  const lotList: string | null = sessionStorage.getItem("lots");
 
-  if (estateList) {
+  // Home Section
+  if (allSections.length > 1) {
+    breadcrumbs.push("Home");
+    links.push("home");
+  }
+
+  // Estate Section
+  if (allSections.length > 2 && estateList) {
     try {
       const estates: estateProps[] = JSON.parse(estateList);
+      const matchedEstate = estates.find(
+        (estate) => estate.id === allSections[2]
+      );
 
-      allSections.forEach((section, index) => {
-        // Home section (first section)
-        if (index === 0) {
-          breadcrumbs.push("Home"); // Push 'Home' breadcrumb
-          links.push(section); // Push 'Home' link
-        } else {
-          // Subdirectories - sections after the first one
-          if (index % 2 === 0) {
-            const matchedEstate = estates.find(
-              (estate) => estate.id === section
-            );
-
-            if (matchedEstate) {
-              // If an estate with matching ID is found
-              breadcrumbs.push(matchedEstate.estate);
-              const link = allSections.slice(0, index + 1).join("/");
-              links.push(link);
-            }
-          }
-        }
-      });
+      if (matchedEstate) {
+        // If an estate with matching ID is found
+        breadcrumbs.push(matchedEstate.estate);
+        const link = allSections.slice(0, 3).join("/");
+        links.push(link);
+      }
     } catch (error) {
       console.error("Error parsing estate list from sessionStorage:", error);
     }
-  } else {
-    console.warn("No estate list found in sessionStorage.");
+  }
+
+  // Lot Section
+  if (allSections.length > 4 && lotList) {
+    try {
+      const lots: lotProps[] = JSON.parse(lotList);
+      const matchedLot = lots.find((lot) => lot.id === allSections[4]);
+
+      if (matchedLot) {
+        // If an lot with matching ID is found
+        breadcrumbs.push(matchedLot.lot);
+        const link = allSections.slice(0, 5).join("/");
+        links.push(link);
+      }
+    } catch (error) {
+      console.error("Error parsing lot list from sessionStorage:", error);
+    }
   }
 
   const [user, setUser] = useState<string>();
