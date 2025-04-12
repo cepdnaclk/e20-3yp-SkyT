@@ -69,7 +69,11 @@ function EstateCard({ estate }: estateCardProps) {
         component={NavLink}
         to={`/home/estate/${estate.id}`}
         elevation={3}
-        sx={{ width: 345, cursor: "pointer", textDecoration: "none" }}
+        sx={{
+          width: 345,
+          cursor: "pointer",
+          textDecoration: "none",
+        }}
       >
         <CardActionArea>
           <CardMedia
@@ -78,11 +82,23 @@ function EstateCard({ estate }: estateCardProps) {
             image={estate.image}
             alt={estate.estate}
           />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+
+          <CardContent sx={{ fontFamily: "Montserrat" }}>
+            <Typography
+              gutterBottom
+              variant="h6"
+              component="div"
+              fontFamily={"inherit"}
+              fontWeight={600}
+            >
               {estate.estate}
             </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            <Typography
+              variant="body2"
+              fontFamily={"inherit"}
+              fontWeight={550}
+              sx={{ color: "text.secondary" }}
+            >
               {estate.address}
             </Typography>
           </CardContent>
