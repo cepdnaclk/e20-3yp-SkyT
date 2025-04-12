@@ -9,7 +9,8 @@ interface ItemProps {
 }
 
 export default function MenuItem({ label, icon, path }: ItemProps) {
-  const isActive = useLocation().pathname == path;
+  const currPath = "/" + useLocation().pathname.split("/")[1];
+  const isActive = currPath == path;
 
   return (
     <Box
