@@ -41,7 +41,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
         <Typography fontWeight={700} fontFamily={"inherit"} variant="h5" noWrap>
           Welcome {user}
         </Typography>
-        <Typography>Logie Estate/ Lot LD5</Typography>
+        <Typography>Home/ Logie Estate/ Lot LD5</Typography>
       </Grid>
 
       {/* Quick Links */}
