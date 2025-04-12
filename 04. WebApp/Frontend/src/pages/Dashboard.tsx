@@ -101,7 +101,11 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
             );
           })}
 
-          <Typography sx={{ color: "text.primary" }} fontFamily={"Montserrat"}>
+          <Typography
+            sx={{ color: "text.primary" }}
+            fontFamily={"Montserrat"}
+            fontWeight={500}
+          >
             {breadcrumbs?.[breadcrumbs.length - 1]}
           </Typography>
         </Breadcrumbs>
