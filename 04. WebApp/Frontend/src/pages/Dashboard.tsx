@@ -13,7 +13,8 @@ import {
 import { useEffect, useState } from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import IconMenu from "../components/IconMenu";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import SearchBox from "../components/SearchBox";
 
 interface estateProps {
   id: string;
@@ -73,7 +74,12 @@ function EstateCard({ estate }: estateCardProps) {
       display={"flex"}
       justifyContent={"center"}
     >
-      <Card elevation={3} sx={{ width: 345 }}>
+      <Card
+        component={NavLink}
+        to={`/estate/${estate.id}`}
+        elevation={3}
+        sx={{ width: 345, cursor: "pointer", textDecoration: "none" }}
+      >
         <CardActionArea>
           <CardMedia
             component="img"
@@ -100,6 +106,13 @@ function Dashboard() {
   const [user, setUser] = useState<string>();
   const [estates, setEstates] = useState<estateProps[]>();
   const [msgCount, setMsgCount] = useState<number>();
+  const [search, setSearch] = useState<string>("");
+
+  const filteredEstates = estates?.filter(
+    (est) =>
+      est.estate.toLowerCase().includes(search.toLowerCase()) ||
+      est.address.toLowerCase().includes(search.toLowerCase())
+  );
 
   const getInfo = async () => {
     setEstates(ESTATES);
@@ -121,25 +134,35 @@ function Dashboard() {
       </Grid>
 
       {/* Quick Links */}
-      <Grid
-        size={6}
-        display={{ xs: "none", md: "flex" }}
-        justifyContent={"end"}
-      >
-        <Stack direction={"row"} alignItems={"center"}>
-          <Tooltip title={"Notifications"}>
-            <IconButton
-              onClick={() => {
-                navigator("/notifications");
-              }}
-            >
-              <Badge badgeContent={msgCount} color="primary" max={9}>
-                <NotificationsIcon color="action" sx={{ fontSize: 30 }} />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+      <Grid size={{ xs: 12, md: 6 }} display={"flex"} justifyContent={"end"}>
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={{ xs: "start", md: "end" }}
+          width={"100%"}
+        >
+          <SearchBox
+            placeholder="Search"
+            value={search}
+            fullWidth
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-          <IconMenu />
+          <Stack direction={"row"} display={{ xs: "none", md: "flex" }}>
+            <Tooltip title={"Notifications"} sx={{ ml: 2 }}>
+              <IconButton
+                onClick={() => {
+                  navigator("/notifications");
+                }}
+              >
+                <Badge badgeContent={msgCount} color="primary" max={9}>
+                  <NotificationsIcon color="action" sx={{ fontSize: 30 }} />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
+            <IconMenu />
+          </Stack>
         </Stack>
       </Grid>
 
@@ -151,7 +174,7 @@ function Dashboard() {
         overflow={"auto"}
         padding={"10px"}
       >
-        {estates?.map((estate) => (
+        {filteredEstates?.map((estate) => (
           <EstateCard key={estate.id} estate={estate} />
         ))}
       </Grid>
