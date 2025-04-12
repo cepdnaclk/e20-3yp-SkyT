@@ -6,6 +6,7 @@ import {
   IconButton,
   Stack,
   Toolbar,
+  Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -54,14 +55,16 @@ export default function AppBar1({ menu }: { menu: ItemProps[] }) {
 
         {/* User profile */}
         <Stack direction={"row"} gap={1} alignItems={"center"}>
-          <Badge
-            component={NavLink}
-            to={"/notifications"}
-            badgeContent={msgCount}
-            color="primary"
-          >
-            <NotificationsIcon color="action" sx={{ fontSize: 30 }} />
-          </Badge>
+          <Tooltip title={"Notifications"}>
+            <Badge
+              component={NavLink}
+              to={"/notifications"}
+              badgeContent={msgCount}
+              color="primary"
+            >
+              <NotificationsIcon color="action" sx={{ fontSize: 30 }} />
+            </Badge>
+          </Tooltip>
 
           <IconMenu />
         </Stack>
