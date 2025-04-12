@@ -86,7 +86,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   return (
     <Grid container spacing={3} fontFamily={"Montserrat"}>
       {/* Welcome Message */}
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <Typography fontWeight={700} fontFamily={"inherit"} variant="h5" noWrap>
           Welcome {user}
         </Typography>
@@ -112,7 +112,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
       </Grid>
 
       {/* Quick Links */}
-      <Grid size={{ xs: 12, md: 6 }} display={"flex"} justifyContent={"end"}>
+      <Grid size={{ xs: 12, sm: 6 }} display={"flex"} justifyContent={"end"}>
         <Stack
           direction={"row"}
           alignItems={"center"}
@@ -148,7 +148,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
       <Grid
         size={12}
         container
-        maxHeight={"calc(100vh - 185px)"}
+        height={"calc(100vh - 170px)"}
         overflow={"auto"}
         padding={"10px"}
       >
