@@ -6,13 +6,18 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import ForgotPassword from "./pages/ForgotPassword";
-import Dashboard from "./pages/Dashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import People from "./pages/People";
 import Message from "./pages/Message";
+import DashboardArea from "./pages/Dashboard";
+import Dashboard from "./pages/DashBoard.Home";
+import { useState } from "react";
+import Estate from "./pages/Dashboard.Estate";
 
 function App() {
+  const [search, setSearch] = useState<string>("");
+
   return (
     <Box width={"100vw"} height={"100vh"} bgcolor={"hsl(0,0%,95%)"}>
       <BrowserRouter>
@@ -24,11 +29,20 @@ function App() {
 
           {/* Protected Routes */}
           <Route path="/" element={<Home />}>
-            <Route path="/" element={<Navigate to={"/home"} />} />
-            <Route path="/home" element={<Dashboard />} />
-            <Route path="/notifications" element={<Message />} />
-            <Route path="/people" element={<People />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route index element={<Navigate to={"/home"} />} />
+            <Route
+              path="/home"
+              element={<DashboardArea search={search} setSearch={setSearch} />}
+            >
+              <Route index element={<Dashboard search={search} />} />
+              <Route
+                path="estate/:estateId"
+                element={<Estate search={search} />}
+              />
+            </Route>
+            <Route path="notifications" element={<Message />} />
+            <Route path="people" element={<People />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
 
           {/* All other routes */}
