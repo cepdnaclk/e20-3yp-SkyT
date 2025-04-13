@@ -1,4 +1,11 @@
-import { Box, Typography, Card, Tooltip, IconButton } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Card,
+  Tooltip,
+  IconButton,
+  alpha,
+} from "@mui/material";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import { PieChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
@@ -7,19 +14,44 @@ interface PHCardProps {
   low?: number;
   optimal?: number;
   high?: number;
+  PH?: number;
 }
 
-export default function PHCard({ low, optimal, high }: PHCardProps) {
+interface ColorProps {
+  optimal: string;
+  low: string;
+  high: string;
+}
+
+const COLOR_CODES: ColorProps = {
+  optimal: "#4caf50",
+  low: "#fe0032",
+  high: "#2196f3",
+};
+
+const LOWER_BOUND = 3;
+const UPPER_BOUND = 6;
+
+export default function PHCard({ low, optimal, high, PH }: PHCardProps) {
   const [loading, setLoading] = useState(true);
+  const [color, setColor] = useState<string>(COLOR_CODES.optimal);
 
   useEffect(() => {
     // Check if all values are defined
-    if (low !== undefined && optimal !== undefined && high !== undefined) {
+    if (
+      low !== undefined &&
+      optimal !== undefined &&
+      high !== undefined &&
+      PH !== undefined
+    ) {
       setLoading(false);
+      if (PH < LOWER_BOUND) setColor(COLOR_CODES.low);
+      else if (UPPER_BOUND < PH) setColor(COLOR_CODES.high);
+      else setColor(COLOR_CODES.optimal);
     } else {
       setLoading(true);
     }
-  }, [low, optimal, high]);
+  }, [low, optimal, high, PH]);
 
   const handleClick = () => {
     console.log("Analysis...");
@@ -40,10 +72,33 @@ export default function PHCard({ low, optimal, high }: PHCardProps) {
       }}
     >
       {/* Header */}
-      <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={0.5}
+      >
         <Typography variant="h6" fontFamily={"inherit"} fontWeight={600}>
           PH Value
         </Typography>
+
+        <Box
+          border={"2px solid"}
+          borderColor={color}
+          width={"100px"}
+          textAlign={"center"}
+          borderRadius={5}
+          bgcolor={alpha(color!, 0.3)}
+        >
+          <Typography
+            variant="h6"
+            fontFamily={"inherit"}
+            fontWeight={600}
+            color={color}
+          >
+            {PH}
+          </Typography>
+        </Box>
 
         <Tooltip title="Analysis">
           <IconButton
@@ -65,9 +120,21 @@ export default function PHCard({ low, optimal, high }: PHCardProps) {
           series={[
             {
               data: [
-                { label: "Low", value: low!, color: "#dd0130" },
-                { label: "Optimal", value: optimal!, color: "#04aa6d" },
-                { label: "High", value: high!, color: "#1a76d2" },
+                {
+                  label: "Low",
+                  value: low!,
+                  color: alpha(COLOR_CODES.low, 0.8),
+                },
+                {
+                  label: "Optimal",
+                  value: optimal!,
+                  color: alpha(COLOR_CODES.optimal, 0.8),
+                },
+                {
+                  label: "High",
+                  value: high!,
+                  color: alpha(COLOR_CODES.high, 0.8),
+                },
               ],
               highlightScope: { fade: "global", highlight: "item" },
               faded: {
@@ -78,7 +145,7 @@ export default function PHCard({ low, optimal, high }: PHCardProps) {
               valueFormatter,
             },
           ]}
-          height={180}
+          height={170}
           loading={loading}
           slotProps={{
             legend: {

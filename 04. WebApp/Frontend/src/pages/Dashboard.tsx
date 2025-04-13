@@ -165,9 +165,9 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
       <Grid
         size={12}
         container
-        height={"calc(100vh - 170px)"}
+        height={{ xs: "calc(100vh - 170px)", md: "calc(100vh - 165px)" }}
         overflow={"auto"}
-        padding={"10px"}
+        padding={"2px"}
       >
         <Outlet />
       </Grid>

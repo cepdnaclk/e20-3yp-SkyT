@@ -7,7 +7,6 @@ import {
   Tooltip,
   Skeleton,
 } from "@mui/material";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { useDate } from "../utils/useDate";
 import { IoWaterOutline } from "react-icons/io5";
 import { TbTemperatureSun } from "react-icons/tb";
@@ -16,6 +15,7 @@ import { WiDayRainMix } from "react-icons/wi";
 import { useLocation, useNavigate } from "react-router-dom";
 import sunImage from "../assets/dashboard_asserts/sun6.png";
 
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 interface WeatherCardProps {
   temparature?: string | number;
   humidity?: string | number;
@@ -45,6 +45,7 @@ export default function WeatherCard({
         width: "320px",
         borderRadius: 2,
         fontFamily: "Montserrat",
+        height: "200px",
       }}
     >
       {/* Header */}
