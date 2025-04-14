@@ -1,11 +1,11 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { ValidateData } from "../api/NodeBackend";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 const PARTIAL_ACCESS = ["/page1", "/page2"];
 
 // Custom Protected Route Component
-function ProtectedRoute({ element }: { element: JSX.Element }) {
+function ProtectedRoute({ element }: { element: ReactElement }) {
   const location = useLocation().pathname;
   const [accessType, setAccessType] = useState<string>("validating");
 
