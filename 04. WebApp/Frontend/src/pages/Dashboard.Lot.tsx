@@ -237,9 +237,6 @@ function Lot() {
       <Grid size={{ xs: 12, lg: 6 }}>
         <NPKGraph dataset={npkDataSet} loaded={npkLoaded} />
       </Grid>
-
-      {/* Map */}
-      <Grid size={{ xs: 12, lg: 6 }}>Map</Grid>
     </Grid>
   );
 }
