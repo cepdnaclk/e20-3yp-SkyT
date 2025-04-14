@@ -45,7 +45,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   const lotList: string | null = sessionStorage.getItem("lots");
 
   // Home Section
-  if (allSections.length > 1) {
+  if (allSections.length > 0) {
     breadcrumbs.push("Home");
     links.push("home");
   }

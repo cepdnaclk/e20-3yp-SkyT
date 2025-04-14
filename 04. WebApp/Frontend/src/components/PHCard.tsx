@@ -55,6 +55,10 @@ export default function PHCard({ low, optimal, high, PH }: PHCardProps) {
 
   const handleClick = () => {
     console.log("Analysis...");
+    const phGraphElement = document.getElementById("ph-graph");
+    if (phGraphElement) {
+      phGraphElement.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const valueFormatter = (item: { value: number }) =>

@@ -78,6 +78,14 @@ const NutrientBar: React.FC<NutrientProps> = ({ label, value, color }) => (
 );
 
 function SoilCard({ n, p, k }: SoilCardProps) {
+  const handleClick = () => {
+    console.log("NPK Analysis...");
+    const phGraphElement = document.getElementById("npk-graph");
+    if (phGraphElement) {
+      phGraphElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Card
       elevation={3}
@@ -102,7 +110,7 @@ function SoilCard({ n, p, k }: SoilCardProps) {
 
         <Tooltip title="Analysis">
           <IconButton
-            //onClick={handleClick}
+            onClick={handleClick}
             sx={{
               border: "1px solid #00796b",
               borderRadius: 2,

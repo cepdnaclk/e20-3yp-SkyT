@@ -76,6 +76,7 @@ function EstateCard({ estate }: estateCardProps) {
         elevation={3}
         sx={{
           width: 345,
+          maxHeight: 242,
           cursor: "pointer",
           textDecoration: "none",
         }}
@@ -83,7 +84,7 @@ function EstateCard({ estate }: estateCardProps) {
         <CardActionArea>
           <CardMedia
             component="img"
-            height="140"
+            height="150"
             image={estate.image}
             alt={estate.estate}
           />
