@@ -205,7 +205,7 @@ export default function PHGraph({ loaded, dataset }: PHGraphProps) {
             },
           },
         ]}
-        margin={{ top: 10, bottom: 25, right: 5, left: 40 }}
+        margin={{ top: 10, bottom: 25, right: 25, left: 40 }}
         slotProps={{ legend: { hidden: true } }}
       />
     </Card>

@@ -3,6 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import LeafletMap from "../components/LeafletMap";
 import { useEffect, useState } from "react";
 
+interface CenterProps {
+  name: string;
+  location: [number, number];
+}
+
 interface EstateProps {
   search: string;
 }
@@ -154,12 +159,12 @@ function Estate({ search }: EstateProps) {
   const estateId = useLocation().pathname.split("/")[3];
   const navigate = useNavigate();
 
-  const [center, setCenter] = useState<[number, number]>();
+  const [center, setCenter] = useState<CenterProps>();
   const [estateInfo, setEstateInfo] = useState<LotSummaryProps[]>();
 
   const getInfo = async (estateId: string) => {
     console.log("Find info on estate: ", estateId);
-    setCenter(PeraCom);
+    setCenter({ name: "PeraCom", location: PeraCom });
     setEstateInfo(LOTS);
 
     const savedList: savedProps[] = [];

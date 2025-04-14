@@ -264,7 +264,7 @@ export default function NPKGraph({ loaded, dataset }: NPKGraphProps) {
             label: "Average N,P,K Values (mg/kg)",
           },
         ]}
-        margin={{ top: 10, bottom: 25, left: 40, right: 5 }}
+        margin={{ top: 10, bottom: 25, left: 40, right: 25 }}
         slotProps={{ legend: { hidden: true } }}
       />
     </Card>

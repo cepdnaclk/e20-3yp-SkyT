@@ -7,6 +7,10 @@ import SoilCard from "../components/SoilCard";
 import PHGraph from "../components/PHGraph";
 import NPKGraph from "../components/NPKGraph";
 import { DatasetElementType } from "@mui/x-charts/internals";
+import GallaryCard from "../components/GallaryCard";
+import img from "../assets/dashboard_asserts/Estate.jpg";
+import MapCard from "../components/MapCard";
+import TaskSummaryCard from "../components/TaskSummaryCard";
 
 interface WeatherCardProps {
   temparature?: string | number;
@@ -39,6 +43,18 @@ interface NPKGraphProps {
 interface PHProps {
   date: string;
   ph: number;
+}
+
+interface CenterProps {
+  name: string;
+  location: [number, number];
+}
+
+interface SummaryCardProps {
+  id?: string;
+  due?: string;
+  task?: string;
+  tag?: string;
 }
 
 const WEATHER: WeatherCardProps = {
@@ -82,8 +98,26 @@ const NPK_DATA_Set: NPKGraphProps[] = [
   { date: "2025-04-21", n: 308, p: 14, k: 158 },
 ];
 
+const PeraCom: [number, number] = [7.254670434402384, 80.5912347236105];
+
+const TASKS: SummaryCardProps[] = [
+  {
+    id: "task-001",
+    due: "Apr 15",
+    task: "Check irrigation",
+    tag: "Irrigation",
+  },
+  {
+    id: "task-002",
+    due: "Apr 22",
+    task: "Soil pH sampling",
+    tag: "Soil",
+  },
+];
+
 function Lot() {
-  const lotId = useLocation().pathname.split("/")[5];
+  const path = useLocation().pathname;
+  const lotId = path.split("/")[5];
 
   const [weatherData, setWetherData] = useState<WeatherCardProps>();
   const [latestData, setLatestData] = useState<DataProps>();
@@ -93,6 +127,8 @@ function Lot() {
   const [npkLoaded, setNpkLoaded] = useState<boolean>(false);
   const [npkDataSet, setNpkDataSet] =
     useState<DatasetElementType<Date | number>[]>();
+  const [center, setCenter] = useState<CenterProps>();
+  const [tasks, setTasks] = useState<SummaryCardProps[]>();
 
   useEffect(() => {
     const update = async () => {
@@ -103,6 +139,11 @@ function Lot() {
       setPhDataSet(generateDataSet(PH_Data_Set));
       setNpkLoaded(true);
       setNpkDataSet(generateDataSet(NPK_DATA_Set));
+      setCenter({
+        name: "PeraCom",
+        location: PeraCom,
+      });
+      setTasks(TASKS);
     };
 
     update();
@@ -160,6 +201,33 @@ function Lot() {
         />
       </Grid>
 
+      {/* Gallary */}
+      <Grid
+        size={{ xs: 12, lg: 6, xl: 4 }}
+        display={"flex"}
+        justifyContent={"center"}
+      >
+        <GallaryCard lastUpdate="2025-04-14 at 04:20AM" img={img} path={path} />
+      </Grid>
+
+      {/* Map */}
+      <Grid
+        size={{ xs: 12, lg: 6, xl: 4 }}
+        display={"flex"}
+        justifyContent={"center"}
+      >
+        <MapCard center={center} path={path} />
+      </Grid>
+
+      {/* Task Managment */}
+      <Grid
+        size={{ xs: 12, lg: 6, xl: 4 }}
+        display={"flex"}
+        justifyContent={"center"}
+      >
+        <TaskSummaryCard path={path} tasks={tasks} />
+      </Grid>
+
       {/* PH Analysis Card */}
       <Grid size={{ xs: 12, lg: 6 }}>
         <PHGraph loaded={phLoaded} dataset={phDataSet} />
@@ -169,6 +237,9 @@ function Lot() {
       <Grid size={{ xs: 12, lg: 6 }}>
         <NPKGraph dataset={npkDataSet} loaded={npkLoaded} />
       </Grid>
+
+      {/* Map */}
+      <Grid size={{ xs: 12, lg: 6 }}>Map</Grid>
     </Grid>
   );
 }

@@ -9,7 +9,7 @@ import {
   Stack,
   Skeleton,
 } from "@mui/material";
-import TimelineIcon from "@mui/icons-material/Timeline";
+import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 
 interface NutrientProps {
   label: string;
@@ -110,6 +110,7 @@ function SoilCard({ n, p, k }: SoilCardProps) {
 
         <Tooltip title="Analysis">
           <IconButton
+            color="success"
             onClick={handleClick}
             sx={{
               border: "1px solid #00796b",
@@ -117,7 +118,7 @@ function SoilCard({ n, p, k }: SoilCardProps) {
               padding: "1px",
             }}
           >
-            <TimelineIcon sx={{ color: "#00796b" }} />
+            <BarChartRoundedIcon />
           </IconButton>
         </Tooltip>
       </Box>
