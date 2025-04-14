@@ -12,7 +12,6 @@ import { IoWaterOutline } from "react-icons/io5";
 import { TbTemperatureSun } from "react-icons/tb";
 import { FiWind } from "react-icons/fi";
 import { WiDayRainMix } from "react-icons/wi";
-import { useLocation, useNavigate } from "react-router-dom";
 import sunImage from "../assets/dashboard_asserts/sun6.png";
 
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
@@ -34,8 +33,7 @@ export default function WeatherCard({
   sunrise,
 }: WeatherCardProps) {
   const date = useDate();
-  const path = useLocation().pathname;
-  const navigate = useNavigate();
+  const path = import.meta.env.VITE_WEATHER_CHANNEL;
 
   return (
     <Paper
@@ -70,7 +68,9 @@ export default function WeatherCard({
 
         <Tooltip title={"View More"}>
           <IconButton
-            onClick={() => navigate(path + "/weather")}
+            href={path}
+            target="_blank"
+            rel="noopener noreferrer"
             sx={{
               border: "1px solid gray",
               borderRadius: 2,
