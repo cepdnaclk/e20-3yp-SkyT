@@ -225,7 +225,7 @@ function Lot() {
         display={"flex"}
         justifyContent={"center"}
       >
-        <TaskSummaryCard path={path} tasks={tasks} />
+        <TaskSummaryCard tasks={tasks} />
       </Grid>
 
       {/* PH Analysis Card */}

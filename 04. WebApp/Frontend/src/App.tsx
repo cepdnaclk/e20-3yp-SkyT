@@ -17,6 +17,7 @@ import Estate from "./pages/Dashboard.Estate";
 import Lot from "./pages/Dashboard.Lot";
 import Gallary from "./pages/Dashboard.Gallary";
 import LotMap from "./pages/Dashboard.Map";
+import TaskManager from "./pages/TaskManager";
 
 function App() {
   const [search, setSearch] = useState<string>("");
@@ -52,6 +53,7 @@ function App() {
                 element={<LotMap />}
               />
             </Route>
+            <Route path="taskManager" element={<TaskManager />} />
             <Route path="notifications" element={<Message />} />
             <Route path="people" element={<People />} />
             <Route path="profile" element={<Profile />} />
