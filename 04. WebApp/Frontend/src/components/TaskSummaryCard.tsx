@@ -86,7 +86,7 @@ function SummaryCard({ data }: { data?: SummaryCardProps }) {
   );
 }
 
-export default function TaskSummaryCard({ path, tasks }: TaskCardProps) {
+export default function TaskSummaryCard({ tasks }: TaskCardProps) {
   return (
     <Card
       elevation={3}
@@ -111,7 +111,7 @@ export default function TaskSummaryCard({ path, tasks }: TaskCardProps) {
 
         <Tooltip title={"View More"}>
           <IconButton
-            href={path + "/taskmanager"}
+            href={"/taskmanager"}
             color="success"
             sx={{
               border: "1px solid  #00796b",
