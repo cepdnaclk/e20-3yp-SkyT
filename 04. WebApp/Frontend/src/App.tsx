@@ -15,6 +15,7 @@ import Dashboard from "./pages/DashBoard.Home";
 import { useState } from "react";
 import Estate from "./pages/Dashboard.Estate";
 import Lot from "./pages/Dashboard.Lot";
+import Gallary from "./pages/Dashboard.Gallary";
 
 function App() {
   const [search, setSearch] = useState<string>("");
@@ -41,6 +42,10 @@ function App() {
                 element={<Estate search={search} />}
               />
               <Route path="estate/:estateId/lot/:lotId" element={<Lot />} />
+              <Route
+                path="estate/:estateId/lot/:lotId/gallary"
+                element={<Gallary />}
+              />
             </Route>
             <Route path="notifications" element={<Message />} />
             <Route path="people" element={<People />} />
