@@ -16,6 +16,7 @@ import { useState } from "react";
 import Estate from "./pages/Dashboard.Estate";
 import Lot from "./pages/Dashboard.Lot";
 import Gallary from "./pages/Dashboard.Gallary";
+import LotMap from "./pages/Dashboard.Map";
 
 function App() {
   const [search, setSearch] = useState<string>("");
@@ -45,6 +46,10 @@ function App() {
               <Route
                 path="estate/:estateId/lot/:lotId/gallary"
                 element={<Gallary />}
+              />
+              <Route
+                path="estate/:estateId/lot/:lotId/map"
+                element={<LotMap />}
               />
             </Route>
             <Route path="notifications" element={<Message />} />

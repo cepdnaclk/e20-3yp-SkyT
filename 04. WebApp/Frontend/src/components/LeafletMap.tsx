@@ -15,8 +15,21 @@ interface LotSummaryProps {
   k: number;
 }
 
+interface NodeProps {
+  id: string;
+  nodeId: string;
+  location: [number, number];
+  temperature: number;
+  humididty: number;
+  ph: number;
+  n: number;
+  p: number;
+  k: number;
+}
+
 interface MapInterfaceProps {
   lots?: LotSummaryProps[];
+  nodes?: NodeProps[];
   office?: {
     name: string;
     location: [number, number];
@@ -61,6 +74,7 @@ const defaultIcon = new L.Icon({
 
 export default function LeafletMap({
   lots,
+  nodes,
   office,
   searching,
   handleNavigate,
@@ -107,6 +121,23 @@ export default function LeafletMap({
             {handleNavigate && (
               <button onClick={() => handleNavigate(lot.id)}>View Lot</button>
             )}
+          </Popup>
+        </Marker>
+      ))}
+
+      {/* Node Markers */}
+      {nodes?.map((node) => (
+        <Marker key={node.id} position={node.location} icon={greenIcon}>
+          <Popup>
+            <strong>{node.nodeId}</strong>
+            <br />
+            Temp: {node.temperature}°C
+            <br />
+            Humidity: {node.humididty}%
+            <br />
+            pH: {node.ph}
+            <br />
+            N: {node.n}, P: {node.p}, K: {node.k}
           </Popup>
         </Marker>
       ))}
