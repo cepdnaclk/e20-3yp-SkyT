@@ -6,9 +6,9 @@ import {
   IconButton,
   alpha,
 } from "@mui/material";
-import TimelineIcon from "@mui/icons-material/Timeline";
 import { PieChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
+import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 
 interface PHCardProps {
   low?: number;
@@ -107,13 +107,14 @@ export default function PHCard({ low, optimal, high, PH }: PHCardProps) {
         <Tooltip title="Analysis">
           <IconButton
             onClick={handleClick}
+            color="success"
             sx={{
               border: "1px solid #00796b",
               borderRadius: 2,
               padding: "1px",
             }}
           >
-            <TimelineIcon sx={{ color: "#00796b" }} />
+            <BarChartRoundedIcon />
           </IconButton>
         </Tooltip>
       </Box>

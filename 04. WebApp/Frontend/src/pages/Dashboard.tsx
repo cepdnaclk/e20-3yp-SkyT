@@ -86,6 +86,13 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     }
   }
 
+  // Special Option Section
+  if (allSections.length > 5) {
+    const word =
+      allSections[5].charAt(0).toUpperCase() + allSections[5].slice(1);
+    breadcrumbs.push(word);
+  }
+
   const [user, setUser] = useState<string>();
 
   const [msgCount, setMsgCount] = useState<number>();

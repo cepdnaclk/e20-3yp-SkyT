@@ -15,11 +15,27 @@ interface LotSummaryProps {
   k: number;
 }
 
+interface NodeProps {
+  id: string;
+  nodeId: string;
+  location: [number, number];
+  temperature: number;
+  humididty: number;
+  ph: number;
+  n: number;
+  p: number;
+  k: number;
+}
+
 interface MapInterfaceProps {
   lots?: LotSummaryProps[];
-  office?: [number, number];
+  nodes?: NodeProps[];
+  office?: {
+    name: string;
+    location: [number, number];
+  };
   searching?: string[];
-  handleNavigate: (lotId: string) => void;
+  handleNavigate?: (lotId: string) => void;
 }
 
 // Custom Marker Icons
@@ -58,11 +74,12 @@ const defaultIcon = new L.Icon({
 
 export default function LeafletMap({
   lots,
+  nodes,
   office,
   searching,
   handleNavigate,
 }: MapInterfaceProps) {
-  const mapCenter = office ?? [7.2575, 80.5918]; // Fallback to Peradeniya if office is not given
+  const mapCenter = office?.location ?? [7.2575, 80.5918]; // Fallback to Peradeniya if office is not given
 
   return (
     <MapContainer
@@ -78,8 +95,8 @@ export default function LeafletMap({
 
       {/* Office Marker */}
       {office && (
-        <Marker position={office} icon={defaultIcon}>
-          <Popup>Peracom Office</Popup>
+        <Marker position={office.location} icon={defaultIcon}>
+          <Popup>{office.name}</Popup>
         </Marker>
       )}
 
@@ -101,7 +118,26 @@ export default function LeafletMap({
             <br />
             N: {lot.n}, P: {lot.p}, K: {lot.k}
             <br />
-            <button onClick={() => handleNavigate(lot.id)}>View Lot</button>
+            {handleNavigate && (
+              <button onClick={() => handleNavigate(lot.id)}>View Lot</button>
+            )}
+          </Popup>
+        </Marker>
+      ))}
+
+      {/* Node Markers */}
+      {nodes?.map((node) => (
+        <Marker key={node.id} position={node.location} icon={greenIcon}>
+          <Popup>
+            <strong>{node.nodeId}</strong>
+            <br />
+            Temp: {node.temperature}°C
+            <br />
+            Humidity: {node.humididty}%
+            <br />
+            pH: {node.ph}
+            <br />
+            N: {node.n}, P: {node.p}, K: {node.k}
           </Popup>
         </Marker>
       ))}

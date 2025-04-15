@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import LeafletMap from "../components/LeafletMap";
 import { useEffect, useState } from "react";
 
@@ -8,14 +8,9 @@ interface CenterProps {
   location: [number, number];
 }
 
-interface EstateProps {
-  search: string;
-}
-
-interface LotSummaryProps {
+interface NodeProps {
   id: string;
-  lotId: string;
-  lastUpdate: string;
+  nodeId: string;
   location: [number, number];
   temperature: number;
   humididty: number;
@@ -25,18 +20,12 @@ interface LotSummaryProps {
   k: number;
 }
 
-interface savedProps {
-  id: string;
-  lot: string;
-}
-
 const PeraCom: [number, number] = [7.254670434402384, 80.5912347236105];
 
-const LOTS: LotSummaryProps[] = [
+const Nodes: NodeProps[] = [
   {
     id: "1",
-    lotId: "LOT-A1",
-    lastUpdate: "2025-04-10T10:00:00Z",
+    nodeId: "NODE-A1",
     location: [7.2531, 80.591],
     temperature: 28.5,
     humididty: 75,
@@ -47,8 +36,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "2",
-    lotId: "LOT-B2",
-    lastUpdate: "2025-04-10T10:15:00Z",
+    nodeId: "NODE-B2",
     location: [7.254, 80.5925],
     temperature: 29.0,
     humididty: 73,
@@ -59,8 +47,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "3",
-    lotId: "LOT-C3",
-    lastUpdate: "2025-04-10T10:30:00Z",
+    nodeId: "NODE-C3",
     location: [7.2538, 80.593],
     temperature: 28.2,
     humididty: 70,
@@ -71,8 +58,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "4",
-    lotId: "LOT-D4",
-    lastUpdate: "2025-04-10T10:45:00Z",
+    nodeId: "NODE-D4",
     location: [7.2525, 80.591],
     temperature: 27.9,
     humididty: 76,
@@ -83,8 +69,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "5",
-    lotId: "LOT-E5",
-    lastUpdate: "2025-04-10T11:00:00Z",
+    nodeId: "NODE-E5",
     location: [7.2542, 80.59],
     temperature: 28.7,
     humididty: 72,
@@ -95,8 +80,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "6",
-    lotId: "LOT-F6",
-    lastUpdate: "2025-04-10T11:15:00Z",
+    nodeId: "NODE-F6",
     location: [7.255, 80.5917],
     temperature: 29.1,
     humididty: 71,
@@ -107,8 +91,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "7",
-    lotId: "LOT-G7",
-    lastUpdate: "2025-04-10T11:30:00Z",
+    nodeId: "NODE-G7",
     location: [7.2515, 80.592],
     temperature: 28.3,
     humididty: 74,
@@ -119,8 +102,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "8",
-    lotId: "LOT-H8",
-    lastUpdate: "2025-04-10T11:45:00Z",
+    nodeId: "NODE-H8",
     location: [7.2536, 80.594],
     temperature: 28.9,
     humididty: 70,
@@ -131,8 +113,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "9",
-    lotId: "LOT-I9",
-    lastUpdate: "2025-04-10T12:00:00Z",
+    nodeId: "NODE-I9",
     location: [7.252, 80.5908],
     temperature: 29.2,
     humididty: 69,
@@ -143,8 +124,7 @@ const LOTS: LotSummaryProps[] = [
   },
   {
     id: "10",
-    lotId: "LOT-J10",
-    lastUpdate: "2025-04-10T12:15:00Z",
+    nodeId: "NODE-J10",
     location: [7.2518, 80.593],
     temperature: 28.6,
     humididty: 73,
@@ -155,53 +135,27 @@ const LOTS: LotSummaryProps[] = [
   },
 ];
 
-function Estate({ search }: EstateProps) {
-  const estateId = useLocation().pathname.split("/")[3];
-  const navigate = useNavigate();
+function LotMap() {
+  const lotId = useLocation().pathname.split("/")[5];
 
   const [center, setCenter] = useState<CenterProps>();
-  const [estateInfo, setEstateInfo] = useState<LotSummaryProps[]>();
+  const [lotInfo, setLotInfo] = useState<NodeProps[]>();
 
-  const getInfo = async (estateId: string) => {
-    console.log("Find info on estate: ", estateId);
+  const getInfo = async (lotId: string) => {
+    console.log("Find info on estate: ", lotId);
     setCenter({ name: "PeraCom", location: PeraCom });
-    setEstateInfo(LOTS);
-
-    const savedList: savedProps[] = [];
-    LOTS.map((l) => {
-      const item = { id: l.id, lot: l.lotId };
-      savedList.push(item);
-    });
-
-    sessionStorage.setItem("lots", JSON.stringify(savedList));
+    setLotInfo(Nodes);
   };
 
   useEffect(() => {
-    getInfo(estateId);
-  }, [estateId]);
-
-  const searchedLots = estateInfo
-    ?.filter(
-      (lot) => search && lot.lotId.toLowerCase().includes(search.toLowerCase())
-    )
-    .map((lot) => lot.id);
-
-  const handleNavigate = (lotId: string) => {
-    console.log("Navigate to: ", lotId);
-    const path = `/home/estate/${estateId}/lot/${lotId}`;
-    navigate(path);
-  };
+    getInfo(lotId);
+  }, [lotId]);
 
   return (
     <Box bgcolor={"rosybrown"} width={"100%"} height={"100%"}>
-      <LeafletMap
-        office={center}
-        lots={estateInfo}
-        searching={searchedLots}
-        handleNavigate={handleNavigate}
-      />
+      <LeafletMap office={center} nodes={lotInfo} />
     </Box>
   );
 }
 
-export default Estate;
+export default LotMap;
