@@ -1,27 +1,26 @@
-import { azureDB as connectToAzureSQL } from "./database/azureDbConfig";
-import "./database/mongoDbConfig";
-import "dotenv/config";
-import env from "./util/validateEnv";
 import app from "./app";
+import env from "./util/validateEnv";
+//import sqlDB from "./database/sqldb";
 
-const port = env.MYNODEPORT;
+const port = env.PORT;
 
 const startServer = async () => {
+  //let connection;
+
   try {
-    // Connect to Azure SQL Database
-    await connectToAzureSQL();
+    // Test the DB connection
+    //connection = await sqlDB.getConnection();
+    console.log("Connected to MySQL database");
 
-    // MongoDB connection is already established when importing mongoDbConfig
-    // MongoDB will log connection status in its config file
-
-    console.log("Both databases connected successfully!");
-
-    // Starting the server
+    // Start the server
     app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+      console.log(`Server running on port: ${port}`);
     });
-  } catch (err) {
-    console.error("Error connecting to databases:", err);
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
+    process.exit(1); // Exit the app if DB connection fails
+  } finally {
+    //if (connection) connection.release(); // Always release the connection
   }
 };
 
