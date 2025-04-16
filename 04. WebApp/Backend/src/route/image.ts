@@ -1,4 +1,4 @@
-import express from "express";
+/* import express from "express";
 import multer from "multer";
 import { compressAndSaveImage } from "../util/imageHelper";
 
@@ -19,3 +19,4 @@ router.post("/upload", upload.single("image"), async (req, res, next) => {
 });
 
 export default router;
+ */
