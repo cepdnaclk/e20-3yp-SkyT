@@ -1,0 +1,12 @@
+-- USERS TABLE
+CREATE TABLE USERS (
+  userId INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('Owner', 'Admin', 'Maintain') DEFAULT 'Maintain',
+  fName VARCHAR(30) NOT NULL,
+  lName VARCHAR(30),
+  profilePic VARCHAR(512),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
