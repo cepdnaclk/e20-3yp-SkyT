@@ -9,11 +9,13 @@ import user from "../assets/avetar_asserts/user.png";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPower } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import useLogout from "../utils/useLogout";
 
 export default function IconMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigator = useNavigate();
+  const logout = useLogout();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -21,10 +23,6 @@ export default function IconMenu() {
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    console.log("Loging Out");
   };
 
   return (
@@ -93,7 +91,7 @@ export default function IconMenu() {
         </MenuItem>
 
         <MenuItem
-          onClick={handleLogout}
+          onClick={logout}
           sx={{ fontFamily: "Montserrat", fontWeight: 500 }}
         >
           <IoPower style={{ marginRight: 8 }} /> Logout
