@@ -6,6 +6,7 @@ import { useState } from "react";
 import { postData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth, UserProps } from "../context/AuthContext";
 
 interface credentials {
   email: string;
@@ -27,6 +28,7 @@ function validateLogin({ email, password }: credentials) {
 function Login() {
   const isMediumUp = useMediaQuery("(min-width:570px)");
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -43,8 +45,13 @@ function Login() {
     try {
       const serverResponse = await postData(data, "users/login");
       console.log("Server Response: ", serverResponse.data.message);
+
       const token = serverResponse.data.token;
+      const user = serverResponse.data.payload as UserProps;
+
+      setUser(user);
       sessionStorage.setItem("token", token);
+
       navigate("/home");
     } catch (err) {
       const error = err as AxiosError;

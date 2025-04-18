@@ -57,7 +57,7 @@ export async function deleteData(sendData: object, page: string) {
 }
 
 // Function to validate access
-export async function ValidateData(token: string) {
+export async function validateToken(token: string) {
   try {
     const destination = `${API_BASE_URL}/auth`;
 
@@ -66,7 +66,7 @@ export async function ValidateData(token: string) {
         Authorization: `Bearer ${token}`,
       },
     };
-
+    //console.log("Validating from: ", destination);
     const response = await axios.get(destination, config);
     return response.data; // Return only the data instead of the whole response object
   } catch (error) {

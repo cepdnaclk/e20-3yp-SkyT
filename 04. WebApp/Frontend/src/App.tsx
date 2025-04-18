@@ -1,5 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
+import { useState } from "react";
+
+// Routes
+import PublicRoute from "./routes/publicRoute";
 
 // Pages
 import Home from "./pages/Home";
@@ -12,12 +16,13 @@ import People from "./pages/People";
 import Message from "./pages/Message";
 import DashboardArea from "./pages/Dashboard";
 import Dashboard from "./pages/DashBoard.Home";
-import { useState } from "react";
 import Estate from "./pages/Dashboard.Estate";
 import Lot from "./pages/Dashboard.Lot";
 import Gallary from "./pages/Dashboard.Gallary";
 import LotMap from "./pages/Dashboard.Map";
 import TaskManager from "./pages/TaskManager";
+import PrivateRoute from "./routes/PrivateRoute";
+import ProtectedRoute from "./routes/ProtectedRoutes";
 
 function App() {
   const [search, setSearch] = useState<string>("");
@@ -26,13 +31,19 @@ function App() {
     <Box width={"100vw"} height={"100vh"} bgcolor={"hsl(0,0%,95%)"}>
       <BrowserRouter>
         <Routes>
-          {/* Login */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset" element={<ResetPassword />} />
+          {/* Public Routes */}
+          <Route path="/login" element={<PublicRoute element={<Login />} />} />
+          <Route
+            path="/forgot"
+            element={<PublicRoute element={<ForgotPassword />} />}
+          />
+          <Route
+            path="/reset"
+            element={<PublicRoute element={<ResetPassword />} />}
+          />
 
-          {/* Protected Routes */}
-          <Route path="/" element={<Home />}>
+          {/* Private Routes */}
+          <Route path="/" element={<PrivateRoute element={<Home />} />}>
             <Route index element={<Navigate to={"/home"} />} />
             <Route
               path="/home"
@@ -55,7 +66,15 @@ function App() {
             </Route>
             <Route path="taskManager" element={<TaskManager />} />
             <Route path="notifications" element={<Message />} />
-            <Route path="people" element={<People />} />
+            <Route
+              path="people"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["Owner"]}
+                  elements={<People />}
+                />
+              }
+            />
             <Route path="profile" element={<Profile />} />
           </Route>
 

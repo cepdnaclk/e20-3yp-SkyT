@@ -37,7 +37,7 @@ export const login: RequestHandler = async (req, res, next) => {
 
     console.log("Login successful");
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token, payload });
   } catch (error) {
     next(error);
   }
