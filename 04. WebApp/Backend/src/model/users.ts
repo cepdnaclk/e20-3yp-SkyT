@@ -17,37 +17,42 @@ export interface UpdateUser extends Omit<NewUser, "password"> {
   profilePic: string | null;
 }
 
+interface MysqlError extends Error {
+  code: string;
+  errno: number;
+}
+
 // Create a User class that will handle database interactions
 class UserModel {
   // Create a new user
   static async create(user: NewUser) {
     const { email, password, role, fName, lName } = user;
 
-    // Check if user already exists
-    const [row] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM USERS WHERE email = ?",
-      [email]
-    );
-    console.log("Existing users: ", row);
-    if (row.length > 0) {
-      console.log("User with this email already exists");
-      throw createHttpError(400, "User with this email already exists");
+    try {
+      // Hash the password
+      const hashedPassword = await argon2.hash(password);
+
+      // Insert new user into the database
+      const result = await pool.query<ResultSetHeader>(
+        "INSERT INTO USERS (email, password, role, fName, lName) VALUES (?, ?, ?, ?, ?)",
+        [email, hashedPassword, role || "Maintain", fName, lName || ""]
+      );
+
+      return result[0].insertId; // Return the new user's ID
+    } catch (error: unknown) {
+      if (error instanceof Error && (error as MysqlError).code) {
+        const mysqlError = error as MysqlError;
+        if (mysqlError.code === "ER_DUP_ENTRY" || mysqlError.errno === 1062) {
+          console.log("User with this email already exists");
+          throw createHttpError(400, "User with this email already exists");
+        }
+      }
+      throw error;
     }
-
-    // Hash the password
-    const hashedPassword = await argon2.hash(password);
-
-    // Insert new user into the database
-    const result = await pool.query<ResultSetHeader>(
-      "INSERT INTO USERS (email, password, role, fName, lName) VALUES (?, ?, ?, ?, ?)",
-      [email, hashedPassword, role || "Maintain", fName, lName || ""]
-    );
-
-    return result[0].insertId; // Return the new user's ID
   }
 
   // Get a user by email
-  static async find(email: string) {
+  static async findByEmail(email: string) {
     const result = await pool.query<RowDataPacket[]>(
       "SELECT * FROM USERS WHERE email = ?",
       [email]
@@ -86,7 +91,7 @@ class UserModel {
   // Reset user password
   static async resetPassword(email: string, newPassword: string) {
     // Check if user exists
-    const user = await this.find(email);
+    const user = await this.findByEmail(email);
     if (!user) {
       throw createHttpError(404, "User not found");
     }

@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
-import UserModel, { NewUser } from "../model/users";
-import generatePassword from "../util/generatePassword";
-import { sendPasswordEmail } from "../service/mailer";
+import UserModel, { NewUser } from "../../model/users";
+import generatePassword from "../../util/generatePassword";
+import { sendPasswordEmail } from "../../service/mailer";
 
 export const createUser: RequestHandler = async (req, res, next) => {
   try {
@@ -14,19 +14,27 @@ export const createUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Required fields missing");
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Generate the random password
     const password = generatePassword(10);
 
     // Create user
-    const user: NewUser = { email, password, role, fName, lName };
+    const user: NewUser = {
+      email: normalizedEmail,
+      password,
+      role,
+      fName,
+      lName,
+    };
     const userId = await UserModel.create(user);
 
     console.log("User " + userId + " has been created. Password: " + password);
 
     // Send email
-    await sendPasswordEmail(email, password);
+    await sendPasswordEmail(normalizedEmail, password);
 
-    res.status(201).send("User created successfully!");
+    res.status(201).json({ message: "User created successfully!" });
   } catch (error) {
     next(error);
   }

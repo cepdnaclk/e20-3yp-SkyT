@@ -7,6 +7,7 @@ import env from "./util/validateEnv";
 // Import routes
 import testDBRouter from "./route/testDB";
 import usersRouter from "./route/users";
+import authRouter from "./route/auth";
 
 const app = express();
 const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
@@ -50,6 +51,9 @@ app.get("/", (req, res) => {
 
 // DB Test Route
 app.use("/test", testDBRouter);
+
+// User Authentication
+app.use("/auth", authRouter);
 
 // users Route
 app.use("/users", usersRouter);

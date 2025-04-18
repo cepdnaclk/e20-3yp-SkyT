@@ -12,4 +12,5 @@ export default cleanEnv(process.env, {
   EMAIL_SERVICE: str(),
   EMAIL_USER: str(),
   EMAIL_PASS: str(),
+  JWT_SECRET: str(),
 });
