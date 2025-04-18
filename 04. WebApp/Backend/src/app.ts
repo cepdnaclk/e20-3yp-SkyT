@@ -10,7 +10,7 @@ import usersRouter from "./route/users";
 import authRouter from "./route/auth";
 
 const app = express();
-const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
+const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
 
 /* Middlewares for data validation */
 

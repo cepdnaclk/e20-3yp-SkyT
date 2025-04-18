@@ -2,61 +2,48 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Container,
   Grid,
+  IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import React from "react";
 import { FaUserShield } from "react-icons/fa6";
 import { BsFillShieldLockFill } from "react-icons/bs";
 import { AiOutlineSwapRight } from "react-icons/ai";
 import logo from "../assets/login_asserts/Logotr.png";
 import FillButton from "./FillButton";
 import TextBox from "./TextBox";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-interface credentials {
+interface loginProps {
   email: string;
   password: string;
+  error: string | null;
+  loading: boolean;
+  show: boolean;
+  setShow: (state: boolean) => void;
+  setEmail: (email: string) => void;
+  setPassword: (pwd: string) => void;
+  handleLogin: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-function validateLogin({ email, password }: credentials) {
-  let err = false;
-
-  if (!emailPattern.test(email)) err = true;
-
-  if (!password || password.length < 6) err = true;
-
-  return err;
-}
-
-function login() {
-  console.log("logging");
-}
-
-export function LoginFormMD() {
-  const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Checking credentials");
-
-    const err = validateLogin({ email, password });
-
-    if (err) {
-      setError("Invalid credentials!");
-    } else {
-      setError(null);
-      login();
-    }
-  };
-
+export function LoginFormMD({
+  email,
+  password,
+  error,
+  loading,
+  show,
+  setShow,
+  setEmail,
+  setPassword,
+  handleLogin,
+}: loginProps) {
   return (
     <Grid container width={"100%"} height={"100%"} bgcolor={"rgb(0,0,0,0.1)"}>
       {/* Left side */}
@@ -196,7 +183,7 @@ export function LoginFormMD() {
 
             <TextField
               fullWidth
-              type="password"
+              type={show ? "text" : "password"}
               label="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -207,6 +194,11 @@ export function LoginFormMD() {
                     <InputAdornment position="start">
                       <BsFillShieldLockFill />
                     </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <IconButton size="small" onClick={() => setShow(!show)}>
+                      {show ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
                   ),
                 },
               }}
@@ -229,7 +221,11 @@ export function LoginFormMD() {
                 },
               }}
             >
-              Login
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </Button>
 
             <Typography variant="body2" align="center" mt={2}>
@@ -242,25 +238,17 @@ export function LoginFormMD() {
   );
 }
 
-export function LoginFormXS() {
-  const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Checking credentials");
-
-    const err = validateLogin({ email, password });
-
-    if (err) {
-      setError("Invalid credentials!");
-    } else {
-      setError(null);
-      login();
-    }
-  };
-
+export function LoginFormXS({
+  email,
+  password,
+  error,
+  loading,
+  show,
+  setShow,
+  setEmail,
+  setPassword,
+  handleLogin,
+}: loginProps) {
   return (
     <Grid container width={"100%"} spacing={2}>
       {/* Top */}
@@ -339,7 +327,7 @@ export function LoginFormXS() {
 
             <TextField
               fullWidth
-              type="password"
+              type={show ? "text" : "password"}
               label="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -351,6 +339,11 @@ export function LoginFormXS() {
                       <BsFillShieldLockFill />
                     </InputAdornment>
                   ),
+                  endAdornment: (
+                    <IconButton size="small" onClick={() => setShow(!show)}>
+                      {show ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  ),
                 },
               }}
             />
@@ -361,7 +354,11 @@ export function LoginFormXS() {
               variant="contained"
               endIcon={<AiOutlineSwapRight />}
             >
-              Login
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </FillButton>
 
             <Typography variant="body2" align="center" mt={2}>

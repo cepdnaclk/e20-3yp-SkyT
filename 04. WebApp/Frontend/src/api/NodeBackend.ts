@@ -7,12 +7,12 @@ const API_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
 // Get data from backend
 export async function getData(page: string) {
   try {
-    const destination = `${API_BASE_URL}/api/${page}`;
+    const destination = `${API_BASE_URL}/${page}`;
     //console.log(`Fetching data from: ${destination}`);
     const response = await axios.get(destination);
     return response;
   } catch (error) {
-    console.error("There was an error fetching the data!", error);
+    console.error("Fetching data error!", error);
     throw error;
   }
 }
@@ -20,7 +20,7 @@ export async function getData(page: string) {
 // Update data in backend
 export async function updateData(sendData: object, page: string) {
   try {
-    const destination = `${API_BASE_URL}/api/${page}`;
+    const destination = `${API_BASE_URL}/${page}`;
     //console.log(`Updating data in: ${destination}`);
     const response = await axios.patch(destination, sendData);
     return response;
@@ -30,15 +30,15 @@ export async function updateData(sendData: object, page: string) {
   }
 }
 
-// Add new data in backend
-export async function addData(sendData: object, page: string) {
+// Post data to backend
+export async function postData(sendData: object, page: string) {
   try {
-    const destination = `${API_BASE_URL}/api/${page}`;
+    const destination = `${API_BASE_URL}/${page}`;
     //console.log(`Adding new data in: ${destination}`);
     const response = await axios.post(destination, sendData);
     return response;
   } catch (error) {
-    console.error("Adding data error!", error);
+    console.error("Posting data error!", error);
     throw error;
   }
 }
@@ -46,7 +46,7 @@ export async function addData(sendData: object, page: string) {
 // Add new data in backend -- Need to midify
 export async function deleteData(sendData: object, page: string) {
   try {
-    const destination = `${API_BASE_URL}/api/${page}`;
+    const destination = `${API_BASE_URL}/${page}`;
     //console.log(`Deleting excisting data in: ${destination}`);
     const response = await axios.delete(destination, { data: sendData });
     return response;
@@ -57,9 +57,9 @@ export async function deleteData(sendData: object, page: string) {
 }
 
 // Function to validate access
-export async function ValidateData(token: string, page: string) {
+export async function ValidateData(token: string) {
   try {
-    const destination = `${API_BASE_URL}/api/${page}`;
+    const destination = `${API_BASE_URL}/auth`;
 
     const config = {
       headers: {
