@@ -16,6 +16,7 @@ interface decordedProps {
 }
 
 const jwtMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+  console.log("Authentication...");
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return next(createHttpError(401, "No token provided"));

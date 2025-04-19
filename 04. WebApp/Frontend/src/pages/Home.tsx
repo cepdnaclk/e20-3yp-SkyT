@@ -27,7 +27,7 @@ const menuItems = [
 
 const protectedItems = ["people"];
 
-const allowedUsers = ["owner", "admin"];
+const superUsers = ["owner", "admin"];
 
 function DesktopView({ menu }: { menu: ItemProps[] }) {
   return (
@@ -83,7 +83,7 @@ function Home() {
 
   const filterdItems = menuItems.filter(
     (item) =>
-      !allowedUsers.includes(user!.role.toLowerCase()) &&
+      superUsers.includes(user!.role.toLowerCase()) ||
       !protectedItems.includes(item.label.toLowerCase())
   );
 

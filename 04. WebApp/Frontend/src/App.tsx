@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import { useState } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 // Routes
 import PublicRoute from "./routes/publicRoute";
@@ -44,9 +45,10 @@ function App() {
 
           {/* Private Routes */}
           <Route path="/" element={<PrivateRoute element={<Home />} />}>
-            <Route index element={<Navigate to={"/home"} />} />
+            <Route index element={<Navigate to={"home"} />} />
+
             <Route
-              path="/home"
+              path="home"
               element={<DashboardArea search={search} setSearch={setSearch} />}
             >
               <Route index element={<Dashboard search={search} />} />
@@ -64,23 +66,25 @@ function App() {
                 element={<LotMap />}
               />
             </Route>
+
             <Route path="taskManager" element={<TaskManager />} />
             <Route path="notifications" element={<Message />} />
+            <Route path="profile" element={<Profile />} />
+
+            {/* Role base routes */}
             <Route
               path="people"
               element={
-                <ProtectedRoute
-                  allowedRoles={["Owner"]}
-                  elements={<People />}
-                />
+                <ProtectedRoute allowedRoles={["owner"]} element={<People />} />
               }
             />
-            <Route path="profile" element={<Profile />} />
           </Route>
 
           {/* All other routes */}
           <Route path="/*" element={<PageNotFound />} />
         </Routes>
+
+        <LoadingSpinner />
       </BrowserRouter>
     </Box>
   );

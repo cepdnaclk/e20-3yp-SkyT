@@ -4,17 +4,23 @@ import { ReactElement } from "react";
 
 type Props = {
   allowedRoles: string[];
-  elements: ReactElement;
+  element: ReactElement;
 };
 
-const ProtectedRoute = ({ allowedRoles, elements }: Props) => {
-  const { user } = useAuth();
+const ProtectedRoute = ({ allowedRoles, element }: Props) => {
+  const { user, loading } = useAuth();
 
-  if (!user) return <Navigate to="/login" />;
+  console.log("Protected Route: ", user);
+  console.log("Allowed for: ", allowedRoles);
 
-  if (!allowedRoles.includes(user?.role)) return <Navigate to="/notfound" />;
+  if (!loading) {
+    if (!user) return <Navigate to="/login" />;
 
-  return elements;
+    if (!allowedRoles.includes(user?.role.toLowerCase()))
+      return <Navigate to="/notfound" />;
+
+    return element;
+  }
 };
 
 export default ProtectedRoute;

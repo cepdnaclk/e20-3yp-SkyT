@@ -3,9 +3,11 @@ import { useAuth } from "../context/AuthContext";
 import { ReactElement } from "react";
 
 const PrivateRoute = ({ element }: { element: ReactElement }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  return user !== null ? element : <Navigate to="/login" />;
+  if (!loading) {
+    return user !== null ? element : <Navigate to="/login" />;
+  }
 };
 
 export default PrivateRoute;

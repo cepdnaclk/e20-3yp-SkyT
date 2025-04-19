@@ -5,8 +5,8 @@ import video from "../assets/login_asserts/login.mp4";
 import { useState } from "react";
 import { postData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
 import { useAuth, UserProps } from "../context/AuthContext";
+import { ToastAlert } from "../components/ToastAlert";
 
 interface credentials {
   email: string;
@@ -27,7 +27,6 @@ function validateLogin({ email, password }: credentials) {
 
 function Login() {
   const isMediumUp = useMediaQuery("(min-width:570px)");
-  const navigate = useNavigate();
   const { setUser } = useAuth();
 
   const [email, setEmail] = useState<string>("");
@@ -52,7 +51,10 @@ function Login() {
       setUser(user);
       sessionStorage.setItem("token", token);
 
-      navigate("/home");
+      ToastAlert({
+        title: "Login successful!",
+        type: "success",
+      });
     } catch (err) {
       const error = err as AxiosError;
       const status = error.response?.status;
