@@ -39,7 +39,7 @@ function App() {
             element={<PublicRoute element={<ForgotPassword />} />}
           />
           <Route
-            path="/reset"
+            path="/reset/:token"
             element={<PublicRoute element={<ResetPassword />} />}
           />
 
