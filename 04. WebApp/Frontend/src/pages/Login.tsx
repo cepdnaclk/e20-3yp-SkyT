@@ -42,7 +42,7 @@ function Login() {
     const data = { email, password };
 
     try {
-      const serverResponse = await postData(data, "users/login");
+      const serverResponse = await postData(data, "auth");
       console.log("Server Response: ", serverResponse.data.message);
 
       const token = serverResponse.data.token;

@@ -52,10 +52,10 @@ app.get("/", (req, res) => {
 // DB Test Route
 app.use("/test", testDBRouter);
 
-// User Authentication
+// User Authentication Routes
 app.use("/auth", authRouter);
 
-// users Route
+// users Routes
 app.use("/users", usersRouter);
 
 // 404 Handler

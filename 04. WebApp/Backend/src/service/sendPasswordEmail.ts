@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendPasswordEmail = async (to: string, password: string) => {
+const sendPasswordEmail = async (to: string, password: string) => {
   const mailOptions = {
     from: env.EMAIL_USER,
     to,
@@ -31,3 +31,5 @@ export const sendPasswordEmail = async (to: string, password: string) => {
 
   await transporter.sendMail(mailOptions);
 };
+
+export default sendPasswordEmail;

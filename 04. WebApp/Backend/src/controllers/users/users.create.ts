@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel, { NewUser } from "../../model/users";
 import generatePassword from "../../util/generatePassword";
-import { sendPasswordEmail } from "../../service/mailer";
+import sendPasswordEmail from "../../service/sendPasswordEmail";
 
 export const createUser: RequestHandler = async (req, res, next) => {
   try {
