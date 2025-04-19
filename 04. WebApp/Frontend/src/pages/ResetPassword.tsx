@@ -1,11 +1,10 @@
-// src/pages/ResetPassword.tsx
-
 import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import logo from "../assets/login_asserts/Logotr.png";
 import FillButton from "../components/FillButton";
 import TextBox from "../components/TextBox";
+import { postData } from "../api/NodeBackend";
 
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState<string>("");
@@ -14,8 +13,9 @@ export default function ResetPassword() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const { token } = useParams();
+
+  //console.log("Reset token: ", token);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,16 +37,24 @@ export default function ResetPassword() {
     }
 
     setError("");
-    resetPassword(newPassword);
+    resetPassword();
   };
 
-  const resetPassword = async (password: string) => {
+  const resetPassword = async () => {
     setLoading(true);
+    const data = { newPassword, token };
 
     try {
-      console.log("Resetting password with token:", token);
-      console.log("New password: ", password);
-      setSubmitted(true);
+      //console.log("Resetting password with token:", token);
+      //console.log("New password: ", password);
+      const serverResposnse = await postData(data, "auth/reset");
+      if (serverResposnse.status === 200) {
+        setSubmitted(true);
+        console.log(serverResposnse.data.message);
+        setError("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
     } catch (err) {
       console.log("Error: ", err);
       setError("Unable to reset password. Please try again later!");
