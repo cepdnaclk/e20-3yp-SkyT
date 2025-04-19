@@ -26,6 +26,7 @@ export const resetPassword: RequestHandler = async (req, res, next) => {
 
     // Update the password in the USERS table
     await AuthModel.updatePassword(tokenData.userId, newPassword);
+    console.log("Password has been reset successfully.");
 
     res.status(200).json({ message: "Password has been reset successfully." });
   } catch (error) {

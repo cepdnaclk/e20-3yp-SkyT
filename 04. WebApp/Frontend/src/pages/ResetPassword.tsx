@@ -1,16 +1,23 @@
 import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/login_asserts/Logotr.png";
 import FillButton from "../components/FillButton";
 import TextBox from "../components/TextBox";
 import { postData } from "../api/NodeBackend";
+import { AxiosError } from "axios";
+
+interface ErrorResponse {
+  error: string;
+}
 
 export default function ResetPassword() {
+  const navigate = useNavigate();
+
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const { token } = useParams();
@@ -54,10 +61,18 @@ export default function ResetPassword() {
         setError("");
         setNewPassword("");
         setConfirmPassword("");
+        navigate("/login");
       }
     } catch (err) {
-      console.log("Error: ", err);
-      setError("Unable to reset password. Please try again later!");
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      if (status === 404 || status === 400) {
+        console.log(error.response?.data?.error);
+        setError(error.response?.data?.error);
+      } else {
+        setError("Unable to reset password. Please try again later!");
+      }
     } finally {
       setLoading(false);
     }
