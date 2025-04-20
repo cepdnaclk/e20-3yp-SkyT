@@ -27,8 +27,6 @@ const menuItems = [
 
 const protectedItems = ["people"];
 
-const superUsers = ["owner", "admin"];
-
 function DesktopView({ menu }: { menu: ItemProps[] }) {
   return (
     <Paper
@@ -79,7 +77,7 @@ function MobileView({ menu }: { menu: ItemProps[] }) {
 }
 
 function Home() {
-  const { user } = useAuth();
+  const { user, superUsers } = useAuth();
 
   const filterdItems = menuItems.filter(
     (item) =>

@@ -74,9 +74,7 @@ function App() {
             {/* Role base routes */}
             <Route
               path="people"
-              element={
-                <ProtectedRoute allowedRoles={["owner"]} element={<People />} />
-              }
+              element={<ProtectedRoute element={<People />} />}
             />
           </Route>
 

@@ -7,6 +7,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const superUsers = ["owner", "developer"];
+
   useEffect(() => {
     const validate = async (token: string) => {
       console.log("Auth validating...");
@@ -45,7 +47,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider
+      value={{ user, loading, superUsers, setUser, setLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

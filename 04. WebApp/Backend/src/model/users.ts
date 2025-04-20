@@ -10,6 +10,7 @@ export interface NewUser {
   role: string;
   fName: string;
   lName?: string;
+  estates: number[];
 }
 
 export interface UpdateUser extends Omit<NewUser, "password"> {
@@ -17,37 +18,56 @@ export interface UpdateUser extends Omit<NewUser, "password"> {
   profilePic: string | null;
 }
 
-interface MysqlError extends Error {
-  code: string;
-  errno: number;
-}
-
 // Create a User class that will handle database interactions
 class UserModel {
   // Create a new user
   static async create(user: NewUser) {
-    const { email, password, role, fName, lName } = user;
+    const connection = await pool.getConnection();
 
     try {
+      const { email, password, role, fName, lName, estates } = user;
+
+      // Start transaction
+      await connection.beginTransaction();
+
+      // Check for existing email
+      const [existing] = await connection.query<RowDataPacket[]>(
+        "SELECT userId FROM USERS WHERE email = ?",
+        [email]
+      );
+      if (existing.length > 0) {
+        throw createHttpError(400, "User with this email already exists");
+      }
+
       // Hash the password
       const hashedPassword = await argon2.hash(password);
 
       // Insert new user into the database
-      const result = await pool.query<ResultSetHeader>(
+      const [result] = await pool.query<ResultSetHeader>(
         "INSERT INTO USERS (email, password, role, fName, lName) VALUES (?, ?, ?, ?, ?)",
-        [email, hashedPassword, role || "Maintain", fName, lName || ""]
+        [email, hashedPassword, role || "Assistant", fName, lName || ""]
       );
 
-      return result[0].insertId; // Return the new user's ID
-    } catch (error: unknown) {
-      if (error instanceof Error && (error as MysqlError).code) {
-        const mysqlError = error as MysqlError;
-        if (mysqlError.code === "ER_DUP_ENTRY" || mysqlError.errno === 1062) {
-          console.log("User with this email already exists");
-          throw createHttpError(400, "User with this email already exists");
-        }
+      const userId = result.insertId;
+
+      // Insert estates
+      const values = estates.map((estateId) => [userId, estateId]);
+      const [rows] = await connection.query<ResultSetHeader>(
+        `INSERT INTO EMPLOYEES (employeeId, estateId) VALUES ?`,
+        [values]
+      );
+
+      if (rows.affectedRows === 0) {
+        throw createHttpError(500, "No employees added");
       }
+
+      await connection.commit();
+      return userId;
+    } catch (error: unknown) {
+      await connection.rollback();
       throw error;
+    } finally {
+      connection.release();
     }
   }
 
@@ -58,6 +78,36 @@ class UserModel {
       [email]
     );
     return result[0][0]; // Return the user
+  }
+
+  // Get a user by userId
+  static async findById(userId: number | string) {
+    const result = await pool.query<RowDataPacket[]>(
+      "SELECT * FROM USERS WHERE userId = ?",
+      [userId]
+    );
+    return result[0][0]; // Return the user
+  }
+
+  // Get all system users for the developer
+  static async getUsers() {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      `SELECT 
+        u.userId AS id,
+        u.fName,
+        u.lName,
+        u.email,
+        u.profilePic AS img,
+        u.role,
+        JSON_ARRAYAGG(e.estateId) AS estates
+      FROM USERS u
+      JOIN EMPLOYEES e ON e.employeeId = u.userId
+      GROUP BY u.userId`
+    );
+
+    //console.log("Users in the system managed by developers: ", rows);
+
+    return rows;
   }
 
   // Update user details
@@ -86,26 +136,6 @@ class UserModel {
     );
 
     return result; // Return the result of the update
-  }
-
-  // Reset user password
-  static async resetPassword(email: string, newPassword: string) {
-    // Check if user exists
-    const user = await this.findByEmail(email);
-    if (!user) {
-      throw createHttpError(404, "User not found");
-    }
-
-    // Hash the new password
-    const hashedPassword = await argon2.hash(newPassword);
-
-    // Update the user's password in the database
-    const result = await pool.query<ResultSetHeader>(
-      "UPDATE USERS SET password = ? WHERE email = ?",
-      [hashedPassword, email]
-    );
-
-    return result[0]; // Return the result of the password reset operation
   }
 }
 

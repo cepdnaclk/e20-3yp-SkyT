@@ -33,7 +33,7 @@ export const login: RequestHandler = async (req, res, next) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "24h" });
+    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "6h" });
 
     console.log("Login successful");
 

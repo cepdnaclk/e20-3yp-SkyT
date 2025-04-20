@@ -26,6 +26,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
       role,
       fName,
       lName,
+      estates,
     };
     const userId = await UserModel.create(user);
 

@@ -6,11 +6,11 @@ describe("POST /users", () => {
     const res = await request(app)
       .post("/users")
       .send({
-        email: "testuser@example.com",
-        fName: "Test",
-        lName: "User",
-        role: "Maintain",
-        estates: ["1", "2"],
+        email: "econductorinfo@gmail.com",
+        fName: "John",
+        lName: "Doe",
+        role: "Assistant",
+        estates: [1, 2, 3],
       });
 
     expect(res.status).toBe(400);
@@ -23,11 +23,11 @@ describe("POST /users", () => {
     const res = await request(app)
       .post("/users")
       .send({
-        email: "testuser4@example.com",
+        email: "testuser1@example.com",
         fName: "Test",
-        lName: "User",
-        role: "Maintain",
-        estates: ["1", "2"],
+        lName: "User1",
+        role: "Assistant",
+        estates: [1, 2],
       });
 
     expect(res.status).toBe(201);

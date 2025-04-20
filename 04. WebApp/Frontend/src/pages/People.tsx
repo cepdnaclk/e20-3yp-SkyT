@@ -23,95 +23,53 @@ import { FaUserEdit } from "react-icons/fa";
 import AlertDialog from "../components/AlertDialog";
 import { ImBin } from "react-icons/im";
 import FormDialog from "../components/FormDialog";
+import { useAuth } from "../context/AuthContext";
+import { getData, postData } from "../api/NodeBackend";
+import { ToastAlert } from "../components/ToastAlert";
+import { AxiosError } from "axios";
 
 interface MemberProps {
-  id: string;
-  fname: string;
-  lname: string;
+  id: number;
+  fName: string;
+  lName: string;
   email: string;
   img: string | null;
   role: string;
-  estates: string[];
+  estates: number[];
 }
 
-const members: MemberProps[] = [
-  {
-    id: "1",
-    fname: "Frasco",
-    lname: "Soda",
-    email: "fsoda0@hc360.com",
-    img: "http://dummyimage.com/140x100.png/5fa2dd/ffffff",
-    role: "Owner",
-    estates: ["Zoonder"],
-  },
-  {
-    id: "2",
-    fname: "Brynne",
-    lname: "Aseef",
-    email: "baseef1@google.co.uk",
-    img: "http://dummyimage.com/108x100.png/dddddd/000000",
-    role: "Maintain",
-    estates: ["Zoonder"],
-  },
-  {
-    id: "3",
-    fname: "Jorrie",
-    lname: "Rielly",
-    email: "jrielly2@github.com",
-    img: "http://dummyimage.com/101x100.png/5fa2dd/ffffff",
-    role: "Owner",
-    estates: ["Devcast"],
-  },
-  {
-    id: "4",
-    fname: "Barnard",
-    lname: "Gudge",
-    email: "bgudge3@over-blog.com",
-    img: "http://dummyimage.com/117x100.png/cc0000/ffffff",
-    role: "Admin",
-    estates: ["Jabberstorm"],
-  },
-  {
-    id: "5",
-    fname: "Antonetta",
-    lname: "Edler",
-    email: "aedler4@vinaora.com",
-    img: "http://dummyimage.com/237x100.png/5fa2dd/ffffff",
-    role: "Owner",
-    estates: ["Zoonder"],
-  },
-];
+interface ErrorResponse {
+  error: string;
+}
 
-const estates: string[] = [
-  "estate",
-  "Aimbu",
-  "Riffpath",
-  "Devcast",
-  "Jabberstorm",
-  "Zoonder",
-];
+interface EstateProps {
+  estateId: number;
+  estate: string;
+}
 
 const newMember: MemberProps = {
-  id: "",
-  fname: "",
-  lname: "",
+  id: 0,
+  fName: "",
+  lName: "",
   email: "",
   img: null,
-  role: "Maintain",
+  role: "Assistant",
   estates: [],
 };
 
 function People() {
+  const { user } = useAuth();
+
   const [memberList, setMemberList] = useState<MemberProps[]>();
-  const [estateList, setEstateList] = useState<string[]>();
+  const [estateList, setEstateList] = useState<EstateProps[]>();
   const [searchName, setSearchName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [formOpen, setFormOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<MemberProps>(newMember);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [deleteUser, setDeleteUser] = useState<string>("");
+  const [deleteUser, setDeleteUser] = useState<number>();
 
-  const handleEdit = (userId: string) => {
+  const handleEdit = (userId: number) => {
     const user = memberList?.filter((usr) => usr.id === userId);
     console.log("User: ", user);
 
@@ -121,7 +79,7 @@ function People() {
     }
   };
 
-  const handleDelete = (userId: string) => {
+  const handleDelete = (userId: number) => {
     console.log("Delete: ", userId);
     setDeleteUser(userId);
     setDialogOpen(true);
@@ -134,12 +92,12 @@ function People() {
   };
 
   const handleSubmit = (values: MemberProps) => {
-    if (values.id) {
+    if (values.id > 1) {
       console.log("Update User: ", values);
       updateMember();
     } else {
       console.log("Add User: ", values);
-      addMember();
+      addMember(values);
     }
 
     setFormOpen(false);
@@ -150,39 +108,120 @@ function People() {
     setDialogOpen(false);
   };
 
-  const getMembers = () => {
+  const updateMember = () => {
+    console.log("updating");
+  };
+
+  const getMembers = async () => {
+    const url = "estates/employees/" + user?.userId;
+
+    try {
+      const serverResponse = await getData(url);
+      if (serverResponse.status === 200) {
+        const { message, employees } = serverResponse.data;
+        console.log(message);
+        setMemberList(employees);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 404 || status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = "Invalid user ID";
+      }
+
+      console.log("Employees Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    }
+  };
+
+  const getEstateList = async () => {
+    const url = "estates/list/" + user?.userId;
+
+    try {
+      const serverResponse = await getData(url);
+      if (serverResponse.status === 200) {
+        const { message, estates } = serverResponse.data;
+        console.log(message);
+        setEstateList(estates);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 404 || status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Peoples Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    }
+  };
+
+  const addMember = async (data: MemberProps) => {
     setLoading(true);
 
     try {
-      setMemberList(members);
-      setEstateList(estates);
+      const serverResponse = await postData(data, "users");
+      if (serverResponse.status === 201) {
+        console.log(serverResponse.data.message);
+        ToastAlert({
+          type: "success",
+          title: "Account created successfully",
+          onClose: getMembers,
+        });
+      }
     } catch (err) {
-      console.log("Error while fetching data", err);
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 401 || status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Peoples Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const updateMember = () => {
-    console.log("updating");
-  };
-
-  const addMember = () => {
-    console.log("Add member");
-  };
-
   useEffect(() => {
+    getEstateList();
     getMembers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const normalizedSearch = searchName.toLowerCase();
+
+  const matchedEstateIds = estateList
+    ?.filter((est) => est.estate.toLowerCase().includes(normalizedSearch))
+    .map((est) => est.estateId);
 
   const filteredMembers = memberList?.filter(
     (member) =>
-      member.fname.toLowerCase().includes(searchName.toLowerCase()) ||
-      member.lname.toLowerCase().includes(searchName.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchName.toLowerCase()) ||
-      member.estates.some((estate) =>
-        estate.toLowerCase().includes(searchName.toLowerCase())
-      )
+      member.fName.toLowerCase().includes(normalizedSearch) ||
+      member.lName.toLowerCase().includes(normalizedSearch) ||
+      member.email.toLowerCase().includes(normalizedSearch) ||
+      member.estates.some((id) => matchedEstateIds?.includes(id))
   );
 
   return (
@@ -290,7 +329,7 @@ function People() {
                       <Box display="flex" alignItems="center">
                         <Avatar
                           src={member.img || undefined}
-                          alt={`Profile picture of ${member.fname}`}
+                          alt={`Profile picture of ${member.fName}`}
                           sx={{ width: 40, height: 40, mr: 2 }}
                         />
                         <Box>
@@ -300,7 +339,7 @@ function People() {
                             fontSize={"16px"}
                             fontWeight={600}
                           >
-                            {member.fname} {member.lname}
+                            {member.fName} {member.lName}
                           </Typography>
 
                           <Typography
@@ -317,7 +356,14 @@ function People() {
                     <TableCell
                       sx={{ textAlign: "center", fontFamily: "inherit" }}
                     >
-                      {member.estates}
+                      {member.estates
+                        .map(
+                          (estateId) =>
+                            estateList?.find((est) => est.estateId === estateId)
+                              ?.estate
+                        )
+                        .filter((name) => name !== undefined)
+                        .join(", ")}
                     </TableCell>
 
                     <TableCell
@@ -327,29 +373,31 @@ function People() {
                     </TableCell>
 
                     <TableCell>
-                      <Stack
-                        direction={"row"}
-                        justifyContent={"center"}
-                        spacing={1}
-                      >
-                        <Tooltip title={"Edit user"}>
-                          <IconButton
-                            onClick={() => handleEdit(member.id)}
-                            color="default"
-                          >
-                            <FaUserEdit />
-                          </IconButton>
-                        </Tooltip>
+                      {member.id !== user?.userId && (
+                        <Stack
+                          direction={"row"}
+                          justifyContent={"center"}
+                          spacing={1}
+                        >
+                          <Tooltip title={"Edit user"}>
+                            <IconButton
+                              onClick={() => handleEdit(member.id)}
+                              color="default"
+                            >
+                              <FaUserEdit />
+                            </IconButton>
+                          </Tooltip>
 
-                        <Tooltip title={"Remove User"}>
-                          <IconButton
-                            onClick={() => handleDelete(member.id)}
-                            color="error"
-                          >
-                            <ImBin />
-                          </IconButton>
-                        </Tooltip>
-                      </Stack>
+                          <Tooltip title={"Remove User"}>
+                            <IconButton
+                              onClick={() => handleDelete(member.id)}
+                              color="error"
+                            >
+                              <ImBin />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -375,6 +423,7 @@ function People() {
         onClose={() => setFormOpen(false)}
         isEditMode={!!formData.id}
         onSubmit={handleSubmit}
+        user={user?.role}
       />
     </Grid>
   );

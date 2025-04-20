@@ -14,13 +14,18 @@ import {
 } from "@mui/material";
 import TextBox from "./TextBox";
 
+interface EstateProps {
+  estateId: number;
+  estate: string;
+}
+
 interface UserFormValues {
-  id: string;
-  fname: string;
-  lname: string;
+  id: number;
+  fName: string;
+  lName: string;
   email: string;
   role: string;
-  estates: string[];
+  estates: number[];
   img: string | null;
 }
 
@@ -29,21 +34,22 @@ interface UserFormDialogProps {
   onClose: () => void;
   onSubmit: (values: UserFormValues) => void;
   initialValues: UserFormValues;
-  estates?: string[];
+  estates?: EstateProps[];
   isEditMode?: boolean;
+  user?: string;
 }
 
 interface FormErrorsProps {
-  fname: boolean;
+  fName: boolean;
   email: boolean;
   role: boolean;
   estates: boolean;
 }
 
-const roleOptions = ["Owner", "Admin", "Maintain"];
+const roleOptions = ["Owner", "Developer", "Assistant"];
 
 const errorFree: FormErrorsProps = {
-  fname: false,
+  fName: false,
   email: false,
   role: false,
   estates: false,
@@ -58,6 +64,7 @@ function FormDialog({
   initialValues,
   estates,
   isEditMode = false,
+  user,
 }: UserFormDialogProps) {
   const [formValues, setFormValues] = useState<UserFormValues>(initialValues);
   const [error, setError] = useState<FormErrorsProps>(errorFree);
@@ -75,11 +82,11 @@ function FormDialog({
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleChecked = (estate: string) => {
-    const selected = formValues.estates.includes(estate);
+  const handleChecked = (estateId: number) => {
+    const selected = formValues.estates.includes(estateId);
     const updatedEstates = selected
-      ? formValues.estates.filter((e) => e !== estate)
-      : [...formValues.estates, estate];
+      ? formValues.estates.filter((e) => e !== estateId)
+      : [...formValues.estates, estateId];
 
     console.log("Updated Estates: ", updatedEstates);
 
@@ -90,19 +97,46 @@ function FormDialog({
     console.log("Verifying Details");
 
     const err: FormErrorsProps = {
-      fname: !formValues.fname,
+      fName: !formValues.fName,
       email: !emailPattern.test(formValues.email),
-      role: !formValues.role || !roleOptions.includes(formValues.role),
+      role:
+        !formValues.role ||
+        !roleOptions.includes(formValues.role) ||
+        (user?.toLowerCase() !== "developer" &&
+          formValues.role !== "Assistant"),
       estates: formValues.estates.length === 0,
     };
 
     setError(err);
 
-    if (!err.email && !err.estates && !err.fname && !err.role) {
+    if (!err.email && !err.estates && !err.fName && !err.role) {
       console.log("Form submitted", formValues);
       onSubmit(formValues);
     }
   };
+
+  useEffect(() => {
+    if (
+      formValues.role?.toLowerCase() === "developer" &&
+      estates &&
+      estates.length > 0
+    ) {
+      const estList = estates.map((est) => est.estateId);
+      console.log("Developer Access: ", estList);
+
+      setFormValues((prev) => {
+        // Avoid updating if values are already the same
+        if (
+          Array.isArray(prev.estates) &&
+          JSON.stringify(prev.estates) === JSON.stringify(estList)
+        ) {
+          return prev;
+        }
+
+        return { ...prev, estates: estList };
+      });
+    }
+  }, [formValues.role, estates]);
 
   return (
     <Dialog
@@ -121,25 +155,25 @@ function FormDialog({
           <Grid size={6}>
             <TextBox
               label="First Name"
-              name="fname"
-              value={formValues.fname}
+              name="fName"
+              value={formValues.fName}
               onChange={handleChange}
               fullWidth
               required
-              disabled={!!initialValues.fname}
-              error={error.fname}
-              helperText={error.fname && "This field is required!"}
+              disabled={!!initialValues.fName}
+              error={error.fName}
+              helperText={error.fName && "This field is required!"}
             />
           </Grid>
 
           <Grid size={6}>
             <TextBox
               label="Last Name (optional)"
-              name="lname"
-              value={formValues.lname}
+              name="lName"
+              value={formValues.lName}
               onChange={handleChange}
               fullWidth
-              disabled={!!initialValues.lname}
+              disabled={!!initialValues.lName}
             />
           </Grid>
 
@@ -167,6 +201,7 @@ function FormDialog({
               onChange={handleChange}
               fullWidth
               required
+              disabled={user?.toLowerCase() !== "developer"}
               error={error.role}
               helperText={error.role && "Invalid!"}
             >
@@ -183,16 +218,17 @@ function FormDialog({
 
             <FormGroup>
               <Grid container>
-                {estates?.map((estate, idx) => (
-                  <Grid key={idx} size={{ xs: 6, md: 4 }}>
+                {estates?.map((estate) => (
+                  <Grid key={estate.estateId} size={{ xs: 6 }}>
                     <FormControlLabel
+                      disabled={formValues.role?.toLowerCase() === "developer"}
                       control={
                         <Checkbox
-                          checked={formValues.estates.includes(estate)}
-                          onChange={() => handleChecked(estate)}
+                          checked={formValues.estates.includes(estate.estateId)}
+                          onChange={() => handleChecked(estate.estateId)}
                         />
                       }
-                      label={estate}
+                      label={estate.estate}
                     />
                   </Grid>
                 ))}

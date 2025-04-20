@@ -8,6 +8,7 @@ import env from "./util/validateEnv";
 import testDBRouter from "./route/testDB";
 import usersRouter from "./route/users";
 import authRouter from "./route/auth";
+import estateRouter from "./route/estates";
 
 const app = express();
 const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
@@ -57,6 +58,9 @@ app.use("/auth", authRouter);
 
 // users Routes
 app.use("/users", usersRouter);
+
+// estates Route
+app.use("/estates", estateRouter);
 
 // 404 Handler
 app.use((req, res, next) => {

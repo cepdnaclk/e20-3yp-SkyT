@@ -4,7 +4,10 @@ import { RowDataPacket } from "mysql2";
 
 export const testDB: RequestHandler = async (req, res, next) => {
   try {
-    const testQuery = "SELECT * FROM USERS";
+    const testQuery = `SELECT e.estateId, e.estate 
+       FROM ESTATES e
+       INNER JOIN EMPLOYEES u ON e.estateId = u.estateId
+       WHERE employeeId = 1`;
     const [rows] = await pool.query<RowDataPacket[]>(testQuery);
     console.log(rows);
     res.status(200).json(rows);
