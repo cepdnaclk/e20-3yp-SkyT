@@ -21,7 +21,7 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       req.body.userInfo
     );
 
-    if (!userId || !fName || !email || !allowedRoles.includes(role)) {
+    if (isNaN(userId) || !fName || !email || !allowedRoles.includes(role)) {
       throw createHttpError(400, "Missing required fields");
     }
 

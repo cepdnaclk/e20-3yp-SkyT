@@ -65,7 +65,7 @@ describe("POST /auth", () => {
   it("Should return a success message", async () => {
     const res = await request(app).post("/auth").send({
       email: "john@example.com",
-      password: "PH6T2VGRNA",
+      password: "abcd123",
     });
 
     expect(res.status).toBe(200);
