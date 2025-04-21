@@ -9,6 +9,7 @@ import testDBRouter from "./route/testDB";
 import usersRouter from "./route/users";
 import authRouter from "./route/auth";
 import estateRouter from "./route/estates";
+import path from "path";
 
 const app = express();
 const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
@@ -52,6 +53,12 @@ app.get("/", (req, res) => {
 
 // DB Test Route
 app.use("/test", testDBRouter);
+
+// Image Route - Static Route
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "../images")) // Adjust based on `dist/` structure
+);
 
 // User Authentication Routes
 app.use("/auth", authRouter);

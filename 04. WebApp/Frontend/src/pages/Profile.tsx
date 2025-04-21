@@ -65,6 +65,8 @@ const errInit: errorProps = {
 
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+
 function Profile() {
   const { user } = useAuth();
   const [userInfo, setUserInfo] = useState<userInfoProps>(usr);
@@ -184,9 +186,13 @@ function Profile() {
     try {
       const servereResponse = await getData(url);
       if (servereResponse.status === 200) {
+        const result: userInfoProps = servereResponse.data.result;
         console.log(servereResponse.data.message);
-        setUserInfo(servereResponse.data.result);
-        setEmail(servereResponse.data.result.email);
+        setUserInfo(result);
+        setEmail(result.email);
+
+        const path = `${BASE_URL}/${result.profilePic}`;
+        setImagePreview(path);
       }
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;

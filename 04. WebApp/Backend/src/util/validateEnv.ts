@@ -3,6 +3,7 @@ import { port, str } from "envalid/dist/validators";
 
 export default cleanEnv(process.env, {
   PORT: port(),
+  IMAGE_DIR: str(),
   DB_HOST: str(),
   DB_PORT: port(),
   DB_USER: str(),

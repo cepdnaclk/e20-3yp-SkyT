@@ -5,6 +5,8 @@ import argon2 from "argon2";
 import AuthModel from "../../model/auth";
 import jwt from "jsonwebtoken";
 import env from "../../util/validateEnv";
+import fs from "fs";
+import path from "path";
 
 const allowedRoles = ["Owner", "Developer", "Assistant"];
 
@@ -12,8 +14,12 @@ export const updateUser: RequestHandler = async (req, res, next) => {
   try {
     console.log("Updating user: ", req.body);
 
+    // Destructuring fields
+    const { file } = req;
     const { curPwd, newPwd, emailCode } = req.body;
-    const { userId, email, role, fName, lName, profilePic } = req.body.userInfo;
+    const { userId, email, role, fName, lName, profilePic } = JSON.parse(
+      req.body.userInfo
+    );
 
     if (!userId || !fName || !email || !allowedRoles.includes(role)) {
       throw createHttpError(400, "Missing required fields");
@@ -21,22 +27,16 @@ export const updateUser: RequestHandler = async (req, res, next) => {
 
     console.log("Profile Picture: ", profilePic);
 
-    // Find old user
+    // Find user
     const user = await UserModel.findById(userId);
     console.log("User: ", user);
-    if (!user) {
-      throw next(createHttpError(404, "User not found"));
-    }
+    if (!user) throw next(createHttpError(404, "User not found"));
 
     // Password Verification
     let password = null;
     if (curPwd && newPwd) {
       const passwordMatch = await argon2.verify(user.password, curPwd);
-
-      if (!passwordMatch) {
-        throw next(createHttpError(401, "Invalid password"));
-      }
-
+      if (!passwordMatch) throw next(createHttpError(401, "Invalid password"));
       password = newPwd;
     }
 
@@ -62,6 +62,19 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       }
     }
 
+    // Handle image file upload
+    let imageUrl: string | null = user.profilePic || null;
+    if (file) {
+      const ext = path.extname(file.originalname);
+      const newFilename = `user_${userId}${ext}`;
+      const savePath = path.join(`${env.IMAGE_DIR}/users`, newFilename);
+
+      // Move file and overwrite existing
+      fs.renameSync(file.path, savePath);
+
+      imageUrl = `${env.IMAGE_DIR}/users/${newFilename}`;
+    }
+
     // Update user
     const result = await UserModel.update({
       userId,
@@ -70,7 +83,7 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       role,
       fName,
       lName,
-      profilePic: null,
+      profilePic: imageUrl || null,
     });
 
     res.status(200).json(result);
