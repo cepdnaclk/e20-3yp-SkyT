@@ -6,16 +6,22 @@ import {
   Alert,
   Stack,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AvatarButton from "../components/AvatarButton";
 import TextBox from "../components/TextBox";
 import FillButton from "../components/FillButton";
+import { useAuth } from "../context/AuthContext";
+import { getData, postData, updateData } from "../api/NodeBackend";
+import { ToastAlert } from "../components/ToastAlert";
+import { AxiosError } from "axios";
+import EmailDialog from "../components/EmailDialog";
 
 interface userInfoProps {
+  userId: number;
   role: string;
   email: string;
-  fname: string;
-  lname: string;
+  fName: string;
+  lName: string;
   profilePic: string;
 }
 
@@ -31,19 +37,24 @@ interface errorProps {
   pwd: boolean;
 }
 
-// Example user data - ideally should come from auth context or API
-const user: userInfoProps = {
-  role: "Admin",
-  email: "john@example.com",
-  fname: "John",
-  lname: "Doe",
-  profilePic: "/default-profile.png", // placeholder
-};
+interface ErrorResponse {
+  error: string;
+}
 
 const pwd: passwordProps = {
   currentPwd: null,
   newPwd: null,
   confirmPwd: null,
+};
+
+// Example user data - ideally should come from auth context or API
+const usr: userInfoProps = {
+  userId: 0,
+  role: "",
+  email: "",
+  fName: "",
+  lName: "",
+  profilePic: "",
 };
 
 const errInit: errorProps = {
@@ -55,43 +66,146 @@ const errInit: errorProps = {
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 function Profile() {
-  const [userInfo, setUserInfo] = useState<userInfoProps>(user);
+  const { user } = useAuth();
+  const [userInfo, setUserInfo] = useState<userInfoProps>(usr);
   const [password, setPassword] = useState<passwordProps>(pwd);
   const [error, setError] = useState<errorProps>(errInit);
   const [pwdError, setPwdError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | undefined>();
+  const [email, setEmail] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [code, setCode] = useState<string>("");
 
   const handleSubmit = () => {
     // Input Validation
     const err: errorProps = {
-      name: !userInfo.fname,
+      name: !userInfo.fName,
       email: !emailPattern.test(userInfo.email),
       pwd: password.newPwd !== password.confirmPwd,
     };
 
     setError(err);
-
     if (!err.email && !err.name && !err.pwd) {
-      updateInfo();
+      if (email !== userInfo.email) {
+        console.log("Validating Email");
+        validateEmail();
+      } else {
+        updateInfo();
+      }
+    }
+  };
+
+  const validateEmail = async () => {
+    const data = {
+      newEmail: userInfo.email,
+      userId: userInfo.userId,
+    };
+
+    try {
+      const servereResponse = await postData(data, "auth/email");
+      if (servereResponse.status === 200) {
+        console.log(servereResponse.data.message);
+        setOpen(true);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 401 || status === 404) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Profile Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+
+      setOpen(false);
     }
   };
 
   const updateInfo = async () => {
-    setLoading(true);
-    const data = {
-      userInfo,
-      curPwd: password.currentPwd,
-      newPwd: password.newPwd,
-    };
+    setBtnLoading(true);
 
     try {
-      console.log("update info: ", data);
+      const formData = new FormData();
+      formData.append("userInfo", JSON.stringify(userInfo));
+      formData.append("curPwd", password.currentPwd || "");
+      formData.append("newPwd", password.newPwd || "");
+      formData.append("emailCode", code);
+      if (imageFile) {
+        formData.append("imageFile", imageFile);
+      }
+
+      const servereResponse = await updateData(formData, "users");
+      if (servereResponse.status === 200) {
+        const msg = servereResponse.data.message;
+        console.log(msg);
+        ToastAlert({
+          type: "success",
+          title: msg,
+          onClose: getInfo,
+        });
+      }
       setPwdError(false);
     } catch (err) {
-      console.log("Update failed!", err);
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 404 || status === 400 || status === 401) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Profile Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
     } finally {
-      setLoading(false);
+      setBtnLoading(false);
+      setOpen(false);
+    }
+  };
+
+  const getInfo = async () => {
+    const url = "users/" + user?.userId;
+
+    setBtnLoading(true);
+
+    try {
+      const servereResponse = await getData(url);
+      if (servereResponse.status === 200) {
+        console.log(servereResponse.data.message);
+        setUserInfo(servereResponse.data.result);
+        setEmail(servereResponse.data.result.email);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 404 || status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Profile Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -115,6 +229,12 @@ function Profile() {
     }));
   };
 
+  useEffect(() => {
+    getInfo();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Grid container spacing={2} fontFamily={"Montserrat"} height={"100%"}>
       <Grid size={{ xs: 12, md: 6, lg: 4 }}>
@@ -131,7 +251,11 @@ function Profile() {
           alignItems={"center"}
           gap={1}
         >
-          <AvatarButton image={image} setImage={setImage} />
+          <AvatarButton
+            setImageFile={setImageFile}
+            imagePreview={imagePreview}
+            setImagePreview={setImagePreview}
+          />
 
           <Typography
             variant="h4"
@@ -140,7 +264,7 @@ function Profile() {
             fontWeight={700}
             mt={2}
           >
-            {userInfo.fname} {userInfo.lname}
+            {userInfo?.fName} {userInfo?.lName}
           </Typography>
 
           <Typography
@@ -168,9 +292,9 @@ function Profile() {
 
         <Grid size={{ xs: 12, lg: 6 }}>
           <TextBox
-            name="fname"
+            name="fName"
             label="First Name"
-            value={userInfo.fname}
+            value={userInfo?.fName}
             onChange={handleInfo}
             fullWidth
             required
@@ -181,9 +305,9 @@ function Profile() {
 
         <Grid size={{ xs: 12, lg: 6 }}>
           <TextBox
-            name="lname"
+            name="lName"
             label="Last Name"
-            value={userInfo.lname}
+            value={userInfo.lName}
             onChange={handleInfo}
             fullWidth
           />
@@ -263,12 +387,12 @@ function Profile() {
           <FillButton
             onClick={handleSubmit}
             variant="contained"
-            disabled={loading}
+            disabled={btnLoading}
             sx={{
               borderRadius: "5px",
             }}
           >
-            {loading ? (
+            {btnLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
               "Update Profile"
@@ -276,6 +400,15 @@ function Profile() {
           </FillButton>
         </Grid>
       </Grid>
+
+      <EmailDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        onSubmit={() => updateInfo()}
+        code={code}
+        setCode={setCode}
+        onResend={() => validateEmail()}
+      />
     </Grid>
   );
 }

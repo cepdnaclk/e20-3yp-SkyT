@@ -13,7 +13,7 @@ export interface NewUser {
   estates: number[];
 }
 
-export interface UpdateUser extends Omit<NewUser, "password"> {
+export interface UpdateUser extends Omit<NewUser, "estates"> {
   userId: number;
   profilePic: string | null;
 }
@@ -138,9 +138,9 @@ class UserModel {
   }
 
   // Update user details
-  /* static async update(user: UpdateUser) {
-    // Extract the userId from the passed 'user' object
-    const { userId, profilePic, estates, ...updates } = user;
+  static async update(user: UpdateUser) {
+    // Extract the props
+    const { userId, profilePic, password, ...updates } = user;
 
     const connection = await pool.getConnection();
 
@@ -158,18 +158,44 @@ class UserModel {
 
       // If a profilePic is provided, add it to the SET clause
       if (profilePic !== null) {
-        fields += `, profilePic = ?`; // Add profilePic to the SET clause
-        values.push(profilePic); // Add profilePic to the values
+        fields += `, profilePic = ?`;
+        values.push(profilePic);
+      }
+
+      // If password updated
+      if (password !== null) {
+        const hashedPassword = await argon2.hash(password);
+
+        fields += `, password = ?`;
+        values.push(hashedPassword);
       }
 
       // User Query
       const query = `UPDATE USERS SET ${fields} WHERE userId = ?`;
 
-      console.log("Query: ", query);
       // Execute the query
-      await pool.query<ResultSetHeader>(query, [...values, userId]);
+      const [rows] = await pool.query<ResultSetHeader>(query, [
+        ...values,
+        userId,
+      ]);
 
-       */
+      if (rows.affectedRows === 0) {
+        throw createHttpError(404, "User not found");
+      }
+
+      // Auth Query
+      const deleteTokenQuery = "DELETE FROM AUTH WHERE userId = ?";
+      await connection.query(deleteTokenQuery, [userId]);
+
+      await connection.commit();
+      return { message: "User updated successfully" };
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 export default UserModel;

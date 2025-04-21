@@ -11,7 +11,7 @@ export interface AuthContextProps {
   loading: boolean;
   superUsers: string[];
   setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading: (value: boolean) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({

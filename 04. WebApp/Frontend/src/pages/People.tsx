@@ -63,7 +63,7 @@ function People() {
   const [memberList, setMemberList] = useState<MemberProps[]>();
   const [estateList, setEstateList] = useState<EstateProps[]>();
   const [searchName, setSearchName] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [formOpen, setFormOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<MemberProps>(newMember);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -162,7 +162,7 @@ function People() {
   };
 
   const addMember = async (data: MemberProps) => {
-    setLoading(true);
+    setBtnLoading(true);
 
     try {
       const serverResponse = await postData(data, "users");
@@ -191,12 +191,14 @@ function People() {
         title: errMsg || "Something went wrong",
       });
     } finally {
-      setLoading(false);
+      setBtnLoading(false);
     }
   };
 
   const updateMember = async (id: number, estates: number[]) => {
     console.log("updating");
+
+    setBtnLoading(true);
 
     const data = { id, estates };
 
@@ -227,7 +229,7 @@ function People() {
         title: errMsg || "Something went wrong",
       });
     } finally {
-      setLoading(false);
+      setBtnLoading(false);
     }
   };
 
@@ -311,14 +313,14 @@ function People() {
           <FillButton
             onClick={handleAdd}
             variant="contained"
-            disabled={loading}
+            disabled={btnLoading}
             sx={{
               borderRadius: "5px",
               gap: 1,
             }}
             startIcon={<BsPersonFillAdd />}
           >
-            {loading ? (
+            {btnLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
               "Add new member"
