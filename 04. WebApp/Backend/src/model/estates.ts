@@ -1,5 +1,6 @@
+import createHttpError from "http-errors";
 import pool from "../database/sqldb";
-import { RowDataPacket } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 class EstateModel {
   // Get owned estates as a list
@@ -39,6 +40,46 @@ class EstateModel {
     //console.log("Employees under manager " + managerId + ": ", rows);
 
     return rows;
+  }
+
+  static async update({
+    userId,
+    estates,
+  }: {
+    userId: number;
+    estates: number[];
+  }) {
+    const connection = await pool.getConnection();
+
+    try {
+      // Start transaction
+      await connection.beginTransaction();
+
+      // Delete existing estate assignments
+      const [result] = await connection.query<ResultSetHeader>(
+        `DELETE FROM EMPLOYEES WHERE employeeId = ?`,
+        [userId]
+      );
+
+      if (result.affectedRows === 0) {
+        throw createHttpError(404, "Employee not found!");
+      }
+
+      // Re-insert updated estate assignments
+      const estValues = estates.map((estateId) => [userId, estateId]);
+      await connection.query<ResultSetHeader>(
+        `INSERT INTO EMPLOYEES (employeeId, estateId) VALUES ?`,
+        [estValues]
+      );
+
+      await connection.commit();
+      return { message: "Estates updated successfully" };
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   }
 }
 

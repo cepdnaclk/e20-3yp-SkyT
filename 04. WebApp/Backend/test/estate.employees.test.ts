@@ -12,7 +12,7 @@ describe("GET /estates/employees/:userId", () => {
 
 describe("GET /estates/employees/:userId", () => {
   it("Should return a success", async () => {
-    const res = await request(app).get("/estates/employees/1").send();
+    const res = await request(app).get("/estates/employees/2").send();
 
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Employees found successfully");

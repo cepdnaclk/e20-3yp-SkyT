@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  MenuItem,
   Grid,
   FormGroup,
   FormControlLabel,
@@ -36,7 +35,6 @@ interface UserFormDialogProps {
   initialValues: UserFormValues;
   estates?: EstateProps[];
   isEditMode?: boolean;
-  user?: string;
 }
 
 interface FormErrorsProps {
@@ -45,8 +43,6 @@ interface FormErrorsProps {
   role: boolean;
   estates: boolean;
 }
-
-const roleOptions = ["Owner", "Developer", "Assistant"];
 
 const errorFree: FormErrorsProps = {
   fName: false,
@@ -64,7 +60,6 @@ function FormDialog({
   initialValues,
   estates,
   isEditMode = false,
-  user,
 }: UserFormDialogProps) {
   const [formValues, setFormValues] = useState<UserFormValues>(initialValues);
   const [error, setError] = useState<FormErrorsProps>(errorFree);
@@ -99,11 +94,7 @@ function FormDialog({
     const err: FormErrorsProps = {
       fName: !formValues.fName,
       email: !emailPattern.test(formValues.email),
-      role:
-        !formValues.role ||
-        !roleOptions.includes(formValues.role) ||
-        (user?.toLowerCase() !== "developer" &&
-          formValues.role !== "Assistant"),
+      role: !formValues.role || formValues.role !== "Assistant",
       estates: formValues.estates.length === 0,
     };
 
@@ -114,29 +105,6 @@ function FormDialog({
       onSubmit(formValues);
     }
   };
-
-  useEffect(() => {
-    if (
-      formValues.role?.toLowerCase() === "developer" &&
-      estates &&
-      estates.length > 0
-    ) {
-      const estList = estates.map((est) => est.estateId);
-      console.log("Developer Access: ", estList);
-
-      setFormValues((prev) => {
-        // Avoid updating if values are already the same
-        if (
-          Array.isArray(prev.estates) &&
-          JSON.stringify(prev.estates) === JSON.stringify(estList)
-        ) {
-          return prev;
-        }
-
-        return { ...prev, estates: estList };
-      });
-    }
-  }, [formValues.role, estates]);
 
   return (
     <Dialog
@@ -194,23 +162,13 @@ function FormDialog({
 
           <Grid size={12}>
             <TextBox
-              select
               label="Role"
               name="role"
               value={formValues.role}
-              onChange={handleChange}
               fullWidth
               required
-              disabled={user?.toLowerCase() !== "developer"}
-              error={error.role}
-              helperText={error.role && "Invalid!"}
-            >
-              {roleOptions.map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
-            </TextBox>
+              disabled
+            />
           </Grid>
 
           <Grid size={12}>
@@ -221,7 +179,6 @@ function FormDialog({
                 {estates?.map((estate) => (
                   <Grid key={estate.estateId} size={{ xs: 6 }}>
                     <FormControlLabel
-                      disabled={formValues.role?.toLowerCase() === "developer"}
                       control={
                         <Checkbox
                           checked={formValues.estates.includes(estate.estateId)}

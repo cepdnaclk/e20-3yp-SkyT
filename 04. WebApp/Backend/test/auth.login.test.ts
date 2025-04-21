@@ -16,7 +16,7 @@ describe("POST /auth", () => {
 describe("POST /auth", () => {
   it("Should return a error (password is empty)", async () => {
     const res = await request(app).post("/auth").send({
-      email: "testuser1@example.com",
+      email: "john@example.com",
       password: "",
     });
 
@@ -52,7 +52,7 @@ describe("POST /auth", () => {
 describe("POST /auth", () => {
   it("Should return a error (invalid password)", async () => {
     const res = await request(app).post("/auth").send({
-      email: "testuser1@example.com",
+      email: "john@example.com",
       password: "QrO3d+831SQ",
     });
 
@@ -64,8 +64,8 @@ describe("POST /auth", () => {
 describe("POST /auth", () => {
   it("Should return a success message", async () => {
     const res = await request(app).post("/auth").send({
-      email: "testuser1@example.com",
-      password: "xr2LbH&T3j",
+      email: "john@example.com",
+      password: "PH6T2VGRNA",
     });
 
     expect(res.status).toBe(200);

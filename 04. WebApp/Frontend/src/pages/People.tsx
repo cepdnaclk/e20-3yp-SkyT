@@ -24,7 +24,7 @@ import AlertDialog from "../components/AlertDialog";
 import { ImBin } from "react-icons/im";
 import FormDialog from "../components/FormDialog";
 import { useAuth } from "../context/AuthContext";
-import { getData, postData } from "../api/NodeBackend";
+import { deleteData, getData, postData, updateData } from "../api/NodeBackend";
 import { ToastAlert } from "../components/ToastAlert";
 import { AxiosError } from "axios";
 
@@ -58,7 +58,7 @@ const newMember: MemberProps = {
 };
 
 function People() {
-  const { user } = useAuth();
+  const { user, superUsers } = useAuth();
 
   const [memberList, setMemberList] = useState<MemberProps[]>();
   const [estateList, setEstateList] = useState<EstateProps[]>();
@@ -94,51 +94,13 @@ function People() {
   const handleSubmit = (values: MemberProps) => {
     if (values.id > 1) {
       console.log("Update User: ", values);
-      updateMember();
+      updateMember(values.id, values.estates);
     } else {
       console.log("Add User: ", values);
       addMember(values);
     }
 
     setFormOpen(false);
-  };
-
-  const deleteMember = () => {
-    console.log("Delete confirmed: ", deleteUser);
-    setDialogOpen(false);
-  };
-
-  const updateMember = () => {
-    console.log("updating");
-  };
-
-  const getMembers = async () => {
-    const url = "estates/employees/" + user?.userId;
-
-    try {
-      const serverResponse = await getData(url);
-      if (serverResponse.status === 200) {
-        const { message, employees } = serverResponse.data;
-        console.log(message);
-        setMemberList(employees);
-      }
-    } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      const status = error.response?.status;
-
-      let errMsg;
-
-      if (status === 404 || status === 400) {
-        console.log(error.response?.data?.error);
-        errMsg = "Invalid user ID";
-      }
-
-      console.log("Employees Error:", errMsg);
-      ToastAlert({
-        type: "error",
-        title: errMsg || "Something went wrong",
-      });
-    }
   };
 
   const getEstateList = async () => {
@@ -163,6 +125,35 @@ function People() {
       }
 
       console.log("Peoples Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    }
+  };
+
+  const getMembers = async () => {
+    const url = "estates/employees/" + user?.userId;
+
+    try {
+      const serverResponse = await getData(url);
+      if (serverResponse.status === 200) {
+        const { message, employees } = serverResponse.data;
+        console.log(message);
+        setMemberList(employees);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 404 || status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = "Invalid user ID";
+      }
+
+      console.log("Employees Error:", errMsg);
       ToastAlert({
         type: "error",
         title: errMsg || "Something went wrong",
@@ -201,6 +192,76 @@ function People() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updateMember = async (id: number, estates: number[]) => {
+    console.log("updating");
+
+    const data = { id, estates };
+
+    try {
+      const serverResponse = await updateData(data, "estates");
+      if (serverResponse.status === 200) {
+        console.log(serverResponse.data.message);
+        ToastAlert({
+          type: "success",
+          title: "User updated successfully",
+          onClose: getMembers,
+        });
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Peoples Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteMember = async () => {
+    console.log("Delete confirmed: ", deleteUser);
+
+    try {
+      const serverResponse = await deleteData({ userId: deleteUser }, "users");
+      if (serverResponse.status === 200) {
+        console.log(serverResponse.data.message);
+        ToastAlert({
+          type: "success",
+          title: "User deleted successfully",
+          onClose: getMembers,
+        });
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Peoples Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    } finally {
+      setDialogOpen(false);
     }
   };
 
@@ -373,7 +434,7 @@ function People() {
                     </TableCell>
 
                     <TableCell>
-                      {member.id !== user?.userId && (
+                      {!superUsers.includes(member.role.toLowerCase()) && (
                         <Stack
                           direction={"row"}
                           justifyContent={"center"}
@@ -423,7 +484,6 @@ function People() {
         onClose={() => setFormOpen(false)}
         isEditMode={!!formData.id}
         onSubmit={handleSubmit}
-        user={user?.role}
       />
     </Grid>
   );

@@ -110,33 +110,66 @@ class UserModel {
     return rows;
   }
 
-  // Update user details
-  static async update(user: UpdateUser) {
-    // Extract the userId from the passed 'user' object
-    const { userId, profilePic, ...updates } = user;
+  // Delete an assistant
+  static async deleteAssistant(userId: number) {
+    const conn = await pool.getConnection();
 
-    // Dynamically build the SET clause based on the fields provided in 'updates'
-    let fields = Object.keys(updates)
-      .map((field) => `${field} = ?`)
-      .join(", ");
+    try {
+      await conn.beginTransaction();
 
-    // Values to be updated
-    const values = Object.values(updates);
+      // First, remove from EMPLOYEE table
+      const [result] = await conn.query<ResultSetHeader>(
+        "DELETE FROM USERS WHERE userId = ? AND role = 'Assistant'",
+        [userId]
+      );
 
-    // If a profilePic is provided, add it to the SET clause
-    if (profilePic !== null) {
-      fields += `, profilePic = ?`; // Add profilePic to the SET clause
-      values.push(profilePic); // Add profilePic to the values
+      if (result.affectedRows === 0) {
+        throw createHttpError(404, "User not found");
+      }
+
+      await conn.commit();
+      return { message: "User deleted successfully" };
+    } catch (error) {
+      await conn.rollback();
+      throw error;
+    } finally {
+      conn.release();
     }
-
-    // Execute the query
-    const [result] = await pool.query<ResultSetHeader>(
-      `UPDATE USERS SET ${fields} WHERE userId = ?`,
-      [...values, userId] // Add userId at the end to use in WHERE clause
-    );
-
-    return result; // Return the result of the update
   }
+
+  // Update user details
+  /* static async update(user: UpdateUser) {
+    // Extract the userId from the passed 'user' object
+    const { userId, profilePic, estates, ...updates } = user;
+
+    const connection = await pool.getConnection();
+
+    try {
+      // Start transaction
+      await connection.beginTransaction();
+
+      // Dynamically build the SET clause based on the fields provided in 'updates'
+      let fields = Object.keys(updates)
+        .map((field) => `${field} = ?`)
+        .join(", ");
+
+      // Values to be updated
+      const values = Object.values(updates);
+
+      // If a profilePic is provided, add it to the SET clause
+      if (profilePic !== null) {
+        fields += `, profilePic = ?`; // Add profilePic to the SET clause
+        values.push(profilePic); // Add profilePic to the values
+      }
+
+      // User Query
+      const query = `UPDATE USERS SET ${fields} WHERE userId = ?`;
+
+      console.log("Query: ", query);
+      // Execute the query
+      await pool.query<ResultSetHeader>(query, [...values, userId]);
+
+       */
 }
 
 export default UserModel;
