@@ -24,12 +24,12 @@ interface DashboardAreaProps {
 }
 
 interface estateProps {
-  id: string;
+  id: number;
   estate: string;
 }
 
 interface lotProps {
-  id: string;
+  id: number;
   lot: string;
 }
 
@@ -64,7 +64,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     try {
       const estates: estateProps[] = JSON.parse(estateList);
       const matchedEstate = estates.find(
-        (estate) => estate.id === allSections[2]
+        (estate) => String(estate.id) === allSections[2]
       );
 
       if (matchedEstate) {
@@ -82,7 +82,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   if (allSections.length > 4 && lotList) {
     try {
       const lots: lotProps[] = JSON.parse(lotList);
-      const matchedLot = lots.find((lot) => lot.id === allSections[4]);
+      const matchedLot = lots.find((lot) => String(lot.id) === allSections[4]);
 
       if (matchedLot) {
         // If an lot with matching ID is found
