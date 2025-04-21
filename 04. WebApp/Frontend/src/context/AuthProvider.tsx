@@ -10,7 +10,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const superUsers = ["owner", "developer"];
 
   useEffect(() => {
-    const validate = async (token: string) => {
+    const validate = async () => {
+      const token = sessionStorage.getItem("token");
+
+      if (!token) {
+        console.log("No token");
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
       console.log("Auth validating...");
       try {
         const serverResponse = await validateToken(token);
@@ -31,18 +40,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    const token = sessionStorage.getItem("token");
+    validate();
 
-    if (!token) {
-      console.log("No token");
-      setUser(null);
-      setLoading(false);
-      return;
-    } else {
-      validate(token);
-    }
-
-    const interval = setInterval(validate, 15 * 60 * 1000);
+    const interval = setInterval(validate, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
