@@ -4,10 +4,13 @@ import { deleteAssistant } from "../controllers/users/users.delete";
 import { getInfo } from "../controllers/users/users.getInfo";
 import { updateUser } from "../controllers/users/users.update";
 import { createUploadMiddleware } from "../middleware/uploadMiddleware";
+import { homeRequest } from "../controllers/users/users.homeRequest";
 
 const router = express.Router();
 
 const uploadProfilePic = createUploadMiddleware("users");
+
+router.get("/home/:userId", homeRequest);
 
 router.get("/:userId", getInfo);
 

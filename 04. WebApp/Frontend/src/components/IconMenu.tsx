@@ -5,13 +5,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import user from "../assets/avetar_asserts/user.png";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPower } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../utils/useLogout";
 
-export default function IconMenu() {
+export default function IconMenu({ img }: { img: string }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigator = useNavigate();
@@ -40,7 +39,7 @@ export default function IconMenu() {
             <Avatar
               sx={{ boxShadow: 3, cursor: "pointer", border: "3px solid gray" }}
               alt="Remy Sharp"
-              src={user}
+              src={img}
             />
           </IconButton>
         </Tooltip>
