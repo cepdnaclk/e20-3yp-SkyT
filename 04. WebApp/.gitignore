@@ -6,3 +6,9 @@
 
 # dist package
 **/dist
+
+# Dummy html pages
+**/dummy.html
+
+# Backend Images
+**/Images

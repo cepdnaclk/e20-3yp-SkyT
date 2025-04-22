@@ -1,9 +1,10 @@
 import { Box, Button, Divider } from "@mui/material";
 import logo from "../assets/login_asserts/Logotr.png";
 import { IoPower } from "react-icons/io5";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MenuItem from "./MenuItem";
 import { ReactElement } from "react";
+import useLogout from "../utils/useLogout";
 
 interface ItemProps {
   label: string;
@@ -13,6 +14,8 @@ interface ItemProps {
 
 function SideBar({ menu }: { menu: ItemProps[] }) {
   const navigator = useNavigate();
+  const logout = useLogout();
+
   return (
     <Box
       width={"250px"}
@@ -48,8 +51,7 @@ function SideBar({ menu }: { menu: ItemProps[] }) {
       <Box mt="auto">
         <Divider sx={{ my: 2, width: "200px" }} />
         <Button
-          component={NavLink}
-          to="/"
+          onClick={logout}
           fullWidth
           startIcon={<IoPower />}
           sx={{

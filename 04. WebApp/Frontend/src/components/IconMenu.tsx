@@ -5,15 +5,20 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import user from "../assets/avetar_asserts/user.png";
 import { FaUserCircle } from "react-icons/fa";
 import { IoPower } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import useLogout from "../utils/useLogout";
+import { useAuth } from "../context/AuthContext";
 
 export default function IconMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigator = useNavigate();
+  const logout = useLogout();
+
+  const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+  const { user } = useAuth();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -21,10 +26,6 @@ export default function IconMenu() {
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    console.log("Loging Out");
   };
 
   return (
@@ -42,7 +43,7 @@ export default function IconMenu() {
             <Avatar
               sx={{ boxShadow: 3, cursor: "pointer", border: "3px solid gray" }}
               alt="Remy Sharp"
-              src={user}
+              src={`${BASE_URL}/${user?.profilePic}`}
             />
           </IconButton>
         </Tooltip>
@@ -93,7 +94,7 @@ export default function IconMenu() {
         </MenuItem>
 
         <MenuItem
-          onClick={handleLogout}
+          onClick={logout}
           sx={{ fontFamily: "Montserrat", fontWeight: 500 }}
         >
           <IoPower style={{ marginRight: 8 }} /> Logout

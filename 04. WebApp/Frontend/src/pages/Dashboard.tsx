@@ -13,6 +13,10 @@ import IconMenu from "../components/IconMenu";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SearchBox from "../components/SearchBox";
 import Link from "@mui/material/Link";
+import { getData } from "../api/NodeBackend";
+import { useAuth } from "../context/AuthContext";
+import { AxiosError } from "axios";
+import { ToastAlert } from "../components/ToastAlert";
 
 interface DashboardAreaProps {
   search: string;
@@ -20,19 +24,22 @@ interface DashboardAreaProps {
 }
 
 interface estateProps {
-  id: string;
+  id: number;
   estate: string;
 }
 
 interface lotProps {
-  id: string;
+  id: number;
   lot: string;
 }
 
-const USER = "John";
+interface ErrorResponse {
+  error: string;
+}
 
 function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   const navigator = useNavigate();
+  const { user } = useAuth();
 
   // Get the path and split it
   const path = useLocation().pathname;
@@ -55,7 +62,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     try {
       const estates: estateProps[] = JSON.parse(estateList);
       const matchedEstate = estates.find(
-        (estate) => estate.id === allSections[2]
+        (estate) => String(estate.id) === allSections[2]
       );
 
       if (matchedEstate) {
@@ -73,7 +80,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   if (allSections.length > 4 && lotList) {
     try {
       const lots: lotProps[] = JSON.parse(lotList);
-      const matchedLot = lots.find((lot) => lot.id === allSections[4]);
+      const matchedLot = lots.find((lot) => String(lot.id) === allSections[4]);
 
       if (matchedLot) {
         // If an lot with matching ID is found
@@ -93,25 +100,50 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     breadcrumbs.push(word);
   }
 
-  const [user, setUser] = useState<string>();
+  const [name, setName] = useState<string>();
 
   const [msgCount, setMsgCount] = useState<number>();
 
-  const getInfo = async () => {
-    setMsgCount(10);
-    setUser(USER);
-  };
-
   useEffect(() => {
+    const getInfo = async () => {
+      const url = `users/home/${user?.userId}`;
+
+      try {
+        const serverResponse = await getData(url);
+        if (serverResponse.status === 200) {
+          const { message, fName, msgCount } = serverResponse.data;
+          console.log(message);
+          setMsgCount(msgCount);
+          setName(fName);
+        }
+      } catch (err) {
+        const error = err as AxiosError<ErrorResponse>;
+        const status = error.response?.status;
+
+        let errMsg;
+
+        if (status === 404 || status === 400) {
+          console.log(error.response?.data?.error);
+          errMsg = error.response?.data?.error;
+        }
+
+        console.log("Dashboard Error:", errMsg);
+        ToastAlert({
+          type: "error",
+          title: errMsg || "Something went wrong",
+        });
+      }
+    };
+
     getInfo();
-  }, []);
+  }, [user?.userId]);
 
   return (
     <Grid container spacing={3} fontFamily={"Montserrat"}>
       {/* Welcome Message */}
       <Grid size={{ xs: 12, sm: 6 }}>
         <Typography fontWeight={700} fontFamily={"inherit"} variant="h5" noWrap>
-          Welcome {user}
+          Welcome {name}
         </Typography>
 
         <Breadcrumbs aria-label="breadcrumb">

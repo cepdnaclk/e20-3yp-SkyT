@@ -3,6 +3,7 @@ import { useState } from "react";
 import logo from "../assets/login_asserts/Logotr.png";
 import FillButton from "../components/FillButton";
 import TextBox from "../components/TextBox";
+import { postData } from "../api/NodeBackend";
 
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -28,8 +29,14 @@ const ForgotPassword = () => {
 
     try {
       console.log("Send reset link to:", data);
-      setSubmitted(true);
-      setErr(false);
+      const serverResponse = await postData({ email: data }, "auth/create");
+
+      if (serverResponse.status === 201) {
+        console.log(serverResponse.data.message);
+        setSubmitted(true);
+        setEmail("");
+        setErr(false);
+      }
     } catch (error) {
       console.log("Err:", error);
       setSubmitted(false);

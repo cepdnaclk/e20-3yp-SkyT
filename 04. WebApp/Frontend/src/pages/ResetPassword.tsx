@@ -1,21 +1,28 @@
-// src/pages/ResetPassword.tsx
-
 import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/login_asserts/Logotr.png";
 import FillButton from "../components/FillButton";
 import TextBox from "../components/TextBox";
+import { postData } from "../api/NodeBackend";
+import { AxiosError } from "axios";
+
+interface ErrorResponse {
+  error: string;
+}
 
 export default function ResetPassword() {
+  const navigate = useNavigate();
+
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const { token } = useParams();
+
+  //console.log("Reset token: ", token);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,19 +44,35 @@ export default function ResetPassword() {
     }
 
     setError("");
-    resetPassword(newPassword);
+    resetPassword();
   };
 
-  const resetPassword = async (password: string) => {
+  const resetPassword = async () => {
     setLoading(true);
+    const data = { newPassword, token };
 
     try {
-      console.log("Resetting password with token:", token);
-      console.log("New password: ", password);
-      setSubmitted(true);
+      //console.log("Resetting password with token:", token);
+      //console.log("New password: ", password);
+      const serverResposnse = await postData(data, "auth/reset");
+      if (serverResposnse.status === 200) {
+        setSubmitted(true);
+        console.log(serverResposnse.data.message);
+        setError("");
+        setNewPassword("");
+        setConfirmPassword("");
+        navigate("/login");
+      }
     } catch (err) {
-      console.log("Error: ", err);
-      setError("Unable to reset password. Please try again later!");
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      if (status === 404 || status === 400) {
+        console.log(error.response?.data?.error);
+        setError(error.response?.data?.error);
+      } else {
+        setError("Unable to reset password. Please try again later!");
+      }
     } finally {
       setLoading(false);
     }

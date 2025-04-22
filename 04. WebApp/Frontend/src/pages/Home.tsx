@@ -5,6 +5,14 @@ import { IoNotifications, IoSpeedometer } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { Outlet } from "react-router-dom";
 import { MdPeopleAlt } from "react-icons/md";
+import { useAuth } from "../context/AuthContext";
+import { ReactElement } from "react";
+
+interface ItemProps {
+  label: string;
+  icon: ReactElement;
+  path: string;
+}
 
 const menuItems = [
   { label: "Dashboard", icon: <IoSpeedometer />, path: "/home" },
@@ -17,7 +25,9 @@ const menuItems = [
   { label: "Profile", icon: <FaUserCircle />, path: "/profile" },
 ];
 
-function DesktopView() {
+const protectedItems = ["people"];
+
+function DesktopView({ menu }: { menu: ItemProps[] }) {
   return (
     <Paper
       elevation={2}
@@ -29,7 +39,7 @@ function DesktopView() {
       }}
     >
       {/* Sidebar */}
-      <SideBar menu={menuItems} />
+      <SideBar menu={menu} />
 
       {/* Body */}
       <Box
@@ -43,7 +53,7 @@ function DesktopView() {
   );
 }
 
-function MobileView() {
+function MobileView({ menu }: { menu: ItemProps[] }) {
   return (
     <Box
       sx={{ display: { xs: "block", md: "none" } }}
@@ -51,7 +61,7 @@ function MobileView() {
       height={"100%"}
     >
       {/* App bar */}
-      <AppBar menu={menuItems} />
+      <AppBar menu={menu} />
 
       {/* Body */}
       <Box
@@ -67,6 +77,14 @@ function MobileView() {
 }
 
 function Home() {
+  const { user, superUsers } = useAuth();
+
+  const filterdItems = menuItems.filter(
+    (item) =>
+      superUsers.includes(user!.role.toLowerCase()) ||
+      !protectedItems.includes(item.label.toLowerCase())
+  );
+
   return (
     <Box
       height={"100%"}
@@ -76,10 +94,10 @@ function Home() {
       justifyContent={"center"}
     >
       {/* Desktop View */}
-      <DesktopView />
+      <DesktopView menu={filterdItems} />
 
       {/* Mobile View */}
-      <MobileView />
+      <MobileView menu={filterdItems} />
     </Box>
   );
 }

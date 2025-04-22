@@ -1,23 +1,73 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { isHttpError } from "http-errors";
-//import path from "path";
+import cors from "cors";
+import env from "./util/validateEnv";
 
 // Import routes
-//import imageRoute from "./route/image";
+import testDBRouter from "./route/testDB";
+import usersRouter from "./route/users";
+import authRouter from "./route/auth";
+import estateRouter from "./route/estates";
+import path from "path";
 
 const app = express();
+const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
 
+/* Middlewares for data validation */
+
+// Middleware to parse incoming JSON data
+app.use(express.json());
+
+// Middleware to handle URL-encoded data
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+// Only allow your trusted frontend origin and methods
+app.use(
+  cors({
+    origin: [env.FRONTEND_URL], // or "" during dev
+    methods: allowedMethods,
+  })
+);
+
+// Block all other HTTP methods
+app.use((req, res, next) => {
+  if (!allowedMethods.includes(req.method)) {
+    console.log("Method Not Allowed");
+    return next(createHttpError(405, "Method Not Allowed"));
+  }
+  next();
+});
+
+/* Routing */
+
+// Base Route
 app.get("/", (req, res) => {
   console.log("Hello to the user");
   res.send("Hello, World!");
 });
 
-// Static serve images from downloads/ folder
-//app.use("/images", express.static(path.join(__dirname, "downloads")));
+// DB Test Route
+app.use("/test", testDBRouter);
 
-// Routes
-//app.use("/api/images", imageRoute);
+// Image Route - Static Route
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "../images")) // Adjust based on `dist/` structure
+);
+
+// User Authentication Routes
+app.use("/auth", authRouter);
+
+// users Routes
+app.use("/users", usersRouter);
+
+// estates Route
+app.use("/estates", estateRouter);
 
 // 404 Handler
 app.use((req, res, next) => {

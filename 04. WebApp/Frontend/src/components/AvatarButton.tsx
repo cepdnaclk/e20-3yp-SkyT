@@ -4,8 +4,9 @@ import { styled } from "@mui/system";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
 interface AvatarButtonProps {
-  image: string;
-  setImage: (imageUrl: string) => void;
+  imagePreview: string | undefined;
+  setImagePreview: (preview: string) => void;
+  setImageFile: (imgFile: File) => void;
 }
 
 const ProfileImageContainer = styled(Box)({
@@ -25,19 +26,24 @@ const OverlayButton = styled(Box)({
   alignItems: "center",
 });
 
-function AvatarButton({ image, setImage }: AvatarButtonProps) {
+function AvatarButton({
+  setImageFile,
+  imagePreview,
+  setImagePreview,
+}: AvatarButtonProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageURL = URL.createObjectURL(file);
-      setImage(imageURL);
+      setImagePreview(imageURL);
+      setImageFile(file);
       console.log("Image: ", imageURL);
     }
   };
 
   return (
     <ProfileImageContainer>
-      <Avatar src={image} sx={{ width: 170, height: 170 }} />
+      <Avatar src={imagePreview} sx={{ width: 170, height: 170 }} />
 
       <label htmlFor="icon-button-file">
         <OverlayButton>

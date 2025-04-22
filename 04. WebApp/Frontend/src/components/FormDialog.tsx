@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  MenuItem,
   Grid,
   FormGroup,
   FormControlLabel,
@@ -14,13 +13,18 @@ import {
 } from "@mui/material";
 import TextBox from "./TextBox";
 
+interface EstateProps {
+  estateId: number;
+  estate: string;
+}
+
 interface UserFormValues {
-  id: string;
-  fname: string;
-  lname: string;
+  id: number;
+  fName: string;
+  lName: string;
   email: string;
   role: string;
-  estates: string[];
+  estates: number[];
   img: string | null;
 }
 
@@ -29,21 +33,19 @@ interface UserFormDialogProps {
   onClose: () => void;
   onSubmit: (values: UserFormValues) => void;
   initialValues: UserFormValues;
-  estates?: string[];
+  estates?: EstateProps[];
   isEditMode?: boolean;
 }
 
 interface FormErrorsProps {
-  fname: boolean;
+  fName: boolean;
   email: boolean;
   role: boolean;
   estates: boolean;
 }
 
-const roleOptions = ["Owner", "Admin", "Maintain"];
-
 const errorFree: FormErrorsProps = {
-  fname: false,
+  fName: false,
   email: false,
   role: false,
   estates: false,
@@ -75,11 +77,11 @@ function FormDialog({
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleChecked = (estate: string) => {
-    const selected = formValues.estates.includes(estate);
+  const handleChecked = (estateId: number) => {
+    const selected = formValues.estates.includes(estateId);
     const updatedEstates = selected
-      ? formValues.estates.filter((e) => e !== estate)
-      : [...formValues.estates, estate];
+      ? formValues.estates.filter((e) => e !== estateId)
+      : [...formValues.estates, estateId];
 
     console.log("Updated Estates: ", updatedEstates);
 
@@ -90,15 +92,15 @@ function FormDialog({
     console.log("Verifying Details");
 
     const err: FormErrorsProps = {
-      fname: !formValues.fname,
+      fName: !formValues.fName,
       email: !emailPattern.test(formValues.email),
-      role: !formValues.role || !roleOptions.includes(formValues.role),
+      role: !formValues.role || formValues.role !== "Assistant",
       estates: formValues.estates.length === 0,
     };
 
     setError(err);
 
-    if (!err.email && !err.estates && !err.fname && !err.role) {
+    if (!err.email && !err.estates && !err.fName && !err.role) {
       console.log("Form submitted", formValues);
       onSubmit(formValues);
     }
@@ -121,25 +123,25 @@ function FormDialog({
           <Grid size={6}>
             <TextBox
               label="First Name"
-              name="fname"
-              value={formValues.fname}
+              name="fName"
+              value={formValues.fName}
               onChange={handleChange}
               fullWidth
               required
-              disabled={!!initialValues.fname}
-              error={error.fname}
-              helperText={error.fname && "This field is required!"}
+              disabled={!!initialValues.fName}
+              error={error.fName}
+              helperText={error.fName && "This field is required!"}
             />
           </Grid>
 
           <Grid size={6}>
             <TextBox
               label="Last Name (optional)"
-              name="lname"
-              value={formValues.lname}
+              name="lName"
+              value={formValues.lName}
               onChange={handleChange}
               fullWidth
-              disabled={!!initialValues.lname}
+              disabled={!!initialValues.lName}
             />
           </Grid>
 
@@ -160,22 +162,13 @@ function FormDialog({
 
           <Grid size={12}>
             <TextBox
-              select
               label="Role"
               name="role"
               value={formValues.role}
-              onChange={handleChange}
               fullWidth
               required
-              error={error.role}
-              helperText={error.role && "Invalid!"}
-            >
-              {roleOptions.map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
-            </TextBox>
+              disabled
+            />
           </Grid>
 
           <Grid size={12}>
@@ -183,16 +176,16 @@ function FormDialog({
 
             <FormGroup>
               <Grid container>
-                {estates?.map((estate, idx) => (
-                  <Grid key={idx} size={{ xs: 6, md: 4 }}>
+                {estates?.map((estate) => (
+                  <Grid key={estate.estateId} size={{ xs: 6 }}>
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formValues.estates.includes(estate)}
-                          onChange={() => handleChecked(estate)}
+                          checked={formValues.estates.includes(estate.estateId)}
+                          onChange={() => handleChecked(estate.estateId)}
                         />
                       }
-                      label={estate}
+                      label={estate.estate}
                     />
                   </Grid>
                 ))}

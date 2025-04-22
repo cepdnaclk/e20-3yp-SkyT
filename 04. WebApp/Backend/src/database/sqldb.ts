@@ -3,6 +3,7 @@ import env from "../util/validateEnv";
 
 const access: PoolOptions = {
   host: env.DB_HOST,
+  port: env.DB_PORT,
   database: env.DB_NAME,
   user: env.DB_USER,
   password: env.DB_PASSWORD,
