@@ -3,14 +3,29 @@ import pool from "../database/sqldb";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 class EstateModel {
-  // Get owned estates as a list
-  static async getEstateList(userId: number) {
+  // Get owned estates as a summary list
+  static async getEstateSummay(userId: number) {
     const [rows] = await pool.query<RowDataPacket[]>(
       `SELECT e.estateId, e.estate 
        FROM ESTATES e 
        INNER JOIN EMPLOYEES u ON e.estateId = u.estateId
        WHERE employeeId = ?`,
       [userId]
+    );
+
+    //console.log("Owned Estates: ", rows);
+
+    return rows;
+  }
+
+  // Get owned estates as a detailed list
+  static async getEstates(employeeId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      `SELECT e.estateId, e.estate, e.address, e.image
+       FROM ESTATES e 
+       INNER JOIN EMPLOYEES u ON e.estateId = u.estateId
+       WHERE employeeId = ?`,
+      [employeeId]
     );
 
     //console.log("Owned Estates: ", rows);

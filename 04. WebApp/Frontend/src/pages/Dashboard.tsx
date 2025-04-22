@@ -127,7 +127,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
           errMsg = error.response?.data?.error;
         }
 
-        console.log("Profile Error:", errMsg);
+        console.log("Dashboard Error:", errMsg);
         ToastAlert({
           type: "error",
           title: errMsg || "Something went wrong",

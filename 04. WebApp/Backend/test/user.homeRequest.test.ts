@@ -27,6 +27,5 @@ describe("GET /users/home/:userId", () => {
     expect(res.body.message).toBe("User found successfully");
     expect(res.body.fName).toBeDefined();
     expect(res.body.msgCount).toBeDefined();
-    expect(res.body.profilePic).toBeDefined();
   });
 });

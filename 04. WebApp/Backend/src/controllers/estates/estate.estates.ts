@@ -2,24 +2,24 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import EstateModel from "../../model/estates";
 
-export const estateList: RequestHandler = async (req, res, next) => {
+export const estates: RequestHandler = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userId);
-    console.log("Manager: ", userId);
+    console.log("Employee: ", userId);
 
     if (isNaN(userId)) {
       throw createHttpError(400, "Invalid user ID");
     }
 
-    const estates = await EstateModel.getEstateSummay(userId);
+    const estList = await EstateModel.getEstates(userId);
 
-    if (estates.length === 0) {
+    if (estList.length === 0) {
       throw createHttpError(404, "Estates not found");
     }
 
-    console.log("Estates: ", estates);
+    console.log("Estates: ", estList);
 
-    res.status(200).json({ message: "Estates found successfully", estates });
+    res.status(200).json({ message: "Estates found successfully", estList });
   } catch (error) {
     next(error);
   }
