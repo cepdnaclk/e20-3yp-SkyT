@@ -14,4 +14,6 @@ export default cleanEnv(process.env, {
   EMAIL_USER: str(),
   EMAIL_PASS: str(),
   JWT_SECRET: str(),
+  ACCUWEATHER_API_KEY: str(),
+  ACCUWEATHER_BASE_URL: str(),
 });

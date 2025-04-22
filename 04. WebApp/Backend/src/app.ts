@@ -3,13 +3,14 @@ import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { isHttpError } from "http-errors";
 import cors from "cors";
 import env from "./util/validateEnv";
+import path from "path";
 
 // Import routes
 import testDBRouter from "./route/testDB";
 import usersRouter from "./route/users";
 import authRouter from "./route/auth";
 import estateRouter from "./route/estates";
-import path from "path";
+import lotRouter from "./route/lots";
 
 const app = express();
 const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
@@ -55,10 +56,7 @@ app.get("/", (req, res) => {
 app.use("/test", testDBRouter);
 
 // Image Route - Static Route
-app.use(
-  "/images",
-  express.static(path.join(__dirname, "../images")) // Adjust based on `dist/` structure
-);
+app.use("/images", express.static(path.join(__dirname, "../images")));
 
 // User Authentication Routes
 app.use("/auth", authRouter);
@@ -68,6 +66,9 @@ app.use("/users", usersRouter);
 
 // estates Route
 app.use("/estates", estateRouter);
+
+// lots Route
+app.use("/lots", lotRouter);
 
 // 404 Handler
 app.use((req, res, next) => {

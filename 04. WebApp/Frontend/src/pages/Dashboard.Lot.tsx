@@ -8,13 +8,14 @@ import PHGraph from "../components/PHGraph";
 import NPKGraph from "../components/NPKGraph";
 import { DatasetElementType } from "@mui/x-charts/internals";
 import GallaryCard from "../components/GallaryCard";
-import img from "../assets/dashboard_asserts/Estate.jpg";
 import MapCard from "../components/MapCard";
 import TaskSummaryCard from "../components/TaskSummaryCard";
+import { useAuth } from "../context/AuthContext";
+import { getData } from "../api/NodeBackend";
+import { AxiosError } from "axios";
+import { ToastAlert } from "../components/ToastAlert";
 
 interface WeatherCardProps {
-  temparature?: string | number;
-  humidity?: string | number;
   wind?: string | number;
   rain?: string | number;
   sunset?: string;
@@ -31,6 +32,11 @@ interface DataProps {
   Nitrogen: number;
   Phosphorus: number;
   Potassium: number;
+}
+
+interface ImageProps {
+  url: string | null;
+  uploadedAt: string | null;
 }
 
 interface NPKGraphProps {
@@ -51,32 +57,24 @@ interface CenterProps {
 }
 
 interface SummaryCardProps {
-  id?: string;
+  id?: number;
   due?: string;
   task?: string;
   tag?: string;
 }
 
-const WEATHER: WeatherCardProps = {
-  temparature: 27,
-  humidity: 30,
-  wind: 10,
-  rain: 50,
-  sunrise: "10:00",
-  sunset: "10:00",
-};
+interface ErrorResponse {
+  error: string;
+}
 
-const DATA: DataProps = {
-  Temperature: 30,
-  Humidity: 20,
-  lowPH: 20,
-  highPH: 10,
-  optimalPH: 70,
-  PH: 8.5,
-  Nitrogen: 50,
-  Phosphorus: 70,
-  Potassium: 40,
-};
+interface serverResponse {
+  message: string;
+  weather: WeatherCardProps;
+  latest: DataProps;
+  center: CenterProps;
+  latestImage: ImageProps;
+  taskList: SummaryCardProps[];
+}
 
 const PH_Data_Set: PHProps[] = [
   { date: "2025-04-14", ph: 6.0 },
@@ -98,26 +96,10 @@ const NPK_DATA_Set: NPKGraphProps[] = [
   { date: "2025-04-21", n: 308, p: 14, k: 158 },
 ];
 
-const PeraCom: [number, number] = [7.254670434402384, 80.5912347236105];
-
-const TASKS: SummaryCardProps[] = [
-  {
-    id: "task-001",
-    due: "Apr 15",
-    task: "Check irrigation",
-    tag: "Irrigation",
-  },
-  {
-    id: "task-002",
-    due: "Apr 22",
-    task: "Soil pH sampling",
-    tag: "Soil",
-  },
-];
-
 function Lot() {
   const path = useLocation().pathname;
   const lotId = path.split("/")[5];
+  const { user } = useAuth();
 
   const [weatherData, setWetherData] = useState<WeatherCardProps>();
   const [latestData, setLatestData] = useState<DataProps>();
@@ -129,25 +111,61 @@ function Lot() {
     useState<DatasetElementType<Date | number>[]>();
   const [center, setCenter] = useState<CenterProps>();
   const [tasks, setTasks] = useState<SummaryCardProps[]>();
+  const [image, setImage] = useState<ImageProps | null>();
 
   useEffect(() => {
     const update = async () => {
-      console.log("Updating Data", lotId);
-      setLatestData(DATA);
-      setWetherData(WEATHER);
-      setPhLoaded(true);
-      setPhDataSet(generateDataSet(PH_Data_Set));
-      setNpkLoaded(true);
-      setNpkDataSet(generateDataSet(NPK_DATA_Set));
-      setCenter({
-        name: "PeraCom",
-        location: PeraCom,
-      });
-      setTasks(TASKS);
+      console.log("Updating Data", { lotId, userId: user?.userId });
+      setPhLoaded(false);
+      setNpkLoaded(false);
+
+      const url = `lots/${lotId}/user/${user?.userId}`;
+
+      try {
+        const serverResponse = await getData(url);
+
+        if (serverResponse.status === 200) {
+          const {
+            message,
+            weather,
+            latest,
+            center,
+            latestImage,
+            taskList,
+          }: serverResponse = serverResponse.data;
+          console.log(message);
+          setWetherData(weather);
+          setLatestData(latest);
+          setCenter(center);
+          setImage(latestImage);
+          setTasks(taskList);
+        }
+      } catch (err) {
+        const error = err as AxiosError<ErrorResponse>;
+        const status = error.response?.status;
+
+        let errMsg;
+
+        if (status === 401 || status === 400) {
+          console.log(error.response?.data?.error);
+          errMsg = error.response?.data?.error;
+        }
+
+        console.log("Dashboard Error:", errMsg);
+        ToastAlert({
+          type: "error",
+          title: errMsg || "Something went wrong",
+        });
+      } finally {
+        setPhLoaded(true);
+        setNpkLoaded(true);
+      }
     };
 
     update();
-  }, [lotId]);
+    setPhDataSet(generateDataSet(PH_Data_Set));
+    setNpkDataSet(generateDataSet(NPK_DATA_Set));
+  }, [lotId, user?.userId]);
 
   const generateDataSet = (data: PHProps[] | NPKGraphProps[]) =>
     data.map((item) => {
@@ -207,7 +225,11 @@ function Lot() {
         display={"flex"}
         justifyContent={"center"}
       >
-        <GallaryCard lastUpdate="2025-04-14 at 04:20AM" img={img} path={path} />
+        <GallaryCard
+          lastUpdate={image?.uploadedAt}
+          img={image?.url}
+          path={path}
+        />
       </Grid>
 
       {/* Map */}

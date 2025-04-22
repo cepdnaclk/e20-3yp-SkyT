@@ -125,7 +125,7 @@ export default function WeatherCard({
           <FiWind style={{ color: "gray", fontSize: "2rem" }} />
           {wind ? (
             <Typography fontWeight="bold" variant="body1">
-              {wind}m/s
+              {wind}km/h
             </Typography>
           ) : (
             <Skeleton width={"100%"} height={30} />

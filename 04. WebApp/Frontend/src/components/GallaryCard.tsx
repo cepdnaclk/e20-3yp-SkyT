@@ -9,9 +9,9 @@ import {
 import LandscapeRoundedIcon from "@mui/icons-material/LandscapeRounded";
 
 interface GallaryCardProps {
-  lastUpdate?: string;
-  img?: string;
-  path?: string;
+  lastUpdate?: string | null;
+  img?: string | null;
+  path: string;
 }
 
 export default function GallaryCard({
@@ -19,6 +19,7 @@ export default function GallaryCard({
   img,
   path,
 }: GallaryCardProps) {
+  const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
   return (
     <Card
       elevation={3}
@@ -41,14 +42,16 @@ export default function GallaryCard({
           Gallary
         </Typography>
 
-        <Typography
-          color="text.secondary"
-          variant="caption"
-          fontFamily={"inherit"}
-          fontWeight={600}
-        >
-          Last Update On: <br /> {lastUpdate}
-        </Typography>
+        {lastUpdate && (
+          <Typography
+            color="text.secondary"
+            variant="caption"
+            fontFamily={"inherit"}
+            fontWeight={600}
+          >
+            Last Update On: <br /> {lastUpdate}
+          </Typography>
+        )}
 
         <Tooltip title={"View More"}>
           <IconButton
@@ -67,13 +70,26 @@ export default function GallaryCard({
       </Box>
 
       <CardActionArea href={path + "/gallary"}>
-        <Box
-          component={"img"}
-          src={img}
-          alt="image"
-          width={"100%"}
-          height={"155px"}
-        />
+        {img ? (
+          <Box
+            component={"img"}
+            src={`${BASE_URL}/${img}`}
+            alt="image"
+            width={"100%"}
+            height={"155px"}
+          />
+        ) : (
+          <Box
+            width={"100%"}
+            height={"155px"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            fontWeight={500}
+          >
+            No Data ...
+          </Box>
+        )}
       </CardActionArea>
     </Card>
   );
