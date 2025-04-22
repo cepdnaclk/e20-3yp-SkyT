@@ -3,8 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 interface LotSummaryProps {
-  id: string;
-  lotId: string;
+  lotId: number;
+  lot: string;
   lastUpdate: string;
   location: [number, number];
   temperature: number;
@@ -34,8 +34,8 @@ interface MapInterfaceProps {
     name: string;
     location: [number, number];
   };
-  searching?: string[];
-  handleNavigate?: (lotId: string) => void;
+  searching?: number[];
+  handleNavigate?: (lotId: number) => void;
 }
 
 // Custom Marker Icons
@@ -103,12 +103,12 @@ export default function LeafletMap({
       {/* Lots Markers */}
       {lots?.map((lot) => (
         <Marker
-          key={lot.id}
+          key={lot.lotId}
           position={lot.location}
-          icon={searching?.includes(lot.id) ? redIcon : greenIcon}
+          icon={searching?.includes(lot.lotId) ? redIcon : greenIcon}
         >
           <Popup>
-            <strong>{lot.lotId}</strong>
+            <strong>{lot.lot}</strong>
             <br />
             Temp: {lot.temperature}°C
             <br />
@@ -119,7 +119,9 @@ export default function LeafletMap({
             N: {lot.n}, P: {lot.p}, K: {lot.k}
             <br />
             {handleNavigate && (
-              <button onClick={() => handleNavigate(lot.id)}>View Lot</button>
+              <button onClick={() => handleNavigate(lot.lotId)}>
+                View Lot
+              </button>
             )}
           </Popup>
         </Marker>

@@ -57,6 +57,27 @@ class EstateModel {
     return rows;
   }
 
+  // Get office location of the estate
+  static async getOfficeById(estateId: number, userId: number) {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      `SELECT e.estate AS name, e.lat, e.lng
+       FROM ESTATES e
+       JOIN EMPLOYEES u ON e.estateId = u.estateId
+       WHERE u.estateId = ? AND u.employeeId = ?`,
+      [estateId, userId]
+    );
+
+    // If no matching rows, return null or empty array
+    if (rows.length === 0) return null;
+
+    // Return location object if found
+    return {
+      name: rows[0].name,
+      location: [rows[0].lat, rows[0].lng],
+    };
+  }
+
+  // Update employees
   static async update({
     userId,
     estates,

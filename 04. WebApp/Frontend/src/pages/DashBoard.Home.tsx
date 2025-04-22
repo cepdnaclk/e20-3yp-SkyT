@@ -15,7 +15,7 @@ import { ToastAlert } from "../components/ToastAlert";
 import defaultImage from "../assets/dashboard_asserts/Estate.jpg";
 
 interface estateProps {
-  id: number;
+  estateId: number;
   estate: string;
   address: string;
   image: string;
@@ -48,7 +48,7 @@ function EstateCard({ estate }: estateCardProps) {
     >
       <Card
         component={NavLink}
-        to={`/home/estate/${estate.id}`}
+        to={`/home/estate/${estate.estateId}`}
         elevation={3}
         sx={{
           width: 345,
@@ -107,7 +107,7 @@ function Dashboard({ search }: { search: string }) {
 
           const savedList: savedProps[] = [];
           estList.map((estate) => {
-            const item = { id: estate.id, estate: estate.estate };
+            const item = { id: estate.estateId, estate: estate.estate };
             savedList.push(item);
           });
           sessionStorage.setItem("estates", JSON.stringify(savedList));
@@ -141,7 +141,7 @@ function Dashboard({ search }: { search: string }) {
   );
 
   return filteredEstates?.map((estate) => (
-    <EstateCard key={estate.id} estate={estate} />
+    <EstateCard key={estate.estateId} estate={estate} />
   ));
 }
 
