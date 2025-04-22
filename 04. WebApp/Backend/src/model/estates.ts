@@ -73,7 +73,7 @@ class EstateModel {
     // Return location object if found
     return {
       name: rows[0].name,
-      location: [rows[0].lat, rows[0].lng],
+      location: [parseFloat(rows[0].lat), parseFloat(rows[0].lng)],
     };
   }
 

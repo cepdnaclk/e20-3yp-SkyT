@@ -22,7 +22,7 @@ interface LotSummaryProps {
   lastUpdate: string;
   location: [number, number];
   temperature: number;
-  humididty: number;
+  humidity: number;
   ph: number;
   n: number;
   p: number;
@@ -64,7 +64,7 @@ function Estate({ search }: EstateProps) {
         if (serverResponse.status === 200) {
           const { message, summary, office }: serverResponse =
             serverResponse.data;
-          console.log(message);
+          console.log({ message, office });
           setOffice(office);
           setEstateInfo(summary);
 
