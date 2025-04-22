@@ -20,21 +20,18 @@ export const homeRequest: RequestHandler = async (req, res, next) => {
       throw createHttpError(404, "User not found");
     }
 
-    const { fName, profilePic } = result;
+    const { fName } = result;
 
     // Get Message count (future)
     const msgCount = 10;
 
-    console.log({ userId, fName, profilePic, msgCount });
+    console.log({ userId, fName, msgCount });
 
-    res
-      .status(200)
-      .json({
-        message: "User found successfully",
-        msgCount,
-        fName,
-        profilePic,
-      });
+    res.status(200).json({
+      message: "User found successfully",
+      msgCount,
+      fName,
+    });
   } catch (error) {
     next(error);
   }

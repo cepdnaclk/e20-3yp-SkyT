@@ -10,7 +10,7 @@ export interface AuthRequest extends Request {
 interface decordedProps {
   userId: string;
   role: string;
-  email: string;
+  profilePic: string | null;
   exp: number;
   iat: number;
 }

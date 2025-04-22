@@ -29,7 +29,7 @@ export const login: RequestHandler = async (req, res, next) => {
     // 3. Generate JWT token
     const payload = {
       userId: user.userId,
-      email: user.email,
+      profilePic: user.profilePic,
       role: user.role,
     };
 

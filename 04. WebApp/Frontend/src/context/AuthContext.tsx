@@ -2,8 +2,8 @@ import { createContext, useContext } from "react";
 
 export interface UserProps {
   userId: number;
-  email: string;
   role: string;
+  profilePic: string | null;
 }
 
 export interface AuthContextProps {

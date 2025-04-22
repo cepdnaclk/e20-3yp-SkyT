@@ -38,8 +38,6 @@ interface ErrorResponse {
 }
 
 function DashboardArea({ search, setSearch }: DashboardAreaProps) {
-  const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
-
   const navigator = useNavigate();
   const { user } = useAuth();
 
@@ -106,8 +104,6 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
 
   const [msgCount, setMsgCount] = useState<number>();
 
-  const [profilePic, setProfilePic] = useState<string | null>();
-
   useEffect(() => {
     const getInfo = async () => {
       const url = `users/home/${user?.userId}`;
@@ -115,11 +111,10 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
       try {
         const serverResponse = await getData(url);
         if (serverResponse.status === 200) {
-          const { message, profilePic, fName, msgCount } = serverResponse.data;
+          const { message, fName, msgCount } = serverResponse.data;
           console.log(message);
           setMsgCount(msgCount);
           setName(fName);
-          setProfilePic(profilePic);
         }
       } catch (err) {
         const error = err as AxiosError<ErrorResponse>;
@@ -200,7 +195,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
               </IconButton>
             </Tooltip>
 
-            <IconMenu img={`${BASE_URL}/${profilePic}`} />
+            <IconMenu />
           </Stack>
         </Stack>
       </Grid>

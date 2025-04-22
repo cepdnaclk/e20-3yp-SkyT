@@ -8,7 +8,7 @@ export const verifyToken = (req: AuthRequest, res: Response) => {
     message: "Token is valid",
     user: {
       userId: user?.userId,
-      email: user?.email,
+      profilePic: user?.profilePic,
       role: user?.role,
     },
   });
