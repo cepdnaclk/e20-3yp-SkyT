@@ -79,7 +79,7 @@ export function Lot() {
     const update = async () => {
       console.log("Updating Data", { lotId, userId: user?.userId });
 
-      const url = `lots/${lotId}/user/${user?.userId}`;
+      const url = `lots/summary/${lotId}/${user?.userId}`;
 
       try {
         const serverResponse = await getData(url);
@@ -87,14 +87,12 @@ export function Lot() {
         if (serverResponse.status === 200) {
           const {
             message,
-            weather,
             latest,
             center,
             latestImage,
             taskList,
           }: serverResponse = serverResponse.data;
           console.log(message);
-          setWetherData(weather);
           setLatestData(latest);
           setCenter(center);
           setImage(latestImage);
@@ -119,7 +117,40 @@ export function Lot() {
       }
     };
 
+    const getWeather = async () => {
+      console.log("Updating Weather Data", { lotId, userId: user?.userId });
+
+      const url = `lots/weather/${lotId}/${user?.userId}`;
+
+      try {
+        const serverResponse = await getData(url);
+
+        if (serverResponse.status === 200) {
+          const { message, weather }: serverResponse = serverResponse.data;
+          console.log(message);
+          setWetherData(weather);
+        }
+      } catch (err) {
+        const error = err as AxiosError<ErrorResponse>;
+        const status = error.response?.status;
+
+        let errMsg;
+
+        if (status === 401 || status === 400) {
+          console.log(error.response?.data?.error);
+          errMsg = error.response?.data?.error;
+        }
+
+        console.log("Dashboard Error:", errMsg);
+        ToastAlert({
+          type: "error",
+          title: errMsg || "Something went wrong",
+        });
+      }
+    };
+
     update();
+    getWeather();
   }, [lotId, user?.userId]);
 
   return (

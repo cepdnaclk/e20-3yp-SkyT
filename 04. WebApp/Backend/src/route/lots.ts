@@ -2,10 +2,13 @@ import express from "express";
 import { getInfo } from "../controllers/lots/lots.getInfo";
 import { getPHAnalytics } from "../controllers/lots/lots.phAnalytics";
 import { getNPKAnalytics } from "../controllers/lots/lots.npkAnalytics";
+import { getWeather } from "../controllers/lots/lots.weather";
 
 const router = express.Router();
 
-router.get("/:lotId/user/:userId", getInfo);
+router.get("/weather/:lotId/:userId", getWeather);
+
+router.get("/summary/:lotId/:userId", getInfo);
 
 router.post("/ph", getPHAnalytics);
 

@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import LotModel from "../../model/lot";
-import { getWeatherData } from "../../util/weather";
 
 interface DataProps {
   Temperature: number;
@@ -13,13 +12,6 @@ interface DataProps {
   Nitrogen: number;
   Phosphorus: number;
   Potassium: number;
-}
-
-interface WeatherCardProps {
-  wind?: string | number;
-  rain?: string | number;
-  sunset?: string;
-  sunrise?: string;
 }
 
 interface CenterProps {
@@ -73,10 +65,6 @@ export const getInfo: RequestHandler = async (req, res, next) => {
       location: [lot.lat, lot.lng],
     };
 
-    // Step 02: Get weather data
-    const location = { lat: lot.lat, lng: lot.lng };
-    //const weather: WeatherCardProps = await getWeatherData(location);
-
     // Step 03: Get latest lot data
     const latest: DataProps = await LotModel.getLotDataById(
       lotId,
@@ -93,7 +81,6 @@ export const getInfo: RequestHandler = async (req, res, next) => {
     console.log({ latest, center, latestImage, taskList });
     res.status(200).json({
       message: "Estates found successfully",
-      //weather,
       latest,
       center,
       latestImage,
