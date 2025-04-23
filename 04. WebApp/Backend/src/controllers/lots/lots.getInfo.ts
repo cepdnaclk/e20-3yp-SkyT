@@ -80,7 +80,7 @@ export const getInfo: RequestHandler = async (req, res, next) => {
 
     console.log({ latest, center, latestImage, taskList });
     res.status(200).json({
-      message: "Estates found successfully",
+      message: "Lot data found successfully",
       latest,
       center,
       latestImage,
