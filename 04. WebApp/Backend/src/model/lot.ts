@@ -137,7 +137,11 @@ class LotModel {
     }
   }
 
-  static async getPHAnalyticsData(lotId: number, reqType: string) {
+  static async getPHAnalyticsData(
+    lotId: number,
+    userId: number,
+    reqType: string
+  ) {
     let startDate: DateTime;
 
     switch (reqType) {
@@ -164,14 +168,20 @@ class LotModel {
         AVG(sr.ph) AS ph
       FROM SENSOR_READINGS sr
       JOIN NODES n ON sr.nodeId = n.nodeId
-      WHERE n.lotId = ? AND sr.timestamp >= ?
+      JOIN LOTS l ON n.lotId = l.lotId
+      JOIN ESTATES es ON l.estateId = es.estateId
+      JOIN EMPLOYEES e ON es.estateId = e.estateId
+      WHERE n.lotId = ? 
+        AND sr.timestamp >= ?
+        AND e.employeeId = ?
       GROUP BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d')
-      ORDER BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d') ASC
+      ORDER BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d') ASC;
     `;
 
     const [rows] = await pool.query<RowDataPacket[]>(query, [
       lotId,
       formattedDate,
+      userId,
     ]);
 
     if (rows.length === 0) {
@@ -184,7 +194,11 @@ class LotModel {
     }));
   }
 
-  static async getNPKAnalyticsData(lotId: number, reqType: string) {
+  static async getNPKAnalyticsData(
+    lotId: number,
+    userId: number,
+    reqType: string
+  ) {
     let startDate: DateTime;
 
     switch (reqType) {
@@ -213,14 +227,20 @@ class LotModel {
         AVG(sr.k) AS k
       FROM SENSOR_READINGS sr
       JOIN NODES n ON sr.nodeId = n.nodeId
-      WHERE n.lotId = ? AND sr.timestamp >= ?
+      JOIN LOTS l ON n.lotId = l.lotId
+      JOIN ESTATES es ON l.estateId = es.estateId
+      JOIN EMPLOYEES e ON es.estateId = e.estateId
+      WHERE n.lotId = ? 
+        AND sr.timestamp >= ?
+        AND e.employeeId = ?
       GROUP BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d')
-      ORDER BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d') ASC
+      ORDER BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d') ASC;
     `;
 
     const [rows] = await pool.query<RowDataPacket[]>(query, [
       lotId,
       formattedDate,
+      userId,
     ]);
 
     if (rows.length === 0) {

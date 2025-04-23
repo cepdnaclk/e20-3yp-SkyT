@@ -27,6 +27,7 @@ export const getPHAnalytics: RequestHandler = async (req, res, next) => {
     // Fetch PH analytics data
     const phData = await LotModel.getPHAnalyticsData(
       lotId,
+      userId,
       range.toLowerCase()
     );
 

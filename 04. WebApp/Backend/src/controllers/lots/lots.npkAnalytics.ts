@@ -27,6 +27,7 @@ export const getNPKAnalytics: RequestHandler = async (req, res, next) => {
     // Fetch PH analytics data
     const npkData = await LotModel.getNPKAnalyticsData(
       lotId,
+      userId,
       range.toLowerCase()
     );
 
