@@ -8,13 +8,17 @@ import {
   FormGroup,
   Menu,
   MenuItem,
+  Skeleton,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import { ArrowDropDown } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DatasetElementType } from "@mui/x-charts/internals";
+import { postData } from "../api/NodeBackend";
+import { AxiosError } from "axios";
+import { ToastAlert } from "./ToastAlert";
 
 interface TimeRangeSelectorProps {
   range?: string;
@@ -27,8 +31,19 @@ interface CheckboxListProps {
 }
 
 interface NPKGraphProps {
-  loaded: boolean;
-  dataset?: DatasetElementType<Date | number>[];
+  userId?: number;
+  lotId?: number;
+}
+
+interface NPKProps {
+  date: string;
+  n: number;
+  p: number;
+  k: number;
+}
+
+interface ErrorResponse {
+  error: string;
 }
 
 const ThemeColor = "#00796b"; // Color Theme
@@ -177,9 +192,53 @@ function CheckboxList({ visibleParas, setVisibleParas }: CheckboxListProps) {
   );
 }
 
-export default function NPKGraph({ loaded, dataset }: NPKGraphProps) {
+export default function NPKGraph({ userId, lotId }: NPKGraphProps) {
   const [range, setRange] = useState<string>("Week");
   const [visibleParas, setVisibleParas] = useState<string[]>(["n", "p", "k"]);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [dataset, setDataset] = useState<DatasetElementType<Date | number>[]>();
+
+  const generateDataSet = (data: NPKProps[]) =>
+    data.map((item) => {
+      const stdDate = new Date(new Date(item.date).setHours(0, 0, 0, 0));
+      const element = { ...item, date: stdDate };
+      return element;
+    });
+
+  useEffect(() => {
+    const getPhData = async () => {
+      const data = { userId, lotId, range };
+      setLoaded(false);
+      try {
+        const serverResponse = await postData(data, "lots/npk");
+        if (serverResponse.status === 200) {
+          const { message, npkData } = serverResponse.data;
+          console.log({ message, npkData });
+          setDataset(generateDataSet(npkData));
+        }
+      } catch (err) {
+        const error = err as AxiosError<ErrorResponse>;
+        const status = error.response?.status;
+
+        let errMsg;
+
+        if (status === 400 || status === 404) {
+          console.log(error.response?.data?.error);
+          errMsg = error.response?.data?.error;
+        }
+
+        console.log("Dashboard Error:", errMsg);
+        ToastAlert({
+          type: "error",
+          title: errMsg || "Something went wrong",
+        });
+      } finally {
+        setLoaded(true);
+      }
+    };
+
+    getPhData();
+  }, [range, userId, lotId]);
 
   return (
     <Card
@@ -206,67 +265,81 @@ export default function NPKGraph({ loaded, dataset }: NPKGraphProps) {
       />
 
       {/* Graph Section */}
-      <LineChart
-        height={274}
-        loading={!loaded}
-        grid={{ horizontal: true }}
-        dataset={dataset}
-        series={[
-          {
-            id: "N",
-            label: "Nitrogen (N)",
-            dataKey: "n",
-            color: COLORS.N,
-          },
-          {
-            id: "P",
-            label: "Phosphorus (P)",
-            dataKey: "p",
-            color: COLORS.P,
-          },
-          {
-            id: "K",
-            label: "Potassium (K)",
-            dataKey: "k",
-            color: COLORS.K,
-          },
-        ].filter((item) => visibleParas?.includes(item.id.toLowerCase()))}
-        xAxis={[
-          {
-            dataKey: "date",
-            valueFormatter: (value: Date) => {
-              if (range === "Week") {
-                return `${value.getDate()} ${value.toLocaleDateString("en-US", {
-                  weekday: "short",
-                })}`;
-              } else if (range === "Month") {
-                return value.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
-              } else if (range === "Year") {
-                return value.toLocaleDateString("en-US", {
-                  month: "short",
-                  year: "numeric",
-                });
-              }
-              return value.toDateString();
+      {loaded ? (
+        <LineChart
+          height={274}
+          loading={!loaded}
+          grid={{ horizontal: true }}
+          dataset={dataset}
+          series={[
+            {
+              id: "N",
+              label: "Nitrogen (N)",
+              dataKey: "n",
+              color: COLORS.N,
             },
-            label: "Date",
-            min: dataset?.[0]?.date,
-            max: dataset?.[dataset.length - 1]?.date,
-            scaleType: "time",
-          },
-        ]}
-        yAxis={[
-          {
-            min: 0,
-            label: "Average N,P,K Values (mg/kg)",
-          },
-        ]}
-        margin={{ top: 10, bottom: 25, left: 40, right: 25 }}
-        slotProps={{ legend: { hidden: true } }}
-      />
+            {
+              id: "P",
+              label: "Phosphorus (P)",
+              dataKey: "p",
+              color: COLORS.P,
+            },
+            {
+              id: "K",
+              label: "Potassium (K)",
+              dataKey: "k",
+              color: COLORS.K,
+            },
+          ].filter((item) => visibleParas?.includes(item.id.toLowerCase()))}
+          xAxis={[
+            {
+              dataKey: "date",
+              valueFormatter: (value: Date) => {
+                if (range === "Week") {
+                  return `${value.getDate()} ${value.toLocaleDateString(
+                    "en-US",
+                    {
+                      weekday: "short",
+                    }
+                  )}`;
+                } else if (range === "Month") {
+                  return value.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+                } else if (range === "Year") {
+                  return value.toLocaleDateString("en-US", {
+                    month: "short",
+                    year: "numeric",
+                  });
+                }
+                return value.toDateString();
+              },
+              label: "Date",
+              min: dataset?.[0]?.date,
+              max: dataset?.[dataset.length - 1]?.date,
+              scaleType: "time",
+            },
+          ]}
+          yAxis={[
+            {
+              min: 0,
+              label: "Average N,P,K Values (mg/kg)",
+            },
+          ]}
+          margin={{ top: 10, bottom: 25, left: 40, right: 25 }}
+          slotProps={{ legend: { hidden: true } }}
+        />
+      ) : (
+        <Skeleton
+          variant="rectangular"
+          sx={{
+            width: "100%",
+            height: "300px",
+            borderRadius: "0 0 8px 8px",
+          }}
+        />
+      )}
     </Card>
   );
 }

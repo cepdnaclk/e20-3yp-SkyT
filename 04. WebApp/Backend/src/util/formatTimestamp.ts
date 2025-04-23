@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 export function formatTimestamp(isoString: string): string {
   const date = new Date(isoString);
 
@@ -11,4 +13,8 @@ export function formatTimestamp(isoString: string): string {
   });
 
   return `${formattedDate} at ${formattedTime}`;
+}
+
+export function getColomboTime(): DateTime {
+  return DateTime.now().setZone("Asia/Colombo");
 }

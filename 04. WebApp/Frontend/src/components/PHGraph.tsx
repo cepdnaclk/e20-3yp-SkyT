@@ -5,13 +5,17 @@ import {
   Card,
   Menu,
   MenuItem,
+  Skeleton,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import { ArrowDropDown } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DatasetElementType } from "@mui/x-charts/internals";
+import { postData } from "../api/NodeBackend";
+import { AxiosError } from "axios";
+import { ToastAlert } from "./ToastAlert";
 
 interface TimeRangeSelectorProps {
   range?: string;
@@ -19,8 +23,17 @@ interface TimeRangeSelectorProps {
 }
 
 interface PHGraphProps {
-  loaded: boolean;
-  dataset?: DatasetElementType<Date | number>[];
+  userId?: number;
+  lotId?: number;
+}
+
+interface ErrorResponse {
+  error: string;
+}
+
+interface PHProps {
+  date: string;
+  ph: number;
 }
 
 const ThemeColor = "#00796b"; // Color Theme
@@ -124,8 +137,52 @@ function TimeRangeSelector({ range, setRange }: TimeRangeSelectorProps) {
   );
 }
 
-export default function PHGraph({ loaded, dataset }: PHGraphProps) {
+export default function PHGraph({ userId, lotId }: PHGraphProps) {
   const [range, setRange] = useState<string>("Week");
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [dataset, setDataset] = useState<DatasetElementType<Date | number>[]>();
+
+  const generateDataSet = (data: PHProps[]) =>
+    data.map((item) => {
+      const stdDate = new Date(new Date(item.date).setHours(0, 0, 0, 0));
+      const element = { ...item, date: stdDate };
+      return element;
+    });
+
+  useEffect(() => {
+    const getPhData = async () => {
+      const data = { userId, lotId, range };
+      setLoaded(false);
+      try {
+        const serverResponse = await postData(data, "lots/ph");
+        if (serverResponse.status === 200) {
+          const { message, phData } = serverResponse.data;
+          console.log({ message, phData });
+          setDataset(generateDataSet(phData));
+        }
+      } catch (err) {
+        const error = err as AxiosError<ErrorResponse>;
+        const status = error.response?.status;
+
+        let errMsg;
+
+        if (status === 400 || status === 404) {
+          console.log(error.response?.data?.error);
+          errMsg = error.response?.data?.error;
+        }
+
+        console.log("Dashboard Error:", errMsg);
+        ToastAlert({
+          type: "error",
+          title: errMsg || "Something went wrong",
+        });
+      } finally {
+        setLoaded(true);
+      }
+    };
+
+    getPhData();
+  }, [range, userId, lotId]);
 
   return (
     <Card
@@ -152,62 +209,76 @@ export default function PHGraph({ loaded, dataset }: PHGraphProps) {
       </Box>
 
       {/* Graph Section */}
-      <LineChart
-        height={300}
-        grid={{ horizontal: true }}
-        loading={!loaded}
-        dataset={dataset}
-        series={[
-          {
-            dataKey: "ph",
-            area: true,
-            label: "pH",
-            showMark: false,
-          },
-        ]}
-        xAxis={[
-          {
-            dataKey: "date",
-            valueFormatter: (value: Date) => {
-              if (range === "Week") {
-                return `${value.getDate()} ${value.toLocaleDateString("en-US", {
-                  weekday: "short",
-                })}`;
-              } else if (range === "Month") {
-                return value.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
-              } else if (range === "Year") {
-                return value.toLocaleDateString("en-US", {
-                  month: "short",
-                  year: "numeric",
-                });
-              }
-              return value.toDateString();
+      {loaded ? (
+        <LineChart
+          height={300}
+          grid={{ horizontal: true }}
+          loading={!loaded}
+          dataset={dataset}
+          series={[
+            {
+              dataKey: "ph",
+              area: true,
+              label: "pH",
+              showMark: false,
             },
-            label: "Date",
-            min: dataset?.[0]?.date,
-            max: dataset?.[dataset.length - 1]?.date,
-            scaleType: "time",
-          },
-        ]}
-        yAxis={[
-          {
-            min: 0,
-            max: 10,
-            label: "Average pH Value",
-            colorMap: {
-              type: "continuous",
+          ]}
+          xAxis={[
+            {
+              dataKey: "date",
+              valueFormatter: (value: Date) => {
+                if (range === "Week") {
+                  return `${value.getDate()} ${value.toLocaleDateString(
+                    "en-US",
+                    {
+                      weekday: "short",
+                    }
+                  )}`;
+                } else if (range === "Month") {
+                  return value.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+                } else if (range === "Year") {
+                  return value.toLocaleDateString("en-US", {
+                    month: "short",
+                    year: "numeric",
+                  });
+                }
+                return value.toDateString();
+              },
+              label: "Date",
+              min: dataset?.[0]?.date,
+              max: dataset?.[dataset.length - 1]?.date,
+              scaleType: "time",
+            },
+          ]}
+          yAxis={[
+            {
               min: 0,
               max: 10,
-              color: ["#e0f2f1", ThemeColor],
+              label: "Average pH Value",
+              colorMap: {
+                type: "continuous",
+                min: 0,
+                max: 10,
+                color: ["#e0f2f1", ThemeColor],
+              },
             },
-          },
-        ]}
-        margin={{ top: 10, bottom: 25, right: 25, left: 40 }}
-        slotProps={{ legend: { hidden: true } }}
-      />
+          ]}
+          margin={{ top: 10, bottom: 25, right: 25, left: 40 }}
+          slotProps={{ legend: { hidden: true } }}
+        />
+      ) : (
+        <Skeleton
+          variant="rectangular"
+          sx={{
+            width: "100%",
+            height: "300px",
+            borderRadius: "0 0 8px 8px",
+          }}
+        />
+      )}
     </Card>
   );
 }

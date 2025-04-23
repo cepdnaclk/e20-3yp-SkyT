@@ -75,7 +75,7 @@ export const getInfo: RequestHandler = async (req, res, next) => {
 
     // Step 02: Get weather data
     const location = { lat: lot.lat, lng: lot.lng };
-    const weather: WeatherCardProps = await getWeatherData(location);
+    //const weather: WeatherCardProps = await getWeatherData(location);
 
     // Step 03: Get latest lot data
     const latest: DataProps = await LotModel.getLotDataById(
@@ -93,7 +93,7 @@ export const getInfo: RequestHandler = async (req, res, next) => {
     console.log({ latest, center, latestImage, taskList });
     res.status(200).json({
       message: "Estates found successfully",
-      weather,
+      //weather,
       latest,
       center,
       latestImage,

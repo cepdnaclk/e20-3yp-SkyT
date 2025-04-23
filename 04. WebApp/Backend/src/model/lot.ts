@@ -1,7 +1,8 @@
 import createHttpError from "http-errors";
 import pool from "../database/sqldb";
 import { RowDataPacket } from "mysql2";
-import { formatTimestamp } from "../util/formatTimestamp";
+import { formatTimestamp, getColomboTime } from "../util/formatTimestamp";
+import { DateTime } from "luxon";
 
 interface DataProps {
   Temperature: number;
@@ -134,6 +135,104 @@ class LotModel {
     } else {
       return null;
     }
+  }
+
+  static async getPHAnalyticsData(lotId: number, reqType: string) {
+    let startDate: DateTime;
+
+    switch (reqType) {
+      case "week":
+        startDate = getColomboTime().minus({ days: 7 });
+        break;
+      case "month":
+        startDate = getColomboTime().minus({ months: 1 });
+        break;
+      case "year":
+        startDate = getColomboTime().minus({ years: 1 });
+        break;
+      default:
+        throw new Error("Invalid reqType");
+    }
+
+    const formattedDate = startDate.toFormat("yyyy-MM-dd");
+
+    console.log("Today: ", formattedDate);
+
+    const query = `
+      SELECT 
+        DATE_FORMAT(sr.timestamp, '%Y-%m-%d') AS date, 
+        AVG(sr.ph) AS ph
+      FROM SENSOR_READINGS sr
+      JOIN NODES n ON sr.nodeId = n.nodeId
+      WHERE n.lotId = ? AND sr.timestamp >= ?
+      GROUP BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d')
+      ORDER BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d') ASC
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [
+      lotId,
+      formattedDate,
+    ]);
+
+    if (rows.length === 0) {
+      throw createHttpError(404, "pH data not found!");
+    }
+
+    return rows.map((row) => ({
+      date: row.date,
+      ph: parseFloat(row.ph),
+    }));
+  }
+
+  static async getNPKAnalyticsData(lotId: number, reqType: string) {
+    let startDate: DateTime;
+
+    switch (reqType) {
+      case "week":
+        startDate = getColomboTime().minus({ days: 7 });
+        break;
+      case "month":
+        startDate = getColomboTime().minus({ months: 1 });
+        break;
+      case "year":
+        startDate = getColomboTime().minus({ years: 1 });
+        break;
+      default:
+        throw new Error("Invalid reqType");
+    }
+
+    const formattedDate = startDate.toFormat("yyyy-MM-dd");
+
+    console.log("Today: ", formattedDate);
+
+    const query = `
+      SELECT 
+        DATE_FORMAT(sr.timestamp, '%Y-%m-%d') AS date, 
+        AVG(sr.n) AS n,
+        AVG(sr.p) AS p,
+        AVG(sr.k) AS k
+      FROM SENSOR_READINGS sr
+      JOIN NODES n ON sr.nodeId = n.nodeId
+      WHERE n.lotId = ? AND sr.timestamp >= ?
+      GROUP BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d')
+      ORDER BY DATE_FORMAT(sr.timestamp, '%Y-%m-%d') ASC
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [
+      lotId,
+      formattedDate,
+    ]);
+
+    if (rows.length === 0) {
+      throw createHttpError(404, "NPK data not found!");
+    }
+
+    return rows.map((row) => ({
+      date: row.date,
+      n: parseFloat(row.n),
+      p: parseFloat(row.p),
+      k: parseFloat(row.k),
+    }));
   }
 }
 
