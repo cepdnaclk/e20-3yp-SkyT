@@ -254,6 +254,65 @@ class LotModel {
       k: parseFloat(row.k),
     }));
   }
+
+  static async getLotCenterAndNodes(lotId: number) {
+    const query = `
+      SELECT 
+        L.lot AS name,
+        L.lat,
+        L.lng,
+        N.id,
+        N.nodeId,
+        N.latitude AS nodeLat,
+        N.longitude AS nodeLng,
+        SR.temperature,
+        SR.humidity,
+        SR.ph,
+        SR.nitrogen,
+        SR.phosphorus,
+        SR.potassium
+      FROM LOTS L
+      JOIN NODES N ON N.lotId = L.id
+      LEFT JOIN (
+        SELECT nodeId, MAX(id) AS latestId
+        FROM SENSOR_READINGS
+        GROUP BY nodeId
+      ) AS Latest ON N.id = Latest.nodeId
+      LEFT JOIN SENSOR_READINGS SR ON SR.id = Latest.latestId
+      WHERE L.id = ?
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [lotId]);
+    return rows;
+  }
+
+  static async getNodesByLotId(lotId: number) {
+    const query = `
+      SELECT 
+        N.nodeId,
+        N.node,
+        N.lat AS nodeLat,
+        N.lng AS nodeLng,
+        SR.temperature,
+        SR.humidity,
+        SR.ph,
+        SR.n,
+        SR.p,
+        SR.k
+      FROM NODES N
+      LEFT JOIN (
+        SELECT nodeId, MAX(readingId) AS latestId
+        FROM SENSOR_READINGS
+        GROUP BY nodeId
+      ) Latest ON N.nodeId = Latest.nodeId
+      LEFT JOIN SENSOR_READINGS SR ON SR.readingId = Latest.latestId
+      WHERE N.lotId = ?
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [lotId]);
+
+    return rows;
+  }
 }
 
 export default LotModel;
