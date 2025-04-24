@@ -44,13 +44,16 @@ export default function Gallary() {
 
     try {
       const serverResponse = await getData(url);
-      console.log(serverResponse);
       if (serverResponse.status === 200) {
         const { message, imageList } = serverResponse.data;
         console.log(message);
         setLatestImages(imageList);
       } else {
         console.log(serverResponse.statusText);
+        ToastAlert({
+          type: "warning",
+          title: "No more images to load",
+        });
       }
     } catch (err) {
       const error = err as AxiosError<ErrorResponse>;
