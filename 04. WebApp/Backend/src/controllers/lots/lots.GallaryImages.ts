@@ -32,7 +32,7 @@ export const getGalleryImages: RequestHandler = async (req, res, next) => {
 
     if (result.length === 0) {
       console.log("No more content to load");
-      res.status(204);
+      res.status(204).send();
     } else {
       const imageList = result.map((row) => ({
         imageId: row.imageId,
