@@ -11,90 +11,79 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { getData } from "../api/NodeBackend";
+import { AxiosError } from "axios";
+import { ToastAlert } from "../components/ToastAlert";
 
 interface ImageCardProps {
-  id: string;
-  img: string;
-  date: string;
+  imageId: number;
+  url: string;
+  uploadedAt: string;
+  node: string;
 }
 
-const imageCardData: ImageCardProps[] = [
-  {
-    id: "img1",
-    img: "https://via.placeholder.com/300x200?text=Image+1",
-    date: "Apr 01, 2025",
-  },
-  {
-    id: "img2",
-    img: "https://via.placeholder.com/300x200?text=Image+2",
-    date: "Apr 02, 2025",
-  },
-  {
-    id: "img3",
-    img: "https://via.placeholder.com/300x200?text=Image+3",
-    date: "Apr 03, 2025",
-  },
-  {
-    id: "img4",
-    img: "https://via.placeholder.com/300x200?text=Image+4",
-    date: "Apr 04, 2025",
-  },
-  {
-    id: "img5",
-    img: "https://via.placeholder.com/300x200?text=Image+5",
-    date: "Apr 05, 2025",
-  },
-  {
-    id: "img6",
-    img: "https://via.placeholder.com/300x200?text=Image+6",
-    date: "Apr 06, 2025",
-  },
-  {
-    id: "img7",
-    img: "https://via.placeholder.com/300x200?text=Image+7",
-    date: "Apr 07, 2025",
-  },
-  {
-    id: "img8",
-    img: "https://via.placeholder.com/300x200?text=Image+8",
-    date: "Apr 08, 2025",
-  },
-  {
-    id: "img9",
-    img: "https://via.placeholder.com/300x200?text=Image+9",
-    date: "Apr 09, 2025",
-  },
-  {
-    id: "img10",
-    img: "https://via.placeholder.com/300x200?text=Image+10",
-    date: "Apr 10, 2025",
-  },
-];
+interface ErrorResponse {
+  error: string;
+}
+
+const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
 
 export default function Gallary() {
   const path = useLocation().pathname;
   const lotId = path.split("/")[5];
+  const { user } = useAuth();
 
   const [latestImages, setLatestImages] = useState<ImageCardProps[]>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getImages = (lot: string, lastItem: string) => {
+  const getImages = async (lastId: number) => {
     setLoading(true);
-    console.log("Fetching early images: " + lot + "lastId: " + lastItem);
-    setLatestImages(imageCardData);
-    setLoading(false);
+    const url = `lots/images/${user?.userId}/${lotId}/${lastId}`;
+    console.log("Fetching early images: " + lotId + "lastId: " + lastId);
+
+    try {
+      const serverResponse = await getData(url);
+      console.log(serverResponse);
+      if (serverResponse.status === 200) {
+        const { message, imageList } = serverResponse.data;
+        console.log(message);
+        setLatestImages(imageList);
+      } else {
+        console.log(serverResponse.statusText);
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 400 || status === 404) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Dashboard Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getImages(lotId, "img1");
-  }, [lotId]);
+    getImages(-1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleClick = () => {
     console.log("Fetching more images!");
     const len = latestImages?.length;
-    const lastId = latestImages?.[len! - 1].id;
+    const lastId = latestImages?.[len! - 1].imageId;
     if (lastId) {
-      getImages(lotId, lastId);
+      getImages(lastId);
     }
   };
 
@@ -121,7 +110,7 @@ export default function Gallary() {
       >
         {latestImages?.map((image) => (
           <Card
-            key={image.id}
+            key={image.imageId}
             elevation={3}
             sx={{
               p: 2,
@@ -135,8 +124,8 @@ export default function Gallary() {
             <CardMedia
               component="img"
               height="170"
-              image={image.img}
-              alt={image.id}
+              image={`${BASE_URL}/${image.url}`}
+              alt={`image on ${image.uploadedAt}`}
             />
             <CardContent>
               <Typography
@@ -144,7 +133,7 @@ export default function Gallary() {
                 variant="body2"
                 sx={{ color: "text.secondary" }}
               >
-                Captured on: {image.date}
+                Captured on: {image.uploadedAt}
               </Typography>
             </CardContent>
           </Card>

@@ -53,7 +53,7 @@ function LotMap() {
 
         let errMsg;
 
-        if (status === 404 || status === 400) {
+        if (status === 400) {
           console.log(error.response?.data?.error);
           errMsg = error.response?.data?.error;
         }

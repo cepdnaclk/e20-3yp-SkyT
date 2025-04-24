@@ -46,6 +46,11 @@ app.use((req, res, next) => {
 
 /* Routing */
 
+/* app.all("/*splat", (req, res, next) => {
+  console.log("Requested URL:", req.originalUrl);
+  next();
+}); */
+
 // Base Route
 app.get("/", (req, res) => {
   console.log("Hello to the user");

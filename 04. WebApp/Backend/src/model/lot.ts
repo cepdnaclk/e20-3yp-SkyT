@@ -313,6 +313,45 @@ class LotModel {
 
     return rows;
   }
+
+  static async getGalleryImages(lotId: number, lastId: number | null) {
+    // Step 1: Get 3 most recent distinct dates
+    const dateQuery = `
+      SELECT DISTINCT DATE(I.uploadedAt) AS date
+      FROM NODE_IMAGES I
+      JOIN NODES N ON I.nodeId = N.nodeId
+      WHERE N.lotId = ?
+      AND (? IS NULL OR I.imageId < ?)
+      ORDER BY DATE(I.uploadedAt) DESC
+      LIMIT 3;
+    `;
+    const [dateRows] = await pool.query<RowDataPacket[]>(dateQuery, [
+      lotId,
+      lastId,
+      lastId,
+    ]);
+    const dates = dateRows.map((r) => r.date);
+
+    //console.log("Dates: ", dates);
+
+    if (dates.length === 0) return [];
+
+    // Step 2: Fetch all images from those 3 dates
+    const placeholders = dates.map(() => "?").join(", ");
+    const imageQuery = `
+      SELECT I.imageId, I.url, I.uploadedAt, N.nodeId AS node
+      FROM NODE_IMAGES I
+      JOIN NODES N ON I.nodeId = N.nodeId
+      WHERE N.lotId = ?
+      AND DATE(I.uploadedAt) IN (${placeholders})
+      ORDER BY I.imageId DESC;
+    `;
+    const [images] = await pool.query<RowDataPacket[]>(imageQuery, [
+      lotId,
+      ...dates,
+    ]);
+    return images;
+  }
 }
 
 export default LotModel;
