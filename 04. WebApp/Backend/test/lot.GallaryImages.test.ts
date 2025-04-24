@@ -47,6 +47,14 @@ describe("GET /images/:userId/:lotId/:lastId", () => {
 });
 
 describe("GET /images/:userId/:lotId/:lastId", () => {
+  it("Should return a error (No images)", async () => {
+    const res = await request(app).get("/lots/images/2/3/17").send();
+
+    expect(res.status).toBe(204);
+  });
+});
+
+describe("GET /images/:userId/:lotId/:lastId", () => {
   it("Should return a success", async () => {
     const res = await request(app).get("/lots/images/2/2/-1").send();
 
