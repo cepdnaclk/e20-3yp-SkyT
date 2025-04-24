@@ -12,7 +12,7 @@ import { useDate } from "../utils/useDate";
 import { useEffect, useState } from "react";
 
 interface SummaryCardProps {
-  id?: string;
+  id?: number;
   due?: string;
   task?: string;
   tag?: string;

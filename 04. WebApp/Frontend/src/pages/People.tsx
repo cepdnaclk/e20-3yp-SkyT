@@ -57,6 +57,8 @@ const newMember: MemberProps = {
   estates: [],
 };
 
+const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+
 function People() {
   const { user, superUsers } = useAuth();
 
@@ -140,6 +142,7 @@ function People() {
       if (serverResponse.status === 200) {
         const { message, employees } = serverResponse.data;
         console.log(message);
+        console.log(employees);
         setMemberList(employees);
       }
     } catch (err) {
@@ -391,10 +394,11 @@ function People() {
                     <TableCell>
                       <Box display="flex" alignItems="center">
                         <Avatar
-                          src={member.img || undefined}
+                          src={`${BASE_URL}/${member.img}`}
                           alt={`Profile picture of ${member.fName}`}
                           sx={{ width: 40, height: 40, mr: 2 }}
                         />
+
                         <Box>
                           <Typography
                             sx={{ color: "#262626" }}

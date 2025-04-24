@@ -17,15 +17,15 @@ interface LotSummaryProps {
 }
 
 interface NodeProps {
-  id: string;
-  nodeId: string;
+  nodeId: number;
+  node: string;
   location: [number, number];
-  temperature: number;
-  humididty: number;
-  ph: number;
-  n: number;
-  p: number;
-  k: number;
+  temperature: string;
+  humididty: string;
+  ph: string;
+  n: string;
+  p: string;
+  k: string;
 }
 
 interface MapInterfaceProps {
@@ -123,6 +123,7 @@ export default function LeafletMap({
           <Popup>
             <strong>{lot.lot}</strong>
             <br />
+            <br />
             Temperature: {lot.temperature}°C
             <br />
             Humidity: {lot.humidity}%
@@ -145,9 +146,9 @@ export default function LeafletMap({
 
       {/* Node Markers */}
       {nodes?.map((node) => (
-        <Marker key={node.id} position={node.location} icon={greenIcon}>
+        <Marker key={node.nodeId} position={node.location} icon={greenIcon}>
           <Popup>
-            <strong>{node.nodeId}</strong>
+            <strong>{node.node}</strong>
             <br />
             Temp: {node.temperature}°C
             <br />
@@ -155,7 +156,9 @@ export default function LeafletMap({
             <br />
             pH: {node.ph}
             <br />
-            N: {node.n}, P: {node.p}, K: {node.k}
+            N: {node.n}mg/kg <br />
+            P: {node.p}mg/kg <br />
+            K: {node.k}mg/kg
           </Popup>
         </Marker>
       ))}
