@@ -2,18 +2,19 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
+import { Typography } from "@mui/material";
 
-interface LotSummaryProps {
+interface LotProps {
   lotId: number;
   lot: string;
-  lastUpdate: string;
   location: [number, number];
-  temperature: number;
-  humidity: number;
-  ph: number;
-  n: number;
-  p: number;
-  k: number;
+  lastUpdate?: string;
+  temperature?: number;
+  humidity?: number;
+  ph?: number;
+  n?: number;
+  p?: number;
+  k?: number;
 }
 
 interface NodeProps {
@@ -29,7 +30,7 @@ interface NodeProps {
 }
 
 interface MapInterfaceProps {
-  lots?: LotSummaryProps[];
+  lots?: LotProps[];
   nodes?: NodeProps[];
   office?: {
     name: string;
@@ -109,7 +110,9 @@ export default function LeafletMap({
       {/* Office Marker */}
       {office && (
         <Marker position={office.location} icon={defaultIcon}>
-          <Popup>{office.name}</Popup>
+          <Popup>
+            <strong>{office.name}</strong>
+          </Popup>
         </Marker>
       )}
 
@@ -122,19 +125,23 @@ export default function LeafletMap({
         >
           <Popup>
             <strong>{lot.lot}</strong>
-            <br />
-            <br />
-            Temperature: {lot.temperature}°C
-            <br />
-            Humidity: {lot.humidity}%
-            <br />
-            pH: {lot.ph}
-            <br />
-            N: {lot.n} mg/kg <br />
-            P: {lot.p} mg/kg <br />
-            K: {lot.k} mg/kg
-            <br />
-            <br />
+
+            {lot.lastUpdate && (
+              <Typography variant="body2" color="text.secondary">
+                {lot.temperature && `Temperature: ${lot.temperature}°C`}
+                <br />
+                {lot.humidity && `Humidity: ${lot.humidity}%`}
+                <br />
+                {lot.ph && `pH: ${lot.ph}`}
+                <br />
+                {lot.n && `N: ${lot.n} mg/kg`}
+                <br />
+                {lot.p && `P: ${lot.p} mg/kg`}
+                <br />
+                {lot.k && `K: ${lot.k} mg/kg`}
+                <br />
+              </Typography>
+            )}
             {handleNavigate && (
               <button onClick={() => handleNavigate(lot.lotId)}>
                 View Lot

@@ -76,6 +76,15 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     }
   }
 
+  // Estate Map Section
+  if (allSections.length === 4) {
+    const word =
+      allSections[3].charAt(0).toUpperCase() + allSections[3].slice(1);
+    breadcrumbs.push(word);
+
+    console.log("Map word: ", word);
+  }
+
   // Lot Section
   if (allSections.length > 4 && lotList) {
     try {

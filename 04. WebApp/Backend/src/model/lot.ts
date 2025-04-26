@@ -66,6 +66,29 @@ class LotModel {
     }));
   }
 
+  static async getLotsByEstate(estateId: number) {
+    const query = `
+          SELECT 
+            lotId,
+            lot,
+            lat,
+            lng
+          FROM LOTS
+          WHERE estateId = ?
+          GROUP BY lotId
+          `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [estateId]);
+
+    if (rows.length === 0) return null;
+
+    return rows.map((row) => ({
+      lotId: row.lotId,
+      lot: row.lot,
+      location: [parseFloat(row.lat), parseFloat(row.lng)],
+    }));
+  }
+
   static async isLotAccessibleByUser(userId: number, lotId: number) {
     const query = `
           SELECT L.* 

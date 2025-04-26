@@ -87,3 +87,17 @@ CREATE TABLE LOT_IMAGES (
   uploadedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (nodeId) REFERENCES NODES(nodeId) ON DELETE CASCADE
 );
+
+-- DRONES TABLE
+CREATE TABLE DRONES (
+  droneId INT AUTO_INCREMENT PRIMARY KEY,
+  estateId INT NOT NULL,
+  type ENUM('Monitoring', 'Fertilizing') DEFAULT 'Monitoring' NOT NULL,
+  model VARCHAR(100),
+  serialNumber VARCHAR(100) UNIQUE,
+  status ENUM('Active', 'Available', 'Removed', 'Maintenance') DEFAULT 'Available',
+  purchaseDate DATE,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (estateId) REFERENCES ESTATES(estateId) ON DELETE CASCADE
+);
