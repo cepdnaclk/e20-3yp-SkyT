@@ -53,10 +53,7 @@ function App() {
               element={<DashboardArea search={search} setSearch={setSearch} />}
             >
               <Route index element={<Dashboard search={search} />} />
-              <Route
-                path="estate/:estateId"
-                element={<EstateSummary search={search} />}
-              />
+              <Route path="estate/:estateId" element={<EstateSummary />} />
               <Route
                 path="estate/:estateId/map"
                 element={<Estate search={search} />}

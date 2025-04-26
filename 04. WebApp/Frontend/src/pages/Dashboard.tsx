@@ -183,7 +183,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
           justifyContent={{ xs: "start", md: "end" }}
           width={"100%"}
         >
-          {allSections.length < 4 && (
+          {(allSections.length === 1 || allSections.length === 4) && (
             <SearchBox
               placeholder="Search"
               value={search}
