@@ -41,6 +41,8 @@ interface TaskCardProps {
 interface TaskListProps {
   estateId?: number;
   userId?: number;
+  lots?: LotProps[];
+  setLots: (lots: LotProps[]) => void;
 }
 
 interface LotProps {
@@ -291,6 +293,11 @@ const dummyTasks: TaskProps[] = [
   },
 ];
 
+const COLOR = {
+  safe: "#009a68",
+  risk: "#e10034",
+};
+
 const LOTS: LotProps[] = [
   { lotId: 1, lot: "HR-L1" },
   { lotId: 2, lot: "HR-L2" },
@@ -298,11 +305,6 @@ const LOTS: LotProps[] = [
   { lotId: 4, lot: "HR-L4" },
   { lotId: 5, lot: "HR-L5" },
 ];
-
-const COLOR = {
-  safe: "#009a68",
-  risk: "#e10034",
-};
 
 function TaskCard({ data, onDelete, onView }: TaskCardProps) {
   const { date: fullDate } = useDate();
@@ -442,11 +444,15 @@ function TaskCard({ data, onDelete, onView }: TaskCardProps) {
   );
 }
 
-export default function TaskList({ estateId, userId }: TaskListProps) {
+export default function TaskList({
+  estateId,
+  userId,
+  lots,
+  setLots,
+}: TaskListProps) {
   const [searching, setSearching] = useState<string>("");
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TaskProps[]>(dummyTasks);
-  const [lots, setLots] = useState<LotProps[]>();
 
   const [deleteId, setDeleteId] = useState<number>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
@@ -463,6 +469,7 @@ export default function TaskList({ estateId, userId }: TaskListProps) {
     };
 
     getTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, estateId]);
 
   const handleView = (id: number) => {
