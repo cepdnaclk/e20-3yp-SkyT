@@ -10,12 +10,18 @@ interface EstateProps {
   estate: string;
 }
 
+interface LotProps {
+  lotId: number;
+  lot: string;
+}
+
 export default function TaskManager() {
   const ests = sessionStorage.getItem("estates");
   const estates: EstateProps[] = ests ? JSON.parse(ests) : null;
   const { user } = useAuth();
 
   const [estate, setEstate] = useState<EstateProps>(estates[0]);
+  const [lots, setLots] = useState<LotProps[]>();
 
   const handleChange = (name: string) => {
     console.log("Selected:", name);
@@ -79,7 +85,12 @@ export default function TaskManager() {
           display={"flex"}
           justifyContent={"center"}
         >
-          <TaskList estateId={estate?.estateId} userId={user?.userId} />
+          <TaskList
+            estateId={estate?.estateId}
+            userId={user?.userId}
+            lots={lots}
+            setLots={setLots}
+          />
         </Grid>
 
         {/* Map Section */}
