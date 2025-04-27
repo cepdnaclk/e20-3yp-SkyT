@@ -16,10 +16,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
 import FillButton from "./FillButton";
 import AddIcon from "@mui/icons-material/Add";
-import { useDate } from "../utils/useDate";
+import { changeDateFormat, changeTimeFormat, useDate } from "../utils/useDate";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { GrView } from "react-icons/gr";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import AlertDialog from "./AlertDialog";
+import TaskDialog from "./TaskDialog";
 
 interface TaskProps {
   taskId: number;
@@ -41,247 +43,260 @@ interface TaskListProps {
   userId?: number;
 }
 
+interface LotProps {
+  lotId: number;
+  lot: string;
+}
+
 const dummyTasks: TaskProps[] = [
   {
     taskId: 1,
     task: "Monitor Lot A",
-    dueDate: "Apr 27",
-    dueTime: "10:00 AM",
+    dueDate: "2025-04-30",
+    dueTime: "10:00",
     lots: [101],
     tag: "Monitoring",
   },
   {
     taskId: 2,
     task: "Fertilize Lot B",
-    dueDate: "Apr 27",
-    dueTime: "01:00 PM",
+    dueDate: "2025-04-30",
+    dueTime: "01:00",
     lots: [102],
     tag: "Fertilizing",
   },
   {
     taskId: 3,
     task: "Memo: Discuss drone routes",
-    dueDate: "Apr 27",
-    dueTime: "03:30 PM",
+    dueDate: "2025-04-30",
+    dueTime: "03:30",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 4,
     task: "Monitor Lot C",
-    dueDate: "Apr 28",
-    dueTime: "09:00 AM",
+    dueDate: "2025-04-30",
+    dueTime: "09:00",
     lots: [103],
     tag: "Monitoring",
   },
   {
     taskId: 5,
     task: "Fertilize Lot D",
-    dueDate: "Apr 28",
-    dueTime: "02:00 PM",
+    dueDate: "2025-04-30",
+    dueTime: "02:00",
     lots: [104],
     tag: "Fertilizing",
   },
   {
     taskId: 6,
     task: "Memo: Soil condition report",
-    dueDate: "Apr 28",
-    dueTime: "04:00 PM",
+    dueDate: "2025-04-30",
+    dueTime: "04:00",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 7,
     task: "Monitor Lot E",
-    dueDate: "Apr 29",
-    dueTime: "08:00 AM",
+    dueDate: "2025-04-30",
+    dueTime: "08:00",
     lots: [105],
     tag: "Monitoring",
   },
   {
     taskId: 8,
     task: "Fertilize Lot F",
-    dueDate: "Apr 29",
-    dueTime: "11:00 AM",
+    dueDate: "2025-05-01",
+    dueTime: "11:00",
     lots: [106],
     tag: "Fertilizing",
   },
   {
     taskId: 9,
     task: "Memo: Update software",
-    dueDate: "Apr 29",
-    dueTime: "01:30 PM",
+    dueDate: "2025-05-01",
+    dueTime: "01:30",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 10,
     task: "Monitor Lot G",
-    dueDate: "Apr 30",
-    dueTime: "07:00 AM",
+    dueDate: "2025-05-01",
+    dueTime: "07:00",
     lots: [107],
     tag: "Monitoring",
   },
   {
     taskId: 11,
     task: "Fertilize Lot H",
-    dueDate: "Apr 30",
-    dueTime: "12:00 PM",
+    dueDate: "2025-05-01",
+    dueTime: "12:00",
     lots: [108],
     tag: "Fertilizing",
   },
   {
     taskId: 12,
     task: "Memo: Inspection notes",
-    dueDate: "Apr 30",
-    dueTime: "03:00 PM",
+    dueDate: "2025-05-01",
+    dueTime: "03:00",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 13,
     task: "Monitor Lot I",
-    dueDate: "May 1",
-    dueTime: "09:30 AM",
+    dueDate: "2025-05-01",
+    dueTime: "09:30",
     lots: [109],
     tag: "Monitoring",
   },
   {
     taskId: 14,
     task: "Fertilize Lot J",
-    dueDate: "May 1",
-    dueTime: "01:30 PM",
+    dueDate: "2025-05-02",
+    dueTime: "01:30",
     lots: [110],
     tag: "Fertilizing",
   },
   {
     taskId: 15,
     task: "Memo: Drone battery check",
-    dueDate: "May 1",
-    dueTime: "04:00 PM",
+    dueDate: "2025-05-02",
+    dueTime: "04:00",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 16,
     task: "Monitor Lot K",
-    dueDate: "May 2",
-    dueTime: "08:30 AM",
+    dueDate: "2025-05-02",
+    dueTime: "08:30",
     lots: [111],
     tag: "Monitoring",
   },
   {
     taskId: 17,
     task: "Fertilize Lot L",
-    dueDate: "May 2",
-    dueTime: "12:30 PM",
+    dueDate: "2025-05-02",
+    dueTime: "12:30",
     lots: [112],
     tag: "Fertilizing",
   },
   {
     taskId: 18,
     task: "Memo: Weather forecast review",
-    dueDate: "May 2",
-    dueTime: "02:00 PM",
+    dueDate: "2025-05-02",
+    dueTime: "02:00",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 19,
     task: "Monitor Lot M",
-    dueDate: "May 3",
-    dueTime: "10:00 AM",
+    dueDate: "2025-05-02",
+    dueTime: "10:00",
     lots: [113],
     tag: "Monitoring",
   },
   {
     taskId: 20,
     task: "Fertilize Lot N",
-    dueDate: "May 3",
-    dueTime: "01:00 PM",
+    dueDate: "2025-05-05",
+    dueTime: "01:00",
     lots: [114],
     tag: "Fertilizing",
   },
   {
     taskId: 21,
     task: "Memo: Drone path optimization",
-    dueDate: "May 3",
-    dueTime: "03:30 PM",
+    dueDate: "2025-05-05",
+    dueTime: "03:30",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 22,
     task: "Monitor Lot O",
-    dueDate: "May 4",
-    dueTime: "09:00 AM",
+    dueDate: "2025-05-05",
+    dueTime: "09:00",
     lots: [115],
     tag: "Monitoring",
   },
   {
     taskId: 23,
     task: "Fertilize Lot P",
-    dueDate: "May 4",
-    dueTime: "11:30 AM",
+    dueDate: "2025-05-05",
+    dueTime: "11:30",
     lots: [116],
     tag: "Fertilizing",
   },
   {
     taskId: 24,
     task: "Memo: Fertilizer stock check",
-    dueDate: "May 4",
-    dueTime: "02:30 PM",
+    dueDate: "2025-05-05",
+    dueTime: "02:30",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 25,
     task: "Monitor Lot Q",
-    dueDate: "May 5",
-    dueTime: "08:00 AM",
+    dueDate: "2025-05-05",
+    dueTime: "08:00",
     lots: [117],
     tag: "Monitoring",
   },
   {
     taskId: 26,
     task: "Fertilize Lot R",
-    dueDate: "May 5",
-    dueTime: "01:00 PM",
+    dueDate: "2025-05-05",
+    dueTime: "01:00",
     lots: [118],
     tag: "Fertilizing",
   },
   {
     taskId: 27,
     task: "Memo: Review drone footage",
-    dueDate: "May 5",
-    dueTime: "03:00 PM",
+    dueDate: "2025-05-05",
+    dueTime: "03:00",
     lots: [],
     tag: "Memo",
   },
   {
     taskId: 28,
     task: "Monitor Lot S",
-    dueDate: "May 6",
-    dueTime: "10:00 AM",
+    dueDate: "2025-05-05",
+    dueTime: "10:00",
     lots: [119],
     tag: "Monitoring",
   },
   {
     taskId: 29,
     task: "Fertilize Lot T",
-    dueDate: "May 6",
-    dueTime: "12:00 PM",
+    dueDate: "2025-05-05",
+    dueTime: "12:00",
     lots: [120],
     tag: "Fertilizing",
   },
   {
     taskId: 30,
     task: "Memo: Monthly maintenance",
-    dueDate: "May 6",
-    dueTime: "03:30 PM",
+    dueDate: "2025-05-05",
+    dueTime: "03:30",
     lots: [],
     tag: "Memo",
   },
+];
+
+const LOTS: LotProps[] = [
+  { lotId: 1, lot: "HR-L1" },
+  { lotId: 2, lot: "HR-L2" },
+  { lotId: 3, lot: "HR-L3" },
+  { lotId: 4, lot: "HR-L4" },
+  { lotId: 5, lot: "HR-L5" },
 ];
 
 const COLOR = {
@@ -292,6 +307,7 @@ const COLOR = {
 function TaskCard({ data, onDelete, onView }: TaskCardProps) {
   const { date: fullDate } = useDate();
   const [isToday, setIsToday] = useState<boolean>(false);
+  const [formatedDate, setFormatedDate] = useState<string>("");
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -315,10 +331,13 @@ function TaskCard({ data, onDelete, onView }: TaskCardProps) {
   useEffect(() => {
     if (!data?.dueDate) return;
 
+    const newDate = changeDateFormat(data.dueDate).split(",")[0];
+    setFormatedDate(newDate);
+
     // Extract "Apr 14" part from "2025 Apr 14"
     const todayShort = fullDate.split(",")[0]; // "Apr 14"
     //console.log(todayShort);
-    setIsToday(data.dueDate === todayShort);
+    setIsToday(newDate === todayShort);
   }, [data?.dueDate, fullDate]);
 
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -356,8 +375,12 @@ function TaskCard({ data, onDelete, onView }: TaskCardProps) {
         color={isToday ? COLOR.risk : COLOR.safe}
         mr={1}
       >
-        {data?.dueDate}
-        <Typography variant="caption">{data?.dueTime}</Typography>
+        {formatedDate}
+        {data.dueTime && (
+          <Typography variant="caption">
+            {changeTimeFormat(data?.dueTime)}
+          </Typography>
+        )}
       </Box>
 
       {/* Info Section */}
@@ -420,15 +443,23 @@ function TaskCard({ data, onDelete, onView }: TaskCardProps) {
 }
 
 export default function TaskList({ estateId, userId }: TaskListProps) {
-  const [searching, setSearching] = useState<string>();
+  const [searching, setSearching] = useState<string>("");
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TaskProps[]>(dummyTasks);
+  const [lots, setLots] = useState<LotProps[]>();
+
+  const [deleteId, setDeleteId] = useState<number>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+
+  const [selectedTask, setSelectedTask] = useState<TaskProps>();
+  const [taskDialogOpen, setTaskDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const getTasks = async () => {
       console.log({ userId, estateId });
       setTasks(dummyTasks);
       setBtnLoading(false);
+      setLots(LOTS);
     };
 
     getTasks();
@@ -436,11 +467,40 @@ export default function TaskList({ estateId, userId }: TaskListProps) {
 
   const handleView = (id: number) => {
     console.log("View clicked for", id);
+    const select = tasks.find((t) => t.taskId === id);
+    setSelectedTask(select);
+    setTaskDialogOpen(true);
+  };
+
+  const handleCreate = () => {
+    console.log("New Task");
+    setSelectedTask(undefined);
+    setTaskDialogOpen(true);
   };
 
   const handleDelete = (id: number) => {
     console.log("Delete clicked for", id);
+    setDeleteDialogOpen(true);
+    setDeleteId(id);
   };
+
+  const deleteTask = async () => {
+    setDeleteDialogOpen(false);
+    console.log("Task: " + deleteId + " is deleted.");
+  };
+
+  const addTask = async (t: TaskProps) => {
+    setTaskDialogOpen(false);
+    console.log("Task Added:", t);
+  };
+
+  const normalizedWord = searching.toLowerCase();
+  const filteredList = tasks.filter(
+    (t) =>
+      t.task.toLowerCase().includes(normalizedWord) ||
+      t.dueDate.includes(normalizedWord) ||
+      t.tag.toLowerCase().includes(normalizedWord)
+  );
 
   return (
     <Box
@@ -485,7 +545,7 @@ export default function TaskList({ estateId, userId }: TaskListProps) {
         />
 
         <FillButton
-          //onClick={handleAdd}
+          onClick={handleCreate}
           variant="contained"
           disabled={btnLoading}
           sx={{
@@ -510,8 +570,8 @@ export default function TaskList({ estateId, userId }: TaskListProps) {
         flexDirection={"column"}
         alignItems={"center"}
       >
-        {tasks ? (
-          tasks.map((t) => (
+        {filteredList ? (
+          filteredList.map((t) => (
             <TaskCard
               key={t.taskId}
               data={t}
@@ -523,6 +583,26 @@ export default function TaskList({ estateId, userId }: TaskListProps) {
           <Skeleton height={70} variant="rectangular" />
         )}
       </Box>
+
+      {/* Delete Confirmation Dialog Box */}
+      <AlertDialog
+        open={deleteDialogOpen}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={deleteTask}
+        onCancel={() => setDeleteDialogOpen(false)}
+      />
+
+      {/* Task Dialog Box */}
+      <TaskDialog
+        task={selectedTask}
+        open={taskDialogOpen}
+        lots={lots}
+        onClose={() => setTaskDialogOpen(false)}
+        onCreate={(t) => addTask(t)}
+      />
     </Box>
   );
 }
