@@ -101,3 +101,20 @@ CREATE TABLE DRONES (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (estateId) REFERENCES ESTATES(estateId) ON DELETE CASCADE
 );
+
+
+-- TASKS TABLE
+CREATE TABLE TASKS (
+  taskId INT AUTO_INCREMENT PRIMARY KEY,
+  task VARCHAR(100) NOT NULL,
+  dueDate DATE NOT NULL,
+  dueTime TIME NOT NULL,
+  tag ENUM('Monitoring', 'Fertilizing', 'Memo') DEFAULT 'Memo',
+  lots JSON NOT NULL,
+  status ENUM('Pending', 'InProgress', 'Completed') DEFAULT 'Pending',
+  estateId INT NOT NULL,
+  userId INT NOT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (estateId) REFERENCES ESTATES(estateId) ON DELETE CASCADE
+);
+

@@ -12,6 +12,7 @@ import {
   FormControl,
   RadioGroup,
   Radio,
+  alpha,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import TextBox from "./TextBox";
@@ -24,11 +25,13 @@ interface TaskProps {
   dueTime: string;
   lots: number[];
   tag: "Monitoring" | "Fertilizing" | "Memo";
+  status: "Completed" | "InProgress" | "Pending";
 }
 
 interface LotProps {
   lotId: number;
   lot: string;
+  location: [number, number];
 }
 
 interface TaskDialogProps {
@@ -55,6 +58,7 @@ const EMPTY_TASK: TaskProps = {
   dueTime: "",
   lots: [],
   tag: "Memo",
+  status: "Pending",
 };
 
 const ERROR_FREE: ErrorProps = {
@@ -65,7 +69,13 @@ const ERROR_FREE: ErrorProps = {
 };
 
 const MAX_DAYS = 7;
-
+const MAX_TASK_LENGTH = 30;
+const COLOR = {
+  safe: "#009a68",
+  risk: "#e10034",
+  inprogress: "#ff9800",
+  pending: "#2196f3",
+};
 export default function TaskDialog({
   task,
   lots,
@@ -74,6 +84,7 @@ export default function TaskDialog({
   onCreate,
 }: TaskDialogProps) {
   const today = useDate().dateISO;
+  const now = useDate().time24.split(" ")[0];
   const maxDate = today ? addDaysToDate(today, MAX_DAYS) : "9999-12-31";
 
   const [taskData, setTaskData] = useState<TaskProps>(EMPTY_TASK);
@@ -81,14 +92,15 @@ export default function TaskDialog({
   const [err, setErr] = useState<ErrorProps>(ERROR_FREE);
 
   useEffect(() => {
-    if (task && task.taskId > 0) {
+    if (open && task && task.taskId > 0) {
       setTaskData(task);
       setViewOnly(true);
     } else {
       setTaskData(EMPTY_TASK);
       setViewOnly(false);
     }
-  }, [task]);
+    setErr(ERROR_FREE);
+  }, [task, open]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -120,7 +132,7 @@ export default function TaskDialog({
         !taskData.dueDate ||
         taskData.dueDate < today ||
         taskData.dueDate > maxDate,
-      time: !taskData.dueTime,
+      time: !taskData.dueTime || taskData.dueTime <= now,
       lots: !taskData.lots || taskData.lots.length === 0,
     };
 
@@ -140,14 +152,44 @@ export default function TaskDialog({
       fullWidth
       sx={{ fontFamily: "Montserrat" }}
     >
-      <DialogTitle fontFamily={"inherit"} fontWeight={600}>
+      <DialogTitle
+        fontFamily={"inherit"}
+        fontWeight={600}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+      >
         {viewOnly ? "Task Information" : "Add New Task"}
+
+        {viewOnly && (
+          <Typography
+            sx={{
+              bgcolor: alpha(
+                taskData.status === "Pending"
+                  ? COLOR.pending
+                  : COLOR.inprogress,
+                0.2
+              ),
+              width: 110,
+              textAlign: "center",
+              borderRadius: 4,
+              fontWeight: 550,
+              color:
+                taskData.status === "Pending"
+                  ? COLOR.pending
+                  : COLOR.inprogress,
+              p: "1px",
+            }}
+          >
+            {taskData.status}
+          </Typography>
+        )}
       </DialogTitle>
 
       <DialogContent dividers>
         <Grid container spacing={2}>
           {/* Task Name */}
-          <Grid size={12}>
+          <Grid size={12} textAlign={"end"}>
             <TextBox
               label="Task"
               name="task"
@@ -158,7 +200,16 @@ export default function TaskDialog({
               disabled={viewOnly}
               error={err.task}
               helperText={err.task && "Invalid Task"}
+              slotProps={{
+                htmlInput: {
+                  maxLength: MAX_TASK_LENGTH,
+                },
+              }}
             />
+            {/* Remaining character count */}
+            <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
+              {`${MAX_TASK_LENGTH - taskData.task.length}/${MAX_TASK_LENGTH}`}
+            </Typography>
           </Grid>
 
           {/* Due Date */}
@@ -167,7 +218,7 @@ export default function TaskDialog({
               label="Due Date"
               type="date"
               name="dueDate"
-              value={taskData.dueDate}
+              value={taskData.dueDate.split("T")[0]}
               onChange={handleChange}
               fullWidth
               required
@@ -195,9 +246,12 @@ export default function TaskDialog({
               required
               disabled={viewOnly}
               error={err.time}
-              helperText={err.time && `Invalid Time`}
+              helperText={
+                err.time && `Time should be greater than current time`
+              }
               slotProps={{
                 inputLabel: { shrink: true },
+                htmlInput: { min: now },
               }}
             />
           </Grid>

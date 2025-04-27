@@ -11,6 +11,7 @@ import usersRouter from "./route/users";
 import authRouter from "./route/auth";
 import estateRouter from "./route/estates";
 import lotRouter from "./route/lots";
+import taskRouter from "./route/tasks";
 
 const app = express();
 const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
@@ -74,6 +75,9 @@ app.use("/estates", estateRouter);
 
 // lots Route
 app.use("/lots", lotRouter);
+
+// tasks Route
+app.use("/tasks", taskRouter);
 
 // 404 Handler
 app.use((req, res, next) => {

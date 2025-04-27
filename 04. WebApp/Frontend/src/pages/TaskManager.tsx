@@ -6,13 +6,19 @@ import TaskList from "../components/TaskList";
 import { useAuth } from "../context/AuthContext";
 
 interface EstateProps {
-  estateId: number;
+  id: number;
   estate: string;
 }
 
 interface LotProps {
   lotId: number;
   lot: string;
+  location: [number, number];
+}
+
+interface OfficeProps {
+  name: string;
+  location: [number, number];
 }
 
 export default function TaskManager() {
@@ -22,6 +28,7 @@ export default function TaskManager() {
 
   const [estate, setEstate] = useState<EstateProps>(estates[0]);
   const [lots, setLots] = useState<LotProps[]>();
+  const [office, setOffice] = useState<OfficeProps>();
 
   const handleChange = (name: string) => {
     console.log("Selected:", name);
@@ -61,7 +68,7 @@ export default function TaskManager() {
             sx={{ borderRadius: 2, maxWidth: "350px" }}
           >
             {estates.map((estate) => (
-              <MenuItem key={estate.estateId} value={estate.estate}>
+              <MenuItem key={estate.id} value={estate.estate}>
                 {estate.estate}
               </MenuItem>
             ))}
@@ -81,15 +88,16 @@ export default function TaskManager() {
         {/* Features Section */}
         <Grid
           size={{ xs: 12, sm: "auto" }}
-          height={"100%"}
+          height={{ xs: "auto", md: "100%" }}
           display={"flex"}
           justifyContent={"center"}
         >
           <TaskList
-            estateId={estate?.estateId}
+            estateId={estate.id}
             userId={user?.userId}
             lots={lots}
             setLots={setLots}
+            setOffice={setOffice}
           />
         </Grid>
 
@@ -100,7 +108,7 @@ export default function TaskManager() {
           minHeight={"370px"}
           bgcolor={"red"}
         >
-          <LeafletMap />
+          <LeafletMap office={office} lots={lots} />
         </Grid>
       </Grid>
     </Box>
