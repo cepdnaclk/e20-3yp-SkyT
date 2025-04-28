@@ -458,6 +458,7 @@ export default function TaskList({
           )}
         </FillButton>
       </Stack>
+
       {/* taskList */}
       <Box
         height={"calc(100% - 50px)"}
@@ -468,7 +469,7 @@ export default function TaskList({
         alignItems={"center"}
       >
         {!taskLoading ? (
-          filteredList ? (
+          filteredList.length > 0 ? (
             filteredList.map((t) => (
               <TaskCard
                 key={t.taskId}
