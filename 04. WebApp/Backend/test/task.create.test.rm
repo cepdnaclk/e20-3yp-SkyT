@@ -1,0 +1,141 @@
+import request from "supertest";
+import app from "../src/app";
+
+describe("POST /tasks", () => {
+  it("Should return a error (invalid userId)", async () => {
+    const res = await request(app)
+      .post("/tasks")
+      .send({
+        task: {
+          taskId: -1,
+          task: "Add Fertilize to Lot EH-L2",
+          dueDate: "2025-04-29",
+          dueTime: "09:05:00",
+          tag: "Fertilizing",
+          status: "Pending",
+          lots: [8],
+        },
+        userId: "abc",
+        estateId: 3,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Required fields missing");
+  });
+});
+
+describe("POST /tasks", () => {
+  it("Should return a error (invalid estateId)", async () => {
+    const res = await request(app)
+      .post("/tasks")
+      .send({
+        task: {
+          taskId: -1,
+          task: "Add Fertilize to Lot EH-L2",
+          dueDate: "2025-04-29",
+          dueTime: "09:05:00",
+          tag: "Fertilizing",
+          status: "Pending",
+          lots: [8],
+        },
+        userId: 2,
+        estateId: "pqr",
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Required fields missing");
+  });
+});
+
+describe("POST /tasks", () => {
+  it("Should return a error (invalid task)", async () => {
+    const res = await request(app)
+      .post("/tasks")
+      .send({
+        task: {
+          taskId: -1,
+          task: "",
+          dueDate: "2025-04-29",
+          dueTime: "09:05:00",
+          tag: "Fertilizing",
+          status: "Pending",
+          lots: [8],
+        },
+        userId: 2,
+        estateId: "pqr",
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Required fields missing");
+  });
+});
+
+describe("POST /tasks", () => {
+  it("Should return a error (task already exist - same data)", async () => {
+    const res = await request(app)
+      .post("/tasks")
+      .send({
+        task: {
+          taskId: -1,
+          task: "Add Fertilize to Lot EH-L2",
+          dueDate: "2025-04-29",
+          dueTime: "09:05:00",
+          tag: "Fertilizing",
+          status: "Pending",
+          lots: [8],
+        },
+        userId: 2,
+        estateId: 3,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("The task already exists");
+  });
+});
+
+describe("POST /tasks", () => {
+  it("Should return a error (task already exist - similar lot)", async () => {
+    const res = await request(app)
+      .post("/tasks")
+      .send({
+        task: {
+          taskId: -1,
+          task: "Add Fertilize to Lot EH-L2 & 3",
+          dueDate: "2025-04-29",
+          dueTime: "09:05:00",
+          tag: "Fertilizing",
+          status: "Pending",
+          lots: [8, 9],
+        },
+        userId: 2,
+        estateId: 3,
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("The task already exists");
+  });
+});
+
+/*describe("POST /tasks", () => {
+  it("Should create a task", async () => {
+    const res = await request(app)
+      .post("/tasks")
+      .send({
+        task: {
+          taskId: -1,
+          task: "Add Fertilize to Lot EH-L3",
+          dueDate: "2025-04-29",
+          dueTime: "09:05:00",
+          tag: "Fertilizing",
+          status: "Pending",
+          lots: [9],
+        },
+        userId: 2,
+        estateId: 3,
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.message).toBe("Task created successfully!");
+  });
+});
+*/

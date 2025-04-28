@@ -87,3 +87,34 @@ CREATE TABLE LOT_IMAGES (
   uploadedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (nodeId) REFERENCES NODES(nodeId) ON DELETE CASCADE
 );
+
+-- DRONES TABLE
+CREATE TABLE DRONES (
+  droneId INT AUTO_INCREMENT PRIMARY KEY,
+  estateId INT NOT NULL,
+  type ENUM('Monitoring', 'Fertilizing') DEFAULT 'Monitoring' NOT NULL,
+  model VARCHAR(100),
+  serialNumber VARCHAR(100) UNIQUE,
+  status ENUM('Active', 'Available', 'Removed', 'Maintenance') DEFAULT 'Available',
+  purchaseDate DATE,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (estateId) REFERENCES ESTATES(estateId) ON DELETE CASCADE
+);
+
+
+-- TASKS TABLE
+CREATE TABLE TASKS (
+  taskId INT AUTO_INCREMENT PRIMARY KEY,
+  task VARCHAR(50) NOT NULL,
+  dueDate DATE NOT NULL,
+  dueTime TIME NOT NULL,
+  tag ENUM('Monitoring', 'Fertilizing', 'Memo') DEFAULT 'Memo',
+  lots JSON NOT NULL,
+  status ENUM('Pending', 'InProgress', 'Completed') DEFAULT 'Pending',
+  estateId INT NOT NULL,
+  userId INT NOT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (estateId) REFERENCES ESTATES(estateId) ON DELETE CASCADE
+);
+

@@ -76,6 +76,15 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     }
   }
 
+  // Estate Map Section
+  if (allSections.length === 4) {
+    const word =
+      allSections[3].charAt(0).toUpperCase() + allSections[3].slice(1);
+    breadcrumbs.push(word);
+
+    console.log("Map word: ", word);
+  }
+
   // Lot Section
   if (allSections.length > 4 && lotList) {
     try {
@@ -174,7 +183,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
           justifyContent={{ xs: "start", md: "end" }}
           width={"100%"}
         >
-          {allSections.length < 4 && (
+          {(allSections.length === 1 || allSections.length === 4) && (
             <SearchBox
               placeholder="Search"
               value={search}

@@ -24,6 +24,7 @@ import LotMap from "./pages/Dashboard.Map";
 import TaskManager from "./pages/TaskManager";
 import PrivateRoute from "./routes/PrivateRoute";
 import ProtectedRoute from "./routes/ProtectedRoutes";
+import EstateSummary from "./pages/Dashboard.EstateSummary";
 
 function App() {
   const [search, setSearch] = useState<string>("");
@@ -52,8 +53,9 @@ function App() {
               element={<DashboardArea search={search} setSearch={setSearch} />}
             >
               <Route index element={<Dashboard search={search} />} />
+              <Route path="estate/:estateId" element={<EstateSummary />} />
               <Route
-                path="estate/:estateId"
+                path="estate/:estateId/map"
                 element={<Estate search={search} />}
               />
               <Route path="estate/:estateId/lot/:lotId" element={<Lot />} />

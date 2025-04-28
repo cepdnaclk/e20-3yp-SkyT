@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Checkbox,
   Typography,
+  FormControl,
 } from "@mui/material";
 import TextBox from "./TextBox";
 
@@ -176,19 +177,41 @@ function FormDialog({
 
             <FormGroup>
               <Grid container>
-                {estates?.map((estate) => (
-                  <Grid key={estate.estateId} size={{ xs: 6 }}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formValues.estates.includes(estate.estateId)}
-                          onChange={() => handleChecked(estate.estateId)}
-                        />
-                      }
-                      label={estate.estate}
-                    />
-                  </Grid>
-                ))}
+                <FormControl
+                  required
+                  error={error.estates}
+                  component="fieldset"
+                  variant="standard"
+                  fullWidth
+                >
+                  {estates?.map((estate) => (
+                    <Grid key={estate.estateId} size={{ xs: 6 }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={formValues.estates.includes(
+                              estate.estateId
+                            )}
+                            onChange={() => handleChecked(estate.estateId)}
+                          />
+                        }
+                        label={estate.estate}
+                      />
+                    </Grid>
+                  ))}
+
+                  {/* Helper Text when error */}
+                  {error.estates && (
+                    <Typography
+                      fontSize="0.75rem"
+                      color="error"
+                      marginTop="4px"
+                      marginLeft="14px"
+                    >
+                      Please select at least one estate.
+                    </Typography>
+                  )}
+                </FormControl>
               </Grid>
             </FormGroup>
           </Grid>

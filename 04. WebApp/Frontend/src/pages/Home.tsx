@@ -2,7 +2,7 @@ import { Box, Paper } from "@mui/material";
 import SideBar from "../components/SideBar";
 import AppBar from "../components/AppBar";
 import { IoNotifications, IoSpeedometer } from "react-icons/io5";
-import { FaUserCircle } from "react-icons/fa";
+import { FaTasks, FaUserCircle } from "react-icons/fa";
 import { Outlet } from "react-router-dom";
 import { MdPeopleAlt } from "react-icons/md";
 import { useAuth } from "../context/AuthContext";
@@ -21,6 +21,7 @@ const menuItems = [
     icon: <IoNotifications />,
     path: "/notifications",
   },
+  { label: "Task Manager", icon: <FaTasks />, path: "/taskmanager" },
   { label: "People", icon: <MdPeopleAlt />, path: "/people" },
   { label: "Profile", icon: <FaUserCircle />, path: "/profile" },
 ];

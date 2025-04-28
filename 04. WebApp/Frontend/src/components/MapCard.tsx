@@ -1,6 +1,13 @@
 import { Box, Card, IconButton, Tooltip, Typography } from "@mui/material";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LeafletMap from "./LeafletMap";
+import { ResponsiveStyleValue } from "@mui/system";
+
+interface LocationListProps {
+  lotId: number;
+  lot: string;
+  location: [number, number];
+}
 
 interface GallaryCardProps {
   path?: string;
@@ -8,18 +15,27 @@ interface GallaryCardProps {
     name: string;
     location: [number, number];
   };
+  width?: ResponsiveStyleValue<string | number>;
+  height?: ResponsiveStyleValue<string | number>;
+  locationList?: LocationListProps[];
 }
 
-export default function MapCard({ path, center }: GallaryCardProps) {
+export default function MapCard({
+  path,
+  center,
+  width,
+  height,
+  locationList,
+}: GallaryCardProps) {
   return (
     <Card
       elevation={3}
       sx={{
         p: 2,
-        width: "320px",
+        width: width ? `calc(${width} - 32px)` : "320px",
         borderRadius: 2,
         fontFamily: "Montserrat",
-        height: "200px",
+        height: height || "200px",
       }}
     >
       {/* Header */}
@@ -49,8 +65,8 @@ export default function MapCard({ path, center }: GallaryCardProps) {
         </Tooltip>
       </Box>
 
-      <Box width={"100%"} height={"160px"}>
-        <LeafletMap office={center} />
+      <Box width={"100%"} height={"calc(100% - 40px)"}>
+        <LeafletMap office={center} lots={locationList} />
       </Box>
     </Card>
   );
