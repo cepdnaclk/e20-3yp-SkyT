@@ -118,3 +118,18 @@ CREATE TABLE TASKS (
   FOREIGN KEY (estateId) REFERENCES ESTATES(estateId) ON DELETE CASCADE
 );
 
+
+-- DRONE STATUS TABLE
+CREATE TABLE DRONE_STATUS (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  droneId INT NOT NULL,
+  lat DECIMAL(18, 15) NOT NULL,
+  lng DECIMAL(18, 15) NOT NULL,
+  battery INT NOT NULL, -- percentage (0 - 100)
+  signalStrength INT NOT NULL, -- percentage (0 - 100)
+  status ENUM('Idle', 'Mission', 'Returning', 'Error') DEFAULT 'Idle',
+  altitude FLOAT, -- meters
+  speed FLOAT,    -- meters/second
+  lastUpdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (droneId) REFERENCES DRONES(droneId) ON DELETE CASCADE
+);

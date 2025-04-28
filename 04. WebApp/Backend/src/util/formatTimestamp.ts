@@ -18,3 +18,12 @@ export function formatTimestamp(isoString: string): string {
 export function getColomboTime(): DateTime {
   return DateTime.now().setZone("Asia/Colombo");
 }
+
+export function getColomboDateTime(): { date: string; time: string } {
+  const now = DateTime.now().setZone("Asia/Colombo");
+
+  const date = now.toISODate() ?? ""; // "2025-04-28"
+  const time = now.toFormat("HH:mm:ss"); // "15:23:45"
+
+  return { date, time };
+}

@@ -224,10 +224,12 @@ function TaskCard({ data, onDelete, onView }: TaskCardProps) {
         <MenuItem onClick={() => handleView(data.taskId)}>
           <GrView size={"15px"} style={{ marginRight: "8px" }} /> View
         </MenuItem>
-        <MenuItem onClick={() => handleDelete(data.taskId)}>
-          <RiDeleteBin6Line size={"15px"} style={{ marginRight: "8px" }} />
-          Delete
-        </MenuItem>
+        {data.status === "Pending" && (
+          <MenuItem onClick={() => handleDelete(data.taskId)}>
+            <RiDeleteBin6Line size={"15px"} style={{ marginRight: "8px" }} />
+            Delete
+          </MenuItem>
+        )}
       </Menu>
     </Stack>
   );

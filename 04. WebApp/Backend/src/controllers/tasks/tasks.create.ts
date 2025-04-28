@@ -1,12 +1,13 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import TaskModel from "../../model/tasks";
+import { getColomboDateTime } from "../../util/formatTimestamp";
 
 interface TaskProps {
   task: string;
   dueDate: string;
   dueTime: string;
-  lots: string;
+  lots: number[];
   tag: "Monitoring" | "Fertilizing" | "Memo";
   estateId: number;
   userId: number;
@@ -32,6 +33,17 @@ export const createTask: RequestHandler = async (req, res, next) => {
       lots.length === 0
     ) {
       throw createHttpError(400, "Required fields missing");
+    }
+
+    // Task Verification
+    const { date, time } = getColomboDateTime();
+
+    if (
+      task.length > 40 ||
+      dueDate < date ||
+      (dueDate === date && dueTime <= time)
+    ) {
+      throw createHttpError(401, "Invalid task details");
     }
 
     // Create task
