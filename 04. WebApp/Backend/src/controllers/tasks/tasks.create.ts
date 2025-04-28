@@ -19,7 +19,7 @@ export const createTask: RequestHandler = async (req, res, next) => {
     const { userId, estateId } = req.body;
     const { task, dueDate, dueTime, tag, lots } = req.body.task;
 
-    console.log("New request from: ", { task, userId, estateId });
+    console.log("New request from: ", { task, userId, estateId, lots });
 
     // Validate input
     if (
@@ -40,7 +40,7 @@ export const createTask: RequestHandler = async (req, res, next) => {
       dueDate,
       dueTime,
       tag,
-      lots: JSON.stringify(lots),
+      lots,
       estateId: parseInt(estateId),
       userId: parseInt(userId),
     };

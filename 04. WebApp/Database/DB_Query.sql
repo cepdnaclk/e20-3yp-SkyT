@@ -106,7 +106,7 @@ CREATE TABLE DRONES (
 -- TASKS TABLE
 CREATE TABLE TASKS (
   taskId INT AUTO_INCREMENT PRIMARY KEY,
-  task VARCHAR(100) NOT NULL,
+  task VARCHAR(50) NOT NULL,
   dueDate DATE NOT NULL,
   dueTime TIME NOT NULL,
   tag ENUM('Monitoring', 'Fertilizing', 'Memo') DEFAULT 'Memo',

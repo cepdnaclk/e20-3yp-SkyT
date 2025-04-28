@@ -22,7 +22,7 @@ import { GrView } from "react-icons/gr";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import AlertDialog from "./AlertDialog";
 import TaskDialog from "./TaskDialog";
-import { getData, postData } from "../api/NodeBackend";
+import { deleteData, getData, postData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "./ToastAlert";
 
@@ -314,6 +314,40 @@ export default function TaskList({
   const deleteTask = async () => {
     setDeleteDialogOpen(false);
     console.log("Task: " + deleteId + " is deleted.");
+
+    const data = { userId, taskId: deleteId };
+
+    setTaskLoading(true);
+
+    try {
+      const serverResponse = await deleteData(data, "tasks");
+      if (serverResponse.status === 200) {
+        console.log(serverResponse.data.message);
+        ToastAlert({
+          type: "success",
+          title: "Task removed successfully",
+          onClose: getTasks,
+        });
+      }
+    } catch (err) {
+      const error = err as AxiosError<ErrorResponse>;
+      const status = error.response?.status;
+
+      let errMsg;
+
+      if (status === 401 || status === 400) {
+        console.log(error.response?.data?.error);
+        errMsg = error.response?.data?.error;
+      }
+
+      console.log("Dashboard Error:", errMsg);
+      ToastAlert({
+        type: "error",
+        title: errMsg || "Something went wrong",
+      });
+    } finally {
+      setTaskLoading(false);
+    }
   };
 
   const addTask = async (t: TaskProps) => {
@@ -366,7 +400,7 @@ export default function TaskList({
 
   return (
     <Box
-      width={"330px"}
+      width={"340px"}
       border={"1px solid #cccccc"}
       height={{ xs: "auto", md: "calc(100% - 32px)" }}
       maxHeight={"100%"}

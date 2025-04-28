@@ -132,7 +132,9 @@ export default function TaskDialog({
         !taskData.dueDate ||
         taskData.dueDate < today ||
         taskData.dueDate > maxDate,
-      time: !taskData.dueTime || taskData.dueTime <= now,
+      time:
+        !taskData.dueTime ||
+        (taskData.dueDate === today && taskData.dueTime <= now),
       lots: !taskData.lots || taskData.lots.length === 0,
     };
 
