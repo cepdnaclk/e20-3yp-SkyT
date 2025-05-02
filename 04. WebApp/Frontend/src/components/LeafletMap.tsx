@@ -3,6 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import { Typography } from "@mui/material";
+import DroneMarker from "./DroneMarker";
 
 interface LotProps {
   lotId: number;
@@ -29,6 +30,15 @@ interface NodeProps {
   k: string;
 }
 
+interface DroneStatusProps {
+  droneId: number;
+  type: string;
+  location: [number, number];
+  battery: number;
+  signal: number;
+  status: "Active" | "Available" | "Removed" | "Maintenance";
+}
+
 interface MapInterfaceProps {
   lots?: LotProps[];
   nodes?: NodeProps[];
@@ -37,6 +47,7 @@ interface MapInterfaceProps {
     location: [number, number];
   };
   searching?: number[];
+  drones?: DroneStatusProps[];
   handleNavigate?: (lotId: number) => void;
 }
 
@@ -89,6 +100,7 @@ export default function LeafletMap({
   nodes,
   office,
   searching,
+  drones,
   handleNavigate,
 }: MapInterfaceProps) {
   const mapCenter = office?.location || defaultCenter;
@@ -168,6 +180,11 @@ export default function LeafletMap({
             K: {node.k}mg/kg
           </Popup>
         </Marker>
+      ))}
+
+      {/* Drone Markers */}
+      {drones?.map((drone) => (
+        <DroneMarker key={drone.droneId} {...drone} />
       ))}
     </MapContainer>
   );

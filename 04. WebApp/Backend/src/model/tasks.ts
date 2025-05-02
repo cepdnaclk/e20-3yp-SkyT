@@ -26,6 +26,19 @@ class TaskModel {
     return rows;
   }
 
+  static async getTasksByLot(lotId: number) {
+    const query = `
+        SELECT taskId, task, dueDate, dueTime, tag, status
+        FROM TASKS
+        WHERE JSON_CONTAINS(lots, JSON_ARRAY(?)) AND status != 'Completed'
+        ORDER BY dueDate, dueTime
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [lotId]);
+
+    return rows;
+  }
+
   static async addTask({
     task,
     dueDate,

@@ -208,7 +208,8 @@ class LotModel {
     ]);
 
     if (rows.length === 0) {
-      throw createHttpError(404, "pH data not found!");
+      //throw createHttpError(404, "pH data not found!");
+      return [];
     }
 
     return rows.map((row) => ({
@@ -267,7 +268,8 @@ class LotModel {
     ]);
 
     if (rows.length === 0) {
-      throw createHttpError(404, "NPK data not found!");
+      //throw createHttpError(404, "NPK data not found!");
+      return [];
     }
 
     return rows.map((row) => ({

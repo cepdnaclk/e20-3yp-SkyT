@@ -1,3 +1,4 @@
+import createHttpError from "http-errors";
 import pool from "../database/sqldb";
 import { RowDataPacket } from "mysql2";
 
@@ -6,6 +7,15 @@ interface DroneProps {
   monAva: number;
   ferAct: number;
   ferAva: number;
+}
+
+interface DroneStatusProps {
+  droneId: number;
+  type: string;
+  location: [number, number];
+  battery: number;
+  signal: number;
+  status: "Active" | "Available" | "Removed" | "Maintenance";
 }
 
 class DroneModel {
@@ -23,6 +33,57 @@ class DroneModel {
     const [rows] = await pool.query<RowDataPacket[]>(query, [estateId]);
 
     return rows[0] as DroneProps;
+  }
+
+  static async getDroneStatusByEstate(estateId: number, userId: number) {
+    const conn = await pool.getConnection();
+    try {
+      // Verify access
+      const authQuery = `
+        SELECT 1 FROM EMPLOYEES
+        WHERE employeeId = ? AND estateId = ?
+      `;
+
+      const [authResult] = await conn.query<RowDataPacket[]>(authQuery, [
+        userId,
+        estateId,
+      ]);
+
+      if (authResult.length === 0) {
+        throw createHttpError(403, "Access denied to the estate");
+      }
+
+      // Fetch drones of the estate
+      const droneQuery = `
+        SELECT S.droneId, D.type, S.lat, S.lng, S.battery, S.signalStrength, D.status
+        FROM DRONE_STATUS S
+        JOIN DRONES D ON D.droneId = S.droneId
+        WHERE D.estateId = ? AND D.status != 'Removed'
+      `;
+      const [drones] = await conn.query<RowDataPacket[]>(droneQuery, [
+        estateId,
+      ]);
+
+      if (drones.length === 0) {
+        throw createHttpError(404, "No drones found");
+      }
+
+      const res: DroneStatusProps[] = drones.map((drone) => ({
+        droneId: parseInt(drone.droneId),
+        type: drone.type,
+        location: [parseFloat(drone.lat), parseFloat(drone.lng)],
+        battery: parseFloat(drone.battery),
+        signal: parseFloat(drone.signalStrength),
+        status: drone.status,
+      }));
+
+      return res;
+    } catch (err) {
+      await conn.rollback();
+      throw err;
+    } finally {
+      conn.release();
+    }
   }
 }
 

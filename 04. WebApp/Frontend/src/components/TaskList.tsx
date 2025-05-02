@@ -337,7 +337,7 @@ export default function TaskList({
 
       let errMsg;
 
-      if (status === 401 || status === 400) {
+      if (status === 400) {
         console.log(error.response?.data?.error);
         errMsg = error.response?.data?.error;
       }
@@ -469,7 +469,7 @@ export default function TaskList({
         alignItems={"center"}
       >
         {!taskLoading ? (
-          filteredList.length > 0 ? (
+          filteredList && filteredList?.length > 0 ? (
             filteredList.map((t) => (
               <TaskCard
                 key={t.taskId}
@@ -487,6 +487,7 @@ export default function TaskList({
           <Skeleton height={70} variant="rectangular" />
         )}
       </Box>
+
       {/* Delete Confirmation Dialog Box */}
       <AlertDialog
         open={deleteDialogOpen}
