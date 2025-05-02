@@ -163,7 +163,7 @@ export default function TaskSummaryCard({ tasks }: TaskCardProps) {
       </Box>
 
       <Stack alignItems={"center"} justifyContent={"center"}>
-        {tasks ? (
+        {tasks && tasks.length > 0 ? (
           tasks.map((task) => <SummaryCard key={task.taskId} data={task} />)
         ) : (
           <Box
@@ -173,7 +173,9 @@ export default function TaskSummaryCard({ tasks }: TaskCardProps) {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Typography>No pending tasks!</Typography>
+            <Typography fontFamily={"Montserrat"} fontWeight={500}>
+              No tasks to show. Enjoy your day!
+            </Typography>
           </Box>
         )}
       </Stack>
