@@ -27,3 +27,22 @@ export function getColomboDateTime(): { date: string; time: string } {
 
   return { date, time };
 }
+
+export function getRelativeTime(date: Date | string): string {
+  try {
+    const zone = "Asia/Colombo";
+    const created =
+      typeof date === "string"
+        ? DateTime.fromISO(date, { zone })
+        : DateTime.fromJSDate(date, { zone });
+
+    const now = DateTime.now().setZone(zone);
+
+    if (!created.isValid) return "invalid date";
+
+    return created.toRelative({ base: now }) ?? "just now";
+  } catch (error) {
+    console.error("Error in getRelativeTime:", error);
+    return "unknown";
+  }
+}

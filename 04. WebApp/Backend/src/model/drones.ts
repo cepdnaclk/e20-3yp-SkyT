@@ -58,7 +58,13 @@ class DroneModel {
         SELECT S.droneId, D.type, S.lat, S.lng, S.battery, S.signalStrength, D.status
         FROM DRONE_STATUS S
         JOIN DRONES D ON D.droneId = S.droneId
-        WHERE D.estateId = ? AND D.status != 'Removed'
+        JOIN (
+          SELECT droneId, MAX(lastUpdate) AS latest
+          FROM DRONE_STATUS
+          GROUP BY droneId
+        ) latest_status ON S.droneId = latest_status.droneId AND S.lastUpdate = latest_status.latest
+        WHERE D.estateId = ? AND D.status != 'Removed';
+
       `;
       const [drones] = await conn.query<RowDataPacket[]>(droneQuery, [
         estateId,
