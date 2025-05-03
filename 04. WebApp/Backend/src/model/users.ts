@@ -2,6 +2,7 @@ import pool from "../database/sqldb";
 import createHttpError from "http-errors";
 import argon2 from "argon2";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { NotificationModel } from "./notifications";
 
 // Define the User interface for type checking
 export interface NewUser {
@@ -17,6 +18,10 @@ export interface UpdateUser extends Omit<NewUser, "estates"> {
   userId: number;
   profilePic: string | null;
 }
+
+// Notification messages
+const WELCOME_MESSAGE =
+  "We're thrilled to have you join our community! Explore all the features we offer and get the most out of your experience. If you have any questions or feedback, feel free to reach out to our support team anytime. Enjoy your journey with us!";
 
 // Create a User class that will handle database interactions
 class UserModel {
@@ -60,6 +65,14 @@ class UserModel {
       if (rows.affectedRows === 0) {
         throw createHttpError(500, "No employees added");
       }
+
+      // Create the welcome message
+      await NotificationModel.createOnce({
+        userId,
+        title: "Welcome to sky T platform",
+        message: WELCOME_MESSAGE,
+        type: "System",
+      });
 
       await connection.commit();
       return userId;
@@ -111,24 +124,43 @@ class UserModel {
   }
 
   // Delete an assistant
-  static async deleteAssistant(userId: number) {
+  static async deleteAssistant(userId: number, managerId: number) {
     const conn = await pool.getConnection();
 
     try {
       await conn.beginTransaction();
 
-      // First, remove from EMPLOYEE table
+      // Check if the manager has access to delete this assistant and get email
+      const authQuery = `
+        SELECT U.email 
+        FROM USERS U
+        JOIN EMPLOYEES E ON E.employeeId = U.userId
+        JOIN ESTATES ES ON ES.estateId = E.estateId
+        WHERE ES.managerId = ? AND U.userId = ? AND U.role = 'Assistant'
+      `;
+      const [rows] = await conn.query<RowDataPacket[]>(authQuery, [
+        managerId,
+        userId,
+      ]);
+
+      if (rows.length === 0) {
+        throw createHttpError(404, "User not found");
+      }
+
+      const userEmail = rows[0].email;
+
+      // Delete assistant from USERS table
       const [result] = await conn.query<ResultSetHeader>(
         "DELETE FROM USERS WHERE userId = ? AND role = 'Assistant'",
         [userId]
       );
 
       if (result.affectedRows === 0) {
-        throw createHttpError(404, "User not found");
+        throw createHttpError(500, "User deletion failed");
       }
 
       await conn.commit();
-      return { message: "User deleted successfully" };
+      return userEmail;
     } catch (error) {
       await conn.rollback();
       throw error;
@@ -185,7 +217,15 @@ class UserModel {
 
       // Auth Query
       const deleteTokenQuery = "DELETE FROM AUTH WHERE userId = ?";
-      await connection.query(deleteTokenQuery, [userId]);
+      await connection.query<ResultSetHeader>(deleteTokenQuery, [userId]);
+
+      // Notify to user
+      await NotificationModel.createOnce({
+        userId,
+        title: "Profile Updated",
+        message: "Your profile information has been successfully updated.",
+        type: "System",
+      });
 
       await connection.commit();
       return { message: "User updated successfully" };

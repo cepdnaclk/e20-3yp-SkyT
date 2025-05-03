@@ -44,10 +44,12 @@ interface CenterProps {
 }
 
 interface SummaryCardProps {
-  id?: number;
-  due?: string;
+  taskId?: number;
   task?: string;
-  tag?: string;
+  dueDate?: string;
+  dueTime?: string;
+  tag: "Monitoring" | "Fertilizing" | "Memo";
+  status: "Completed" | "InProgress" | "Pending";
 }
 
 interface ErrorResponse {

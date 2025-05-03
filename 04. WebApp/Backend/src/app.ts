@@ -12,6 +12,8 @@ import authRouter from "./route/auth";
 import estateRouter from "./route/estates";
 import lotRouter from "./route/lots";
 import taskRouter from "./route/tasks";
+import droneRouter from "./route/drones";
+import notificationRouter from "./route/notifications";
 
 const app = express();
 const allowedMethods = ["GET", "POST", "PATCH", "DELETE"];
@@ -78,6 +80,12 @@ app.use("/lots", lotRouter);
 
 // tasks Route
 app.use("/tasks", taskRouter);
+
+// drones Route
+app.use("/drones", droneRouter);
+
+// notifications Route
+app.use("/notify", notificationRouter);
 
 // 404 Handler
 app.use((req, res, next) => {

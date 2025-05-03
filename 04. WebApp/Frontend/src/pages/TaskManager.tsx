@@ -1,9 +1,10 @@
 import { Box, Grid, MenuItem, Typography } from "@mui/material";
 import LeafletMap from "../components/LeafletMap";
 import TextBox from "../components/TextBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskList from "../components/TaskList";
 import { useAuth } from "../context/AuthContext";
+import { getData } from "../api/NodeBackend";
 
 interface EstateProps {
   id: number;
@@ -21,6 +22,17 @@ interface OfficeProps {
   location: [number, number];
 }
 
+interface DroneStatusProps {
+  droneId: number;
+  type: string;
+  location: [number, number];
+  battery: number;
+  signal: number;
+  status: "Active" | "Available" | "Removed" | "Maintenance";
+}
+
+const PERIOD = 10; // in seconds
+
 export default function TaskManager() {
   const ests = sessionStorage.getItem("estates");
   const estates: EstateProps[] = ests ? JSON.parse(ests) : null;
@@ -29,6 +41,7 @@ export default function TaskManager() {
   const [estate, setEstate] = useState<EstateProps>(estates[0]);
   const [lots, setLots] = useState<LotProps[]>();
   const [office, setOffice] = useState<OfficeProps>();
+  const [drones, setDrones] = useState<DroneStatusProps[]>();
 
   const handleChange = (name: string) => {
     console.log("Selected:", name);
@@ -37,6 +50,28 @@ export default function TaskManager() {
       setEstate(selected);
     }
   };
+
+  useEffect(() => {
+    const fetchDroneData = async () => {
+      const url = `drones/${user?.userId}/${estate.id}`;
+
+      try {
+        const serverResponse = await getData(url);
+
+        if (serverResponse.status === 200) {
+          console.log(serverResponse.data);
+          setDrones(serverResponse.data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchDroneData(); // first call
+    const intervalId = setInterval(fetchDroneData, 1000 * PERIOD); // every 5 seconds
+
+    return () => clearInterval(intervalId); // cleanup
+  }, [estate.id, user?.userId]);
 
   return (
     <Box width={"100%"} height={"100%"}>
@@ -108,7 +143,7 @@ export default function TaskManager() {
           minHeight={"370px"}
           bgcolor={"red"}
         >
-          <LeafletMap office={office} lots={lots} />
+          <LeafletMap office={office} lots={lots} drones={drones} />
         </Grid>
       </Grid>
     </Box>

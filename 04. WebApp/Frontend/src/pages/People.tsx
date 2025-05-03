@@ -240,7 +240,10 @@ function People() {
     console.log("Delete confirmed: ", deleteUser);
 
     try {
-      const serverResponse = await deleteData({ userId: deleteUser }, "users");
+      const serverResponse = await deleteData(
+        { userId: deleteUser, managerId: user?.userId },
+        "users"
+      );
       if (serverResponse.status === 200) {
         console.log(serverResponse.data.message);
         ToastAlert({

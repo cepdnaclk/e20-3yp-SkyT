@@ -8,14 +8,16 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import { useDate } from "../utils/useDate";
+import { changeDateFormat, changeTimeFormat, useDate } from "../utils/useDate";
 import { useEffect, useState } from "react";
 
 interface SummaryCardProps {
-  id?: number;
-  due?: string;
+  taskId?: number;
   task?: string;
-  tag?: string;
+  dueDate?: string;
+  dueTime?: string;
+  tag: "Monitoring" | "Fertilizing" | "Memo";
+  status: "Completed" | "InProgress" | "Pending";
 }
 
 interface TaskCardProps {
@@ -26,20 +28,26 @@ interface TaskCardProps {
 const COLOR = {
   safe: "#009a68",
   risk: "#e10034",
+  inprogress: "#ff9800",
+  pending: "#2196f3",
 };
 
 function SummaryCard({ data }: { data?: SummaryCardProps }) {
   const { date: fullDate } = useDate(); // e.g., "2025 Apr 14"
   const [isToday, setIsToday] = useState<boolean>(false);
+  const [formatedDate, setFormatedDate] = useState<string>("");
 
   useEffect(() => {
-    if (!data?.due) return;
+    if (!data?.dueDate) return;
+
+    const newDate = changeDateFormat(data.dueDate).split(",")[0];
+    setFormatedDate(newDate);
 
     // Extract "Apr 14" part from "2025 Apr 14"
     const todayShort = fullDate.split(",")[0]; // "Apr 14"
     //console.log(todayShort);
-    setIsToday(data.due === todayShort);
-  }, [data?.due, fullDate]);
+    setIsToday(newDate === todayShort);
+  }, [data?.dueDate, fullDate]);
 
   return (
     <Stack
@@ -56,31 +64,60 @@ function SummaryCard({ data }: { data?: SummaryCardProps }) {
         bgcolor={alpha(isToday ? COLOR.risk : COLOR.safe, 0.2)}
         borderRadius={2}
         display={"flex"}
+        flexDirection={"column"}
         justifyContent={"center"}
         alignItems={"center"}
         fontWeight={600}
         color={isToday ? COLOR.risk : COLOR.safe}
         mr={1}
       >
-        {data?.due}
+        {formatedDate}
+        {data?.dueTime && (
+          <Typography variant="caption">
+            {changeTimeFormat(data?.dueTime)}
+          </Typography>
+        )}
       </Box>
 
       <Box fontFamily={"Montserrat"}>
         <Typography fontFamily={"inherit"} fontWeight={600}>
           {data?.task}
         </Typography>
-        <Typography
-          fontFamily={"inherit"}
-          fontWeight={550}
-          bgcolor={"#d9d9d9"}
-          borderRadius={2}
-          width={80}
-          textAlign={"center"}
-          variant="subtitle2"
-          color="text.secondary"
-        >
-          {data?.tag}
-        </Typography>
+
+        <Stack direction={"row"} gap={0.8}>
+          <Typography
+            fontFamily={"inherit"}
+            fontWeight={550}
+            bgcolor={"#d9d9d9"}
+            borderRadius={2}
+            width={90}
+            textAlign={"center"}
+            variant="subtitle2"
+            color="text.secondary"
+          >
+            {data?.tag}
+          </Typography>
+
+          <Typography
+            fontFamily={"inherit"}
+            fontWeight={550}
+            bgcolor={alpha(
+              data?.status === "Pending" ? COLOR.pending : COLOR.inprogress,
+              0.2
+            )}
+            borderRadius={2}
+            sx={{
+              color:
+                data?.status === "Pending" ? COLOR.pending : COLOR.inprogress,
+            }}
+            width={88}
+            textAlign={"center"}
+            variant="subtitle2"
+            color="text.secondary"
+          >
+            {data?.status}
+          </Typography>
+        </Stack>
       </Box>
     </Stack>
   );
@@ -126,8 +163,8 @@ export default function TaskSummaryCard({ tasks }: TaskCardProps) {
       </Box>
 
       <Stack alignItems={"center"} justifyContent={"center"}>
-        {tasks ? (
-          tasks.map((task) => <SummaryCard key={task.id} data={task} />)
+        {tasks && tasks.length > 0 ? (
+          tasks.map((task) => <SummaryCard key={task.taskId} data={task} />)
         ) : (
           <Box
             width={"100%"}
@@ -136,7 +173,9 @@ export default function TaskSummaryCard({ tasks }: TaskCardProps) {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Typography>No pending tasks!</Typography>
+            <Typography fontFamily={"Montserrat"} fontWeight={500}>
+              No tasks to show. Enjoy your day!
+            </Typography>
           </Box>
         )}
       </Stack>

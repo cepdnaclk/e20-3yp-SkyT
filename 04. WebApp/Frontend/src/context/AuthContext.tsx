@@ -4,6 +4,7 @@ export interface UserProps {
   userId: number;
   role: string;
   profilePic: string | null;
+  msgCount: number;
 }
 
 export interface AuthContextProps {

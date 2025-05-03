@@ -224,10 +224,12 @@ function TaskCard({ data, onDelete, onView }: TaskCardProps) {
         <MenuItem onClick={() => handleView(data.taskId)}>
           <GrView size={"15px"} style={{ marginRight: "8px" }} /> View
         </MenuItem>
-        <MenuItem onClick={() => handleDelete(data.taskId)}>
-          <RiDeleteBin6Line size={"15px"} style={{ marginRight: "8px" }} />
-          Delete
-        </MenuItem>
+        {data.status === "Pending" && (
+          <MenuItem onClick={() => handleDelete(data.taskId)}>
+            <RiDeleteBin6Line size={"15px"} style={{ marginRight: "8px" }} />
+            Delete
+          </MenuItem>
+        )}
       </Menu>
     </Stack>
   );
@@ -335,7 +337,7 @@ export default function TaskList({
 
       let errMsg;
 
-      if (status === 401 || status === 400) {
+      if (status === 400) {
         console.log(error.response?.data?.error);
         errMsg = error.response?.data?.error;
       }
@@ -456,6 +458,7 @@ export default function TaskList({
           )}
         </FillButton>
       </Stack>
+
       {/* taskList */}
       <Box
         height={"calc(100% - 50px)"}
@@ -466,7 +469,7 @@ export default function TaskList({
         alignItems={"center"}
       >
         {!taskLoading ? (
-          filteredList ? (
+          filteredList && filteredList?.length > 0 ? (
             filteredList.map((t) => (
               <TaskCard
                 key={t.taskId}
@@ -484,6 +487,7 @@ export default function TaskList({
           <Skeleton height={70} variant="rectangular" />
         )}
       </Box>
+
       {/* Delete Confirmation Dialog Box */}
       <AlertDialog
         open={deleteDialogOpen}

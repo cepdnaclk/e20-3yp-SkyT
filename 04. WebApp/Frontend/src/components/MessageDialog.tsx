@@ -11,12 +11,12 @@ import { Stack, Typography } from "@mui/material";
 import LetterAvatar from "./LetterAvatar";
 
 interface messageProps {
-  id: string;
+  msgId: number;
   title: string;
   message: string;
   time: string;
   sender: string;
-  status: string;
+  isRead: boolean;
 }
 
 interface MessageDialogProps {
@@ -48,6 +48,8 @@ export default function MessageDialog({
   return (
     <Dialog
       open={open}
+      maxWidth="sm"
+      fullWidth
       onClose={handleClose}
       PaperComponent={PaperComponent}
       aria-labelledby="draggable-dialog-title"

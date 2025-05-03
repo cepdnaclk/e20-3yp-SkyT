@@ -48,8 +48,8 @@ describe("POST /lots/npk", () => {
       range: "Week",
     });
 
-    expect(res.status).toBe(404);
-    expect(res.body.error).toBe("NPK data not found!");
+    expect(res.body.message).toBe("NPK data get successfully");
+    expect(res.body.npkData).toBeDefined();
   });
 });
 

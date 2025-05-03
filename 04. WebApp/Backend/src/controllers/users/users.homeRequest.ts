@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel from "../../model/users";
+import { NotificationModel } from "../../model/notifications";
 
 export const homeRequest: RequestHandler = async (req, res, next) => {
   try {
@@ -22,8 +23,8 @@ export const homeRequest: RequestHandler = async (req, res, next) => {
 
     const { fName } = result;
 
-    // Get Message count (future)
-    const msgCount = 10;
+    //  Message count
+    const msgCount = await NotificationModel.getMsgCount(userId);
 
     console.log({ userId, fName, msgCount });
 

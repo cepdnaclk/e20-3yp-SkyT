@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 import pool from "../database/sqldb";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { NotificationModel } from "./notifications";
 
 class EstateModel {
   // Get owned estates as a summary list
@@ -107,6 +108,15 @@ class EstateModel {
         `INSERT INTO EMPLOYEES (employeeId, estateId) VALUES ?`,
         [estValues]
       );
+
+      // Notify user
+      await NotificationModel.createOnce({
+        userId,
+        title: "Estate Assignment Updated",
+        message:
+          "Your assigned estates have been updated. Please log in to your dashboard to view the latest changes.",
+        type: "System",
+      });
 
       await connection.commit();
       return { message: "Estates updated successfully" };

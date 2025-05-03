@@ -10,17 +10,17 @@ import {
 import LetterAvatar from "./LetterAvatar";
 
 interface messageProps {
-  id: string;
+  msgId: number;
   title: string;
   message: string;
   time: string;
   sender: string;
-  status: string;
+  isRead: boolean;
 }
 
 interface MessageCardProps {
   message: messageProps;
-  onClick: (msgId: string) => void;
+  onClick: (msgId: number) => void;
 }
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -62,7 +62,7 @@ function MessageCard({ message, onClick }: MessageCardProps) {
   return (
     <Card
       elevation={3}
-      onClick={() => onClick(message.id)}
+      onClick={() => onClick(message.msgId)}
       sx={{
         width: "calc(100% - 40px)",
         maxWidth: "sm",
@@ -74,7 +74,13 @@ function MessageCard({ message, onClick }: MessageCardProps) {
     >
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Stack direction={"row"} alignItems={"center"}>
-          {message.status === "unread" ? (
+          {message.isRead ? (
+            <LetterAvatar
+              alt={message.sender}
+              text={message.sender}
+              style={{ width: 45, height: 45, marginRight: "16px" }}
+            />
+          ) : (
             <StyledBadge
               sx={{ mr: 2 }}
               overlap="circular"
@@ -87,12 +93,6 @@ function MessageCard({ message, onClick }: MessageCardProps) {
                 style={{ width: 45, height: 45, marginRight: "16px" }}
               />
             </StyledBadge>
-          ) : (
-            <LetterAvatar
-              alt={message.sender}
-              text={message.sender}
-              style={{ width: 45, height: 45, marginRight: "16px" }}
-            />
           )}
 
           <Stack>
