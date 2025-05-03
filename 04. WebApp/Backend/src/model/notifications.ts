@@ -67,6 +67,17 @@ export class NotificationModel {
     }
   }
 
+  static async getMsgCount(userId: number) {
+    const query = `
+      SELECT COUNT(*) AS unreadCount
+      FROM NOTIFICATIONS
+      WHERE userId = ? AND isRead = FALSE
+    `;
+    const [rows] = await pool.query<RowDataPacket[]>(query, [userId]);
+
+    return rows[0]?.unreadCount ?? 0;
+  }
+
   static async markAsRead(userId: number, msgId: number) {
     const query = `UPDATE NOTIFICATIONS SET isRead = TRUE WHERE msgId = ? AND userId = ?`;
     const [result] = await pool.query<ResultSetHeader>(query, [msgId, userId]);
