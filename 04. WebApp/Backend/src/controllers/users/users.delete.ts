@@ -1,24 +1,29 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel from "../../model/users";
+import sendDeleteEmail from "../../service/sendDeleteEmail";
 
 export const deleteAssistant: RequestHandler = async (req, res, next) => {
   try {
-    const { userId } = req.body;
+    const { userId, managerId } = req.body;
 
-    console.log("Delete Assistant: ", userId);
+    console.log("Delete Assistant: " + userId + " by user: " + managerId);
 
     // Validate input
-    if (isNaN(userId)) {
+    if (isNaN(userId) || isNaN(managerId)) {
       throw createHttpError(400, "Invalid user ID");
     }
 
     // Delete assistant
-    const result = await UserModel.deleteAssistant(userId);
+    const email = await UserModel.deleteAssistant(userId, managerId);
 
-    console.log(result.message);
+    // Send email to notify the deletion
+    console.log("Send email to ", email);
+    await sendDeleteEmail(email);
 
-    res.status(200).json(result);
+    console.log("User deleted successfully");
+
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     next(error);
   }

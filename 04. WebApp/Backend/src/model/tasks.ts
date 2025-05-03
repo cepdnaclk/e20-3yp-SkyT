@@ -133,6 +133,30 @@ class TaskModel {
         throw createHttpError(500, "No task added");
       }
 
+      // Notify all employees in the estate
+      const empQuery = `SELECT employeeId FROM EMPLOYEES WHERE estateId = ?`;
+      const [employees] = await conn.query<RowDataPacket[]>(empQuery, [
+        estateId,
+      ]);
+
+      const notifyQuery = `
+        INSERT INTO NOTIFICATIONS (userId, title, message, type)
+        VALUES ?
+      `;
+
+      const notificationValues = employees.map((e) => [
+        e.employeeId,
+        "New Task Assigned",
+        `A new task "${task}" has been scheduled for your estate.`,
+        "Task",
+      ]);
+
+      if (notificationValues.length > 0) {
+        await conn.query(notifyQuery, [notificationValues]);
+      } else {
+        throw createHttpError(500, "Unable to create notification");
+      }
+
       // Commit the transaction
       await conn.commit();
     } catch (err) {
@@ -144,18 +168,18 @@ class TaskModel {
   }
 
   static async removeTask(userId: number, taskId: number) {
-    // Start a transaction to protect everything
     const conn = await pool.getConnection();
 
     try {
       await conn.beginTransaction();
 
+      // Step 1: Auth check & get estateId
       const authQuery = `
-          SELECT T.taskId, T.status 
-          FROM TASKS T
-          JOIN EMPLOYEES E ON E.estateId = T.estateId
-          WHERE E.employeeId = ? AND T.taskId = ?
-        `;
+        SELECT T.taskId, T.status, T.task, T.estateId
+        FROM TASKS T
+        JOIN EMPLOYEES E ON E.estateId = T.estateId
+        WHERE E.employeeId = ? AND T.taskId = ?
+      `;
 
       const [authResult] = await conn.query<RowDataPacket[]>(authQuery, [
         userId,
@@ -163,22 +187,45 @@ class TaskModel {
       ]);
 
       if (authResult.length === 0) {
-        console.log("Access denied");
         throw createHttpError(403, "Access denied");
       }
 
-      if (authResult[0].staus !== "Pending") {
-        console.log("Task is completed or in progress");
+      const { status, estateId, task } = authResult[0];
+
+      if (status !== "Pending") {
         throw createHttpError(400, "Task is completed or in progress");
       }
 
+      // Step 2: Delete the task
       const rmQuery = `DELETE FROM TASKS WHERE taskId = ?`;
-
       const [rmResults] = await conn.query<ResultSetHeader>(rmQuery, [taskId]);
 
       if (rmResults.affectedRows === 0) {
-        console.log("Failed to remove task");
         throw createHttpError(400, "Failed to remove task");
+      }
+
+      // Step 3: Notify all employees in the estate
+      const empQuery = `SELECT employeeId FROM EMPLOYEES WHERE estateId = ?`;
+      const [employees] = await conn.query<RowDataPacket[]>(empQuery, [
+        estateId,
+      ]);
+
+      const notifyQuery = `
+        INSERT INTO NOTIFICATIONS (userId, title, message, type)
+        VALUES ?
+      `;
+
+      const values = employees.map((e) => [
+        e.employeeId,
+        "Task Removed",
+        `Task "${task}" has been removed from your estate.`,
+        "Task",
+      ]);
+
+      if (values.length > 0) {
+        await conn.query<ResultSetHeader>(notifyQuery, [values]);
+      } else {
+        throw createHttpError(500, "Unable to create notification");
       }
 
       await conn.commit();

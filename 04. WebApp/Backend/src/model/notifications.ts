@@ -12,6 +12,13 @@ interface messageProps {
   isRead: boolean;
 }
 
+interface NewMessageProps {
+  title: string;
+  userId: number;
+  message: string;
+  type: "Task" | "Drone" | "Sensor" | "Image" | "System";
+}
+
 function findSender(type: string) {
   switch (type.toLowerCase()) {
     case "system":
@@ -35,12 +42,29 @@ function findSender(type: string) {
 }
 
 export class NotificationModel {
-  static async create(userId: number, message: string, type: string) {
-    const query = `
-      INSERT INTO NOTIFICATIONS (userId, message, type)
-      VALUES (?, ?, ?)
-    `;
-    await pool.query(query, [userId, message, type]);
+  static async createOnce({ userId, title, message, type }: NewMessageProps) {
+    try {
+      const query = `
+        INSERT INTO NOTIFICATIONS (userId, title, message, type)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      const [result] = await pool.query<ResultSetHeader>(query, [
+        userId,
+        title,
+        message,
+        type,
+      ]);
+
+      if (result.affectedRows === 0) {
+        throw createHttpError(500, "Unable to create a notification");
+      }
+
+      console.log("Notify to user " + userId);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   static async getAll(userId: number) {
