@@ -1,4 +1,4 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import jwtMiddleware from "../middleware/jwtMiddleware";
 
 import { verifyToken } from "../controllers/auth/auth.user";
@@ -9,7 +9,7 @@ import { changeEmail } from "../controllers/auth/auth.changeEmail";
 
 const router = express.Router();
 
-router.get("/", jwtMiddleware, verifyToken);
+router.get("/", jwtMiddleware, verifyToken as RequestHandler);
 
 router.post("/create", createToken);
 

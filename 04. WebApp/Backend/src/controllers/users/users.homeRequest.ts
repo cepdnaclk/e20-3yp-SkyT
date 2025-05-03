@@ -23,7 +23,7 @@ export const homeRequest: RequestHandler = async (req, res, next) => {
 
     const { fName } = result;
 
-    // Get Message count
+    //  Message count
     const msgCount = await NotificationModel.getMsgCount(userId);
 
     console.log({ userId, fName, msgCount });

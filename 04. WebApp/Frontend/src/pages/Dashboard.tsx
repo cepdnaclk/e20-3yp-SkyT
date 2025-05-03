@@ -114,6 +114,13 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   const [msgCount, setMsgCount] = useState<number>();
 
   useEffect(() => {
+    const tokenCount = user?.msgCount;
+    if (tokenCount) {
+      setMsgCount(tokenCount);
+    }
+  }, [user?.msgCount]);
+
+  useEffect(() => {
     const getInfo = async () => {
       const url = `users/home/${user?.userId}`;
 
