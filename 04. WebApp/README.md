@@ -1,4 +1,4 @@
-# SkyT
+# SkyT - Web Application
 
 This project is a full-stack smart crop management system for tea plantations designed to help estate owners and admins monitor estate data, manage tasks, control drones, and visualize environmental metrics in real-time.
 
