@@ -161,7 +161,7 @@ npm start
 │   ├── package-lock.json
 │   ├── package.json
 │   └── tsconfig.json
-├── Database            # MySQL database Queries
-├── Gallary             # Project Images
+├── Database            # MySQL database queries
+├── Gallary             # Project images
 └── README.md
 ```
