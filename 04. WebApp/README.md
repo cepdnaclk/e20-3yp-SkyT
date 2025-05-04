@@ -1,107 +1,167 @@
-# Sky Tea
+# SkyT - Web Application
 
-The offcial website for project skyTea.
-
----
-
-## Cypress Setup for a React Project
-
-### Prerequisites
-
-1. A React project initialized using `create-react-app` or other setups.
-2. Node.js and npm/yarn installed on your system.
-
-### Installation
-
-1. Redirect to the working directory.
-2. Run the following command to add Cypress
-
-```powershell
-npm install cypress --save-dev
-```
-
-### Open Cypress
-
-After installation, open Cypress for the first time to initialize its configuration
-
-```powershell
-npx cypress open
-```
-
-This command creates a cypress folder in your project and adds a default `cypress.config.ts` file.
-
-### Update Cypress Config
-
-Edit cypress.config.ts to customize the base URL for the React app:
-
-```typescript
-import { defineConfig } from "cypress";
-
-export default defineConfig({
-  e2e: {
-    baseUrl: "http://localhost:5173", // Enter base URL here
-  },
-});
-```
-
-### Update `package.json`
-
-Update the `package.json` file with the following script.
-
-```json
-"scripts": {
-    "cy:open": "cypress open"
-},
-```
-
-Make sure to remove the following part from the `package.json` file.
-
-```json
-{
-  "type": "module"
-}
-```
-
-### Start Frontend Server
-
-We can use the following CLI to start the frontend server
-
-```powershell
-npm start
-```
-
-### Start Backend Server
-
-We can use the following CLI to start the backend server
-
-```powershell
-npm start
-```
-
-### Start Cypress
-
-We can use the following CLI to start the Cypress
-
-```powershell
-npm run cy:open
-```
+This project is a full-stack smart crop management system for tea plantations designed to help estate owners and admins monitor estate data, manage tasks, control drones, and visualize environmental metrics in real-time.
 
 ---
 
-## Technology Stack
+## Tech Stack
 
-### \* FrontEnd - React + Vite
+### Frontend
+- React + TypeScript
+- Vite
+- Material UI (MUI)
+- React Router DOM
+- Leaflet & Google Maps
+- MUI X Charts
 
-![image](https://github.com/user-attachments/assets/6caa40a9-46a6-46fe-b51c-c4263d96a76d)
+### Backend
+- Node.js + Express
+- TypeScript
+- MySQL2 + Connection Pooling
+- JWT Authentication
+- REST API Architecture
 
-### \* BackEnd - Node + Express
+### Other
+- GitHub Actions (CI/CD)
+- Cloudflare (Frontend Hosting)
+- Vercel (Backend Hosting)
+- EmailJS (for email verification)
 
-![image](https://github.com/user-attachments/assets/bdf7c9e8-e941-462c-a321-bc425751b793)
+---
 
-### \* Database - MongoDB
+## Features
 
-![image](https://github.com/user-attachments/assets/f9fb4f2b-e9f8-409c-a030-0b18154277af)
+### Core Functionalities
+- User authentication and role-based access control (Owner, Assistant, Developer)
+- Real-time dashboard for estate data visualization
+- Profile management with email verification and image upload
+- Task manager for drone-based operations (monitoring, fertilizing, memos)
+- Employee management with permission handling
+- Drone location visualization on the map with signal stats
+- Sensor data ingestion & visualization (NPK, humidity, temperature)
+- Notification system (task alerts, sensor thresholds)
+- Gallery for daily drone image uploads
 
-### \* Testing - Cypress
+### Advanced Implementations
+- Task lifecycle handling with concurrency control
+- Estate and lot-based permission verification
+- JSON storage optimization for task-to-lot mapping
+- Time-series charting with filters (date range, node, value range)
+- Drone control hooks (external service integration)
+- Database-level access validation and relational integrity
+- Custom middleware for token validation and error handling
 
-![image](https://github.com/user-attachments/assets/7b2a572d-903d-436c-bc5d-06861e9ccc71)
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
+```cmd
+git clone https://github.com/cepdnaclk/e20-3yp-SkyT.git
+cd '04. WebApp'
+```
+
+### 2. Setup Environment Variables
+Create `.env` files in `Frontend` and `Backend` folders.
+
+Backend `.env` sample
+```cmd
+# Frontend
+FRONTEND_URL=frontend_url
+
+# Backend
+PORT=backend_port
+IMAGE_DIR=image_dir
+
+# Database
+DB_HOST=host_name
+DB_PORT=port_number
+DB_USER=user_name
+DB_PASSWORD=password
+DB_NAME=database_name
+
+# Mailer
+EMAIL_SERVICE=email_service
+EMAIL_USER=company_email_address
+EMAIL_PASS=app_password
+
+# Hashing
+JWT_SECRET=jwt_secret
+
+# Weather Channel
+ACCUWEATHER_API_KEY=api_key
+ACCUWEATHER_BASE_URL=weather_channel_url
+```
+
+### 3. Start Backend
+```cmd
+cd Backend
+npm install
+npm start
+```
+
+### 3. Start Frontend
+```cmd
+cd Frontend
+npm install
+npm start
+```
+
+---
+
+## Testing
+- Jest + Supertest for backend unit and integration tests
+- Manual API testing via Postman
+
+---
+
+## Project Structure
+```cmd
+.
+├── Frontend/           # React frontend
+│   ├── public/
+│   ├── reference/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── asserts/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── utils/
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── .env
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── Backend/            # Express backend
+│   ├── images/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── database/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── service/
+│   │   ├── util/
+│   │   ├── app.ts
+│   │   └── index.ts
+│   ├── test/
+│   ├── .env
+│   ├── eslint.config.json
+│   ├── jest.config.json
+│   ├── package-lock.json
+│   ├── package.json
+│   └── tsconfig.json
+├── Database            # MySQL database queries
+├── Gallary             # Project images
+└── README.md
+```
