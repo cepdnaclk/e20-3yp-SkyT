@@ -65,7 +65,7 @@ const errInit: errorProps = {
 
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+const BASE_URL = import.meta.env.VITE_BACKEND;
 
 function Profile() {
   const { user } = useAuth();

@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // Base API of the server
-const API_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
-//const API_BASE_URL = import.meta.env.VITE_VERCEL_BACKEND;
+const API_BASE_URL = import.meta.env.VITE_BACKEND;
 
 // Get data from backend
 export async function getData(page: string) {

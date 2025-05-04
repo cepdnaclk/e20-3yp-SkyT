@@ -17,7 +17,7 @@ export default function IconMenu() {
   const navigator = useNavigate();
   const logout = useLogout();
 
-  const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+  const BASE_URL = import.meta.env.VITE_BACKEND;
   const { user } = useAuth();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

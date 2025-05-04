@@ -57,7 +57,7 @@ const newMember: MemberProps = {
   estates: [],
 };
 
-const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+const BASE_URL = import.meta.env.VITE_BACKEND;
 
 function People() {
   const { user, superUsers } = useAuth();
