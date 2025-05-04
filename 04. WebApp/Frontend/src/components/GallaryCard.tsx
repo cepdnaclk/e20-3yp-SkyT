@@ -19,7 +19,7 @@ export default function GallaryCard({
   img,
   path,
 }: GallaryCardProps) {
-  const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+  const BASE_URL = import.meta.env.VITE_BACKEND;
   return (
     <Card
       elevation={3}
