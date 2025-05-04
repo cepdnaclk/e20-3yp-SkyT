@@ -17,6 +17,9 @@ export const updateUser: RequestHandler = async (req, res, next) => {
     // Destructuring fields
     const { file } = req;
     const { curPwd, newPwd, emailCode } = req.body;
+
+    console.log("Type of userInfo: ", typeof req.body.userInfo);
+
     const { userId, email, role, fName, lName, profilePic } = JSON.parse(
       req.body.userInfo
     );
