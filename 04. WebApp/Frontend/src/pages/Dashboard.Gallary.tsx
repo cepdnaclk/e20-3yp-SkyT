@@ -27,7 +27,7 @@ interface ErrorResponse {
   error: string;
 }
 
-const BASE_URL = import.meta.env.VITE_LOCAL_BACKEND;
+const BASE_URL = import.meta.env.VITE_BACKEND;
 
 export default function Gallary() {
   const path = useLocation().pathname;
