@@ -51,6 +51,7 @@ export default function TaskManager() {
     }
   };
 
+  // Fetching live data of drones
   useEffect(() => {
     const fetchDroneData = async () => {
       const url = `drones/${user?.userId}/${estate.id}`;

@@ -15,6 +15,7 @@ import { getData, postData, updateData } from "../api/NodeBackend";
 import { ToastAlert } from "../components/ToastAlert";
 import { AxiosError } from "axios";
 import EmailDialog from "../components/EmailDialog";
+import { useLoading } from "../context/LoadingContext";
 
 interface userInfoProps {
   userId: number;
@@ -69,6 +70,8 @@ const BASE_URL = import.meta.env.VITE_BACKEND;
 
 function Profile() {
   const { user } = useAuth();
+  const { setLoading } = useLoading();
+
   const [userInfo, setUserInfo] = useState<userInfoProps>(usr);
   const [password, setPassword] = useState<passwordProps>(pwd);
   const [error, setError] = useState<errorProps>(errInit);
@@ -105,6 +108,8 @@ function Profile() {
       userId: userInfo.userId,
     };
 
+    setLoading(true);
+
     try {
       const servereResponse = await postData(data, "auth/email");
       if (servereResponse.status === 200) {
@@ -129,11 +134,14 @@ function Profile() {
       });
 
       setOpen(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateInfo = async () => {
     setBtnLoading(true);
+    setLoading(true);
 
     try {
       const formData = new FormData();
@@ -152,7 +160,6 @@ function Profile() {
         ToastAlert({
           type: "success",
           title: msg,
-          onClose: getInfo,
         });
       }
       setPwdError(false);
@@ -175,6 +182,8 @@ function Profile() {
     } finally {
       setBtnLoading(false);
       setOpen(false);
+      setLoading(false);
+      getInfo();
     }
   };
 
@@ -182,6 +191,7 @@ function Profile() {
     const url = "users/" + user?.userId;
 
     setBtnLoading(true);
+    setLoading(true);
 
     try {
       const servereResponse = await getData(url);
@@ -212,6 +222,7 @@ function Profile() {
       });
     } finally {
       setBtnLoading(false);
+      setLoading(false);
     }
   };
 
