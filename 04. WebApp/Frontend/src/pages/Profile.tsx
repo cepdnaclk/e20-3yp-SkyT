@@ -247,10 +247,12 @@ function Profile() {
   };
 
   useEffect(() => {
-    getInfo();
+    if (user) {
+      getInfo();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   return (
     <Grid container spacing={2} fontFamily={"Montserrat"} height={"100%"}>
