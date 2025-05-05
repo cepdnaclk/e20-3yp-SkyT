@@ -283,10 +283,12 @@ function People() {
   };
 
   useEffect(() => {
-    getEstateList();
-    getMembers();
+    if (user) {
+      getEstateList();
+      getMembers();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const normalizedSearch = searchName.toLowerCase();
 
