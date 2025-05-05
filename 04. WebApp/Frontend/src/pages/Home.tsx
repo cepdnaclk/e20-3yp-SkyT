@@ -80,11 +80,13 @@ function MobileView({ menu }: { menu: ItemProps[] }) {
 function Home() {
   const { user, superUsers } = useAuth();
 
-  const filterdItems = menuItems.filter(
-    (item) =>
-      superUsers.includes(user!.role.toLowerCase()) ||
-      !protectedItems.includes(item.label.toLowerCase())
-  );
+  const filterdItems = user
+    ? menuItems.filter(
+        (item) =>
+          superUsers.includes(user!.role.toLowerCase()) ||
+          !protectedItems.includes(item.label.toLowerCase())
+      )
+    : [];
 
   return (
     <Box

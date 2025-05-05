@@ -171,6 +171,7 @@ function People() {
 
   const addMember = async (data: MemberProps) => {
     setBtnLoading(true);
+    setLoading(true);
 
     try {
       const serverResponse = await postData(data, "users");
@@ -179,7 +180,6 @@ function People() {
         ToastAlert({
           type: "success",
           title: "Account created successfully",
-          onClose: getMembers,
         });
       }
     } catch (err) {
@@ -200,13 +200,14 @@ function People() {
       });
     } finally {
       setBtnLoading(false);
+      setLoading(false);
+      getMembers();
     }
   };
 
   const updateMember = async (id: number, estates: number[]) => {
     console.log("updating");
-
-    setBtnLoading(true);
+    setLoading(true);
 
     const data = { id, estates };
 
@@ -217,7 +218,6 @@ function People() {
         ToastAlert({
           type: "success",
           title: "User updated successfully",
-          onClose: getMembers,
         });
       }
     } catch (err) {
@@ -237,12 +237,15 @@ function People() {
         title: errMsg || "Something went wrong",
       });
     } finally {
-      setBtnLoading(false);
+      setLoading(false);
+      getMembers();
     }
   };
 
   const deleteMember = async () => {
     console.log("Delete confirmed: ", deleteUser);
+
+    setLoading(true);
 
     try {
       const serverResponse = await deleteData(
@@ -254,7 +257,6 @@ function People() {
         ToastAlert({
           type: "success",
           title: "User deleted successfully",
-          onClose: getMembers,
         });
       }
     } catch (err) {
@@ -275,6 +277,8 @@ function People() {
       });
     } finally {
       setDialogOpen(false);
+      setLoading(false);
+      getMembers();
     }
   };
 

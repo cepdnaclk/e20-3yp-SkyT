@@ -131,8 +131,10 @@ function Dashboard({ search }: { search: string }) {
       }
     };
 
-    getInfo();
-  }, [user?.userId]);
+    if (user) {
+      getInfo();
+    }
+  }, [user]);
 
   const filteredEstates = estates?.filter(
     (est) =>
