@@ -7,6 +7,7 @@ import AlertDialog from "../components/AlertDialog";
 import { useAuth } from "../context/AuthContext";
 import { deleteData, getData, updateData } from "../api/NodeBackend";
 import { ToastAlert } from "../components/ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface messageProps {
   msgId: number;
@@ -19,6 +20,8 @@ interface messageProps {
 
 function Message() {
   const { user } = useAuth();
+  const { setLoading } = useLoading();
+
   const [messages, setMessages] = useState<messageProps[]>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [searchName, setSearchName] = useState<string>("");
@@ -46,6 +49,9 @@ function Message() {
 
   const deleteMessage = async () => {
     console.log("Deleted");
+    setOpenDelete(false);
+    setOpenDialog(false);
+    setLoading(true);
 
     const data = { msgId: messageData?.msgId, userId: user?.userId };
 
@@ -55,7 +61,6 @@ function Message() {
         ToastAlert({
           type: "success",
           title: "Message deleted successfully.",
-          onClose: getMessages,
         });
       }
     } catch (err) {
@@ -65,8 +70,8 @@ function Message() {
         title: "Failed to delete message!",
       });
     } finally {
-      setOpenDelete(false);
-      setOpenDialog(false);
+      setLoading(false);
+      getMessages();
     }
   };
 
@@ -95,6 +100,8 @@ function Message() {
     console.log("geting info");
     const url = `notify/${user?.userId}`;
 
+    setLoading(true);
+
     try {
       const serverResponse = await getData(url);
 
@@ -109,13 +116,17 @@ function Message() {
         type: "error",
         title: "Failed to find messages!",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    getMessages();
+    if (user) {
+      getMessages();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.userId]);
+  }, [user]);
 
   return (
     <Grid container spacing={3}>

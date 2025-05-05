@@ -27,6 +27,7 @@ import { useAuth } from "../context/AuthContext";
 import { deleteData, getData, postData, updateData } from "../api/NodeBackend";
 import { ToastAlert } from "../components/ToastAlert";
 import { AxiosError } from "axios";
+import { useLoading } from "../context/LoadingContext";
 
 interface MemberProps {
   id: number;
@@ -61,6 +62,7 @@ const BASE_URL = import.meta.env.VITE_BACKEND;
 
 function People() {
   const { user, superUsers } = useAuth();
+  const { setLoading } = useLoading();
 
   const [memberList, setMemberList] = useState<MemberProps[]>();
   const [estateList, setEstateList] = useState<EstateProps[]>();
@@ -107,6 +109,7 @@ function People() {
 
   const getEstateList = async () => {
     const url = "estates/list/" + user?.userId;
+    setLoading(true);
 
     try {
       const serverResponse = await getData(url);
@@ -131,6 +134,8 @@ function People() {
         type: "error",
         title: errMsg || "Something went wrong",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,6 +171,7 @@ function People() {
 
   const addMember = async (data: MemberProps) => {
     setBtnLoading(true);
+    setLoading(true);
 
     try {
       const serverResponse = await postData(data, "users");
@@ -174,7 +180,6 @@ function People() {
         ToastAlert({
           type: "success",
           title: "Account created successfully",
-          onClose: getMembers,
         });
       }
     } catch (err) {
@@ -195,13 +200,14 @@ function People() {
       });
     } finally {
       setBtnLoading(false);
+      setLoading(false);
+      getMembers();
     }
   };
 
   const updateMember = async (id: number, estates: number[]) => {
     console.log("updating");
-
-    setBtnLoading(true);
+    setLoading(true);
 
     const data = { id, estates };
 
@@ -212,7 +218,6 @@ function People() {
         ToastAlert({
           type: "success",
           title: "User updated successfully",
-          onClose: getMembers,
         });
       }
     } catch (err) {
@@ -232,12 +237,15 @@ function People() {
         title: errMsg || "Something went wrong",
       });
     } finally {
-      setBtnLoading(false);
+      setLoading(false);
+      getMembers();
     }
   };
 
   const deleteMember = async () => {
     console.log("Delete confirmed: ", deleteUser);
+
+    setLoading(true);
 
     try {
       const serverResponse = await deleteData(
@@ -249,7 +257,6 @@ function People() {
         ToastAlert({
           type: "success",
           title: "User deleted successfully",
-          onClose: getMembers,
         });
       }
     } catch (err) {
@@ -270,14 +277,18 @@ function People() {
       });
     } finally {
       setDialogOpen(false);
+      setLoading(false);
+      getMembers();
     }
   };
 
   useEffect(() => {
-    getEstateList();
-    getMembers();
+    if (user) {
+      getEstateList();
+      getMembers();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const normalizedSearch = searchName.toLowerCase();
 

@@ -25,6 +25,7 @@ import TaskDialog from "./TaskDialog";
 import { deleteData, getData, postData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "./ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface TaskProps {
   taskId: number;
@@ -242,6 +243,8 @@ export default function TaskList({
   setLots,
   setOffice,
 }: TaskListProps) {
+  const { setLoading } = useLoading();
+
   const [searching, setSearching] = useState<string>("");
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TaskProps[]>();
@@ -286,11 +289,15 @@ export default function TaskList({
       });
     } finally {
       setTaskLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    getTasks();
+    if (userId && estateId) {
+      setLoading(true);
+      getTasks();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, estateId]);
 
@@ -328,7 +335,6 @@ export default function TaskList({
         ToastAlert({
           type: "success",
           title: "Task removed successfully",
-          onClose: getTasks,
         });
       }
     } catch (err) {
@@ -349,6 +355,7 @@ export default function TaskList({
       });
     } finally {
       setTaskLoading(false);
+      getTasks();
     }
   };
 
@@ -367,7 +374,6 @@ export default function TaskList({
         ToastAlert({
           type: "success",
           title: "Task added successfully",
-          onClose: getTasks,
         });
       }
     } catch (err) {
@@ -389,6 +395,7 @@ export default function TaskList({
     } finally {
       setTaskLoading(false);
       setBtnLoading(false);
+      getTasks();
     }
   };
 
@@ -449,7 +456,7 @@ export default function TaskList({
           sx={{
             borderRadius: "5px",
           }}
-          startIcon={<AddIcon />}
+          startIcon={!btnLoading && <AddIcon />}
         >
           {btnLoading ? (
             <CircularProgress size={24} color="inherit" />
@@ -468,23 +475,21 @@ export default function TaskList({
         flexDirection={"column"}
         alignItems={"center"}
       >
-        {!taskLoading ? (
-          filteredList && filteredList?.length > 0 ? (
-            filteredList.map((t) => (
-              <TaskCard
-                key={t.taskId}
-                data={t}
-                onDelete={handleDelete}
-                onView={handleView}
-              />
-            ))
-          ) : (
-            <Typography fontFamily={"Montserrat"} fontWeight={500}>
-              No tasks to show. Enjoy your day!
-            </Typography>
-          )
+        {taskLoading ? (
+          <Skeleton height={70} variant="rectangular" width={"95%"} />
+        ) : filteredList && filteredList?.length > 0 ? (
+          filteredList.map((t) => (
+            <TaskCard
+              key={t.taskId}
+              data={t}
+              onDelete={handleDelete}
+              onView={handleView}
+            />
+          ))
         ) : (
-          <Skeleton height={70} variant="rectangular" />
+          <Typography fontFamily={"Montserrat"} fontWeight={500}>
+            No tasks to show. Enjoy your day!
+          </Typography>
         )}
       </Box>
 

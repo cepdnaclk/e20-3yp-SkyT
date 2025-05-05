@@ -2,6 +2,7 @@ import { Box, Card, IconButton, Tooltip, Typography } from "@mui/material";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LeafletMap from "./LeafletMap";
 import { ResponsiveStyleValue } from "@mui/system";
+import { NavLink } from "react-router-dom";
 
 interface LocationListProps {
   lotId: number;
@@ -51,7 +52,8 @@ export default function MapCard({
 
         <Tooltip title={"Explore"}>
           <IconButton
-            href={path + "/map"}
+            component={NavLink}
+            to={path + "/map"}
             color="success"
             sx={{
               border: "1px solid  #00796b",

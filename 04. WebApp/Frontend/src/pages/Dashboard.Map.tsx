@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { getData } from "../api/NodeBackend";
 import { ToastAlert } from "../components/ToastAlert";
 import { AxiosError } from "axios";
+import { useLoading } from "../context/LoadingContext";
 
 interface CenterProps {
   name: string;
@@ -31,6 +32,7 @@ interface ErrorResponse {
 function LotMap() {
   const lotId = useLocation().pathname.split("/")[5];
   const { user } = useAuth();
+  const { setLoading } = useLoading();
 
   const [center, setCenter] = useState<CenterProps>();
   const [lotInfo, setLotInfo] = useState<NodeProps[]>();
@@ -38,6 +40,7 @@ function LotMap() {
   useEffect(() => {
     const getInfo = async () => {
       const url = `lots/nodes/${user?.userId}/${lotId}`;
+      setLoading(true);
 
       try {
         const serverResponse = await getData(url);
@@ -63,11 +66,16 @@ function LotMap() {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
-    getInfo();
-  }, [lotId, user?.userId]);
+    if (user) {
+      getInfo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lotId, user]);
 
   return (
     <Box bgcolor={"rosybrown"} width={"100%"} height={"100%"}>

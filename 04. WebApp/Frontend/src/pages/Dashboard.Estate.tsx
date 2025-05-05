@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { postData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface OfficeProps {
   name: string;
@@ -48,6 +49,7 @@ function Estate({ search }: EstateProps) {
   const estateId = useLocation().pathname.split("/")[3];
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { setLoading } = useLoading();
 
   const [office, setOffice] = useState<OfficeProps>();
   const [estateInfo, setEstateInfo] = useState<LotSummaryProps[]>();
@@ -55,6 +57,7 @@ function Estate({ search }: EstateProps) {
   useEffect(() => {
     const getInfo = async () => {
       console.log("Find info on estate: ", estateId);
+      setLoading(true);
 
       try {
         const data = { userId: user?.userId, estateId };
@@ -92,11 +95,16 @@ function Estate({ search }: EstateProps) {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
-    getInfo();
-  }, [estateId, user?.userId]);
+    if (user) {
+      getInfo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [estateId, user]);
 
   const searchedLots = estateInfo
     ?.filter(

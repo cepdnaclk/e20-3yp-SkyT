@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import LandscapeRoundedIcon from "@mui/icons-material/LandscapeRounded";
+import { NavLink } from "react-router-dom";
 
 interface GallaryCardProps {
   lastUpdate?: string | null;
@@ -55,7 +56,8 @@ export default function GallaryCard({
 
         <Tooltip title={"View More"}>
           <IconButton
-            href={path + "/gallary"}
+            component={NavLink}
+            to={path + "/gallary"}
             color="success"
             sx={{
               border: "1px solid  #00796b",

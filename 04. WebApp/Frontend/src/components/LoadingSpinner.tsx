@@ -1,7 +1,7 @@
 import { CSSProperties } from "react";
 import { PulseLoader } from "react-spinners";
-import { useAuth } from "../context/AuthContext";
 import { Box } from "@mui/material";
+import { useLoading } from "../context/LoadingContext";
 
 const override: CSSProperties = {
   display: "block",
@@ -9,7 +9,7 @@ const override: CSSProperties = {
 };
 
 export default function LoadingSpinner() {
-  const { loading } = useAuth();
+  const { loading } = useLoading();
 
   if (!loading) return null;
 
@@ -25,7 +25,7 @@ export default function LoadingSpinner() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        zIndex: "100",
+        zIndex: 100,
       }}
     >
       <PulseLoader

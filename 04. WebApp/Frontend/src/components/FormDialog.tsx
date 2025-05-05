@@ -176,16 +176,16 @@ function FormDialog({
             <Typography fontFamily={"Montserrat"}>Estates*</Typography>
 
             <FormGroup>
-              <Grid container>
-                <FormControl
-                  required
-                  error={error.estates}
-                  component="fieldset"
-                  variant="standard"
-                  fullWidth
-                >
+              <FormControl
+                required
+                error={error.estates}
+                component="fieldset"
+                variant="standard"
+                fullWidth
+              >
+                <Grid container>
                   {estates?.map((estate) => (
-                    <Grid key={estate.estateId} size={{ xs: 6 }}>
+                    <Grid key={estate.estateId} size={6}>
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -211,8 +211,8 @@ function FormDialog({
                       Please select at least one estate.
                     </Typography>
                   )}
-                </FormControl>
-              </Grid>
+                </Grid>
+              </FormControl>
             </FormGroup>
           </Grid>
         </Grid>

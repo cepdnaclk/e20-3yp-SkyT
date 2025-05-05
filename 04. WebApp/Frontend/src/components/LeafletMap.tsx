@@ -110,7 +110,7 @@ export default function LeafletMap({
       center={mapCenter}
       zoom={15}
       scrollWheelZoom={true}
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: "100%", width: "100%", zIndex: 10 }}
     >
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

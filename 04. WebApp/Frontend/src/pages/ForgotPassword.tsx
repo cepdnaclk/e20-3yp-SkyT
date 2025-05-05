@@ -30,6 +30,7 @@ const ForgotPassword = () => {
     try {
       console.log("Send reset link to:", data);
       const serverResponse = await postData({ email: data }, "auth/create");
+      console.log("Response: ", serverResponse);
 
       if (serverResponse.status === 201) {
         console.log(serverResponse.data.message);
@@ -94,27 +95,27 @@ const ForgotPassword = () => {
           helperText={err && "Invalid email. Try again!"}
         />
 
-        <FillButton
-          type="submit"
-          fullWidth
-          variant="contained"
-          disabled={loading}
-          sx={{
-            mt: 3,
-            padding: "0.8rem",
-          }}
-        >
-          {loading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            "Send Reset Link"
-          )}
-        </FillButton>
-
-        {submitted && (
+        {submitted ? (
           <Typography variant="body2" color="success.main" mt={2}>
             Reset link sent! Check your inbox.
           </Typography>
+        ) : (
+          <FillButton
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={loading}
+            sx={{
+              mt: 3,
+              padding: "0.8rem",
+            }}
+          >
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Send Reset Link"
+            )}
+          </FillButton>
         )}
       </Box>
     </Box>
