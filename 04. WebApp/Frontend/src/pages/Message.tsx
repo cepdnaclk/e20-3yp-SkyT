@@ -50,8 +50,8 @@ function Message() {
   const deleteMessage = async () => {
     console.log("Deleted");
     setOpenDelete(false);
-    setLoading(true);
     setOpenDialog(false);
+    setLoading(true);
 
     const data = { msgId: messageData?.msgId, userId: user?.userId };
 
