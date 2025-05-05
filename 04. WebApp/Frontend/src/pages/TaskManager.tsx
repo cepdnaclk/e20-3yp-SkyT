@@ -68,11 +68,13 @@ export default function TaskManager() {
       }
     };
 
-    fetchDroneData(); // first call
-    const intervalId = setInterval(fetchDroneData, 1000 * PERIOD); // every 5 seconds
+    if (user) {
+      fetchDroneData(); // first call
+      const intervalId = setInterval(fetchDroneData, 1000 * PERIOD); // every 5 seconds
 
-    return () => clearInterval(intervalId); // cleanup
-  }, [estate.id, user?.userId]);
+      return () => clearInterval(intervalId); // cleanup
+    }
+  }, [estate.id, user]);
 
   return (
     <Box width={"100%"} height={"100%"}>
