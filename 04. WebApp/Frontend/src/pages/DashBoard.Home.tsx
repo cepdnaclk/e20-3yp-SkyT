@@ -13,6 +13,7 @@ import { getData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
 import defaultImage from "../assets/dashboard_asserts/Estate.jpg";
+import { useLoading } from "../context/LoadingContext";
 
 interface estateProps {
   estateId: number;
@@ -92,12 +93,14 @@ function EstateCard({ estate }: estateCardProps) {
 
 function Dashboard({ search }: { search: string }) {
   const { user } = useAuth();
+  const { setLoading } = useLoading();
+
   const [estates, setEstates] = useState<estateProps[]>();
 
   useEffect(() => {
     const getInfo = async () => {
       const url = `estates/${user?.userId}`;
-
+      setLoading(true);
       try {
         const serverResponse = await getData(url);
         if (serverResponse.status === 200) {
@@ -128,12 +131,15 @@ function Dashboard({ search }: { search: string }) {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     if (user) {
       getInfo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const filteredEstates = estates?.filter(

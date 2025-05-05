@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import IconMenu from "../components/IconMenu";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import SearchBox from "../components/SearchBox";
 import Link from "@mui/material/Link";
 import { getData } from "../api/NodeBackend";
@@ -175,7 +175,13 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
           {breadcrumbs?.slice(0, -1).map((section, index) => {
             const goto = "/" + links[index];
             return (
-              <Link key={index} underline="hover" color="inherit" href={goto}>
+              <Link
+                key={index}
+                underline="hover"
+                color="inherit"
+                component={NavLink}
+                to={goto}
+              >
                 {section}
               </Link>
             );

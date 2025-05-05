@@ -15,6 +15,7 @@ import { useAuth } from "../context/AuthContext";
 import { getData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface ImageCardProps {
   imageId: number;
@@ -33,12 +34,13 @@ export default function Gallary() {
   const path = useLocation().pathname;
   const lotId = path.split("/")[5];
   const { user } = useAuth();
+  const { setLoading } = useLoading();
 
   const [latestImages, setLatestImages] = useState<ImageCardProps[]>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
 
   const getImages = async (lastId: number) => {
-    setLoading(true);
+    setBtnLoading(true);
     const url = `lots/images/${user?.userId}/${lotId}/${lastId}`;
     console.log("Fetching early images: " + lotId + "lastId: " + lastId);
 
@@ -72,14 +74,18 @@ export default function Gallary() {
         title: errMsg || "Something went wrong",
       });
     } finally {
+      setBtnLoading(false);
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    getImages(-1);
+    if (user) {
+      setLoading(true);
+      getImages(-1);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const handleClick = () => {
     console.log("Fetching more images!");
@@ -151,7 +157,7 @@ export default function Gallary() {
           <Button
             variant="outlined"
             onClick={handleClick}
-            disabled={loading}
+            disabled={btnLoading}
             color="success"
             sx={{
               fontFamily: "Montserrat",
@@ -161,7 +167,7 @@ export default function Gallary() {
               borderRadius: 2,
             }}
           >
-            {loading ? (
+            {btnLoading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
               "View More"

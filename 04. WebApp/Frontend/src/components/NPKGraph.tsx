@@ -237,7 +237,9 @@ export default function NPKGraph({ userId, lotId }: NPKGraphProps) {
       }
     };
 
-    getPhData();
+    if (userId && lotId) {
+      getPhData();
+    }
   }, [range, userId, lotId]);
 
   return (
@@ -270,7 +272,7 @@ export default function NPKGraph({ userId, lotId }: NPKGraphProps) {
           height={274}
           loading={!loaded}
           grid={{ horizontal: true }}
-          dataset={dataset}
+          dataset={dataset ?? []}
           series={[
             {
               id: "N",
@@ -327,6 +329,7 @@ export default function NPKGraph({ userId, lotId }: NPKGraphProps) {
               label: "Average N,P,K Values (mg/kg)",
             },
           ]}
+          tooltip={{ trigger: dataset && dataset.length > 0 ? "axis" : "none" }}
           margin={{ top: 10, bottom: 25, left: 40, right: 25 }}
           slotProps={{ legend: { hidden: true } }}
         />

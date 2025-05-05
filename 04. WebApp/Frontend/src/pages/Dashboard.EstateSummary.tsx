@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface DroneProps {
   monAct: number;
@@ -64,6 +65,7 @@ export default function EstateSummary() {
   const estateId = useLocation().pathname.split("/")[3];
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { setLoading } = useLoading();
 
   const [office, setOffice] = useState<OfficeProps>();
   const [drones, setDrones] = useState<DroneProps>();
@@ -72,6 +74,7 @@ export default function EstateSummary() {
   useEffect(() => {
     const getInfo = async () => {
       const url = `estates/summary/${user?.userId}/${estateId}`;
+      setLoading(true);
 
       try {
         console.log(url);
@@ -100,12 +103,15 @@ export default function EstateSummary() {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     if (estateId && user?.userId) {
       getInfo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.userId, estateId]);
 
   const handleNavigate = (lotId: number) => {
@@ -211,7 +217,7 @@ export default function EstateSummary() {
           <MapCard
             center={office}
             path={`/home/estate/${estateId}`}
-            height={{ xs: "30vh", lg: "calc(100vh - 400px)" }}
+            height={{ xs: "40vh", lg: "calc(100vh - 400px)" }}
             width={"100%"}
             locationList={lots}
           />

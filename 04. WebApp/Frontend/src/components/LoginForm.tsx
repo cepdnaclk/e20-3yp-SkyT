@@ -74,43 +74,6 @@ export function LoginFormMD({
             Elevating Precision Agriculture into new heights!
           </Typography>
         </Box>
-
-        {/* <Box
-          sx={{
-            padding: "0 1rem",
-            height: "60px",
-            background: "rgba(255,255,255,0.248)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backdropFilter: "blur(1px)",
-            borderRadius: "10px",
-            width: "calc(100% - 30px)",
-            color: "white ",
-          }}
-        >
-          <Typography variant="body2">Don't have an account?</Typography>
-          <Button
-            component={NavLink}
-            to="/register"
-            variant="contained"
-            color="success"
-            sx={{
-              width: "120px",
-              background: "#fff",
-              color: "#00796b",
-              borderRadius: "10px",
-              fontWeight: 400,
-              height: "40px",
-              "&:hover": {
-                background: "#004d40",
-                color: "#fff",
-              },
-            }}
-          >
-            Sign Up
-          </Button> 
-        </Box> */}
       </Grid>
 
       {/* Right side */}
@@ -208,7 +171,8 @@ export function LoginFormMD({
               fullWidth
               type="submit"
               variant="contained"
-              endIcon={<AiOutlineSwapRight />}
+              endIcon={!loading && <AiOutlineSwapRight />}
+              disabled={loading}
               sx={{
                 mt: 1,
                 backgroundColor: "#00796b",
@@ -352,7 +316,8 @@ export function LoginFormXS({
               fullWidth
               type="submit"
               variant="contained"
-              endIcon={<AiOutlineSwapRight />}
+              endIcon={!loading && <AiOutlineSwapRight />}
+              disabled={loading}
             >
               {loading ? (
                 <CircularProgress size={24} color="inherit" />
@@ -367,46 +332,6 @@ export function LoginFormXS({
           </form>
         </Container>
       </Grid>
-
-      {/* Bottom */}
-      {/* <Grid size={12} p={2} display={"flex"} justifyContent={"center"}>
-        <Box
-          sx={{
-            padding: "0 1rem",
-            height: "60px",
-            background: "rgba(255,255,255,0.248)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backdropFilter: "blur(1px)",
-            borderRadius: "10px",
-            width: "80%",
-            color: "white ",
-          }}
-        >
-          <Typography variant="body2">Don't have an account?</Typography>
-          <Button
-            component={NavLink}
-            to="/register"
-            variant="contained"
-            color="success"
-            sx={{
-              width: "120px",
-              background: "#fff",
-              color: "#00796b",
-              borderRadius: "10px",
-              fontWeight: 300,
-              height: "40px",
-              "&:hover": {
-                background: "#004d40",
-                color: "#fff",
-              },
-            }}
-          >
-            Sign Up
-          </Button>
-        </Box>
-      </Grid> */}
     </Grid>
   );
 }

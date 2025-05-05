@@ -181,7 +181,9 @@ export default function PHGraph({ userId, lotId }: PHGraphProps) {
       }
     };
 
-    getPhData();
+    if (userId && lotId) {
+      getPhData();
+    }
   }, [range, userId, lotId]);
 
   return (
@@ -214,7 +216,7 @@ export default function PHGraph({ userId, lotId }: PHGraphProps) {
           height={300}
           grid={{ horizontal: true }}
           loading={!loaded}
-          dataset={dataset}
+          dataset={dataset ?? []}
           series={[
             {
               dataKey: "ph",
@@ -266,6 +268,7 @@ export default function PHGraph({ userId, lotId }: PHGraphProps) {
               },
             },
           ]}
+          tooltip={{ trigger: dataset && dataset.length > 0 ? "axis" : "none" }}
           margin={{ top: 10, bottom: 25, right: 25, left: 40 }}
           slotProps={{ legend: { hidden: true } }}
         />

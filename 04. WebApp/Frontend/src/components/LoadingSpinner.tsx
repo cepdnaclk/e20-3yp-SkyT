@@ -25,7 +25,7 @@ export default function LoadingSpinner() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        zIndex: "100",
+        zIndex: 100,
       }}
     >
       <PulseLoader

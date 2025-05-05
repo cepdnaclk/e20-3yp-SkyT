@@ -13,6 +13,7 @@ import { useAuth } from "../context/AuthContext";
 import { getData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface WeatherCardProps {
   wind?: string | number;
@@ -69,6 +70,7 @@ export function Lot() {
   const path = useLocation().pathname;
   const lotId = path.split("/")[5];
   const { user } = useAuth();
+  const { setLoading } = useLoading();
 
   const [weatherData, setWetherData] = useState<WeatherCardProps>();
   const [latestData, setLatestData] = useState<DataProps>();
@@ -82,6 +84,7 @@ export function Lot() {
       console.log("Updating Data", { lotId, userId: user?.userId });
 
       const url = `lots/summary/${lotId}/${user?.userId}`;
+      setLoading(true);
 
       try {
         const serverResponse = await getData(url);
@@ -116,6 +119,8 @@ export function Lot() {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -123,6 +128,7 @@ export function Lot() {
       console.log("Updating Weather Data", { lotId, userId: user?.userId });
 
       const url = `lots/weather/${lotId}/${user?.userId}`;
+      setLoading(true);
 
       try {
         const serverResponse = await getData(url);
@@ -148,12 +154,17 @@ export function Lot() {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
-    update();
-    getWeather();
-  }, [lotId, user?.userId]);
+    if (user) {
+      update();
+      getWeather();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lotId, user]);
 
   return (
     <Grid container spacing={3} width={"100%"}>
