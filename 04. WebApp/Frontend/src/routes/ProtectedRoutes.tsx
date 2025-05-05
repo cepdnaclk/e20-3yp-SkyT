@@ -18,6 +18,7 @@ const ProtectedRoute = ({ element }: { element: ReactElement }) => {
 
     return element;
   }
+  return element;
 };
 
 export default ProtectedRoute;

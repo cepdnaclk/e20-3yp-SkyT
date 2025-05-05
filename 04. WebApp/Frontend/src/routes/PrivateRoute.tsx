@@ -10,6 +10,7 @@ const PrivateRoute = ({ element }: { element: ReactElement }) => {
   if (!loading) {
     return user !== null ? element : <Navigate to="/login" />;
   }
+  return element;
 };
 
 export default PrivateRoute;
