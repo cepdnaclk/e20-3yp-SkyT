@@ -17,6 +17,7 @@ import { getData } from "../api/NodeBackend";
 import { useAuth } from "../context/AuthContext";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
+import { useLoading } from "../context/LoadingContext";
 
 interface DashboardAreaProps {
   search: string;
@@ -40,6 +41,7 @@ interface ErrorResponse {
 function DashboardArea({ search, setSearch }: DashboardAreaProps) {
   const navigator = useNavigate();
   const { user } = useAuth();
+  const { setLoading } = useLoading();
 
   // Get the path and split it
   const path = useLocation().pathname;
@@ -124,6 +126,8 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
     const getInfo = async () => {
       const url = `users/home/${user?.userId}`;
 
+      setLoading(true);
+
       try {
         const serverResponse = await getData(url);
         if (serverResponse.status === 200) {
@@ -148,11 +152,16 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
           type: "error",
           title: errMsg || "Something went wrong",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
-    getInfo();
-  }, [user?.userId]);
+    if (user) {
+      getInfo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <Grid container spacing={3} fontFamily={"Montserrat"}>
