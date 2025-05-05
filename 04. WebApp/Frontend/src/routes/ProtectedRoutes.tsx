@@ -1,9 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ReactElement } from "react";
+import { useLoading } from "../context/LoadingContext";
 
 const ProtectedRoute = ({ element }: { element: ReactElement }) => {
-  const { user, loading, superUsers } = useAuth();
+  const { user, superUsers } = useAuth();
+  const { loading } = useLoading();
 
   console.log("Protected Route: ", user);
   console.log("Allowed for: ", superUsers);
