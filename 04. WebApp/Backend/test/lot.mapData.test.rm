@@ -1,0 +1,49 @@
+import request from "supertest";
+import app from "../src/app";
+
+describe("GET lots/nodes/:userId/:lotId", () => {
+  it("Should return a error (invalid user)", async () => {
+    const res = await request(app).get("/lots/nodes/abc/1").send();
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Missing required fields");
+  });
+});
+
+describe("GET lots/nodes/:userId/:lotId", () => {
+  it("Should return a error (invalid lotId)", async () => {
+    const res = await request(app).get("/lots/nodes/2/kkd").send();
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Missing required fields");
+  });
+});
+
+describe("GET lots/nodes/:userId/:lotId", () => {
+  it("Should return a error (invalid lotId and userId)", async () => {
+    const res = await request(app).get("/lots/nodes/ddd/kkd").send();
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Missing required fields");
+  });
+});
+
+describe("GET lots/nodes/:userId/:lotId", () => {
+  it("Should return a error (user not found)", async () => {
+    const res = await request(app).get("/lots/nodes/10/5").send();
+
+    expect(res.status).toBe(403);
+    expect(res.body.error).toBe("Forbidden");
+  });
+});
+
+describe("GET lots/nodes/:userId/:lotId", () => {
+  it("Should return a success", async () => {
+    const res = await request(app).get("/lots/nodes/2/2").send();
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("Node data get succesfully");
+    expect(res.body.home).toBeDefined();
+    expect(res.body.nodes).toBeDefined();
+  });
+});

@@ -1,0 +1,11 @@
+# Environment Variables
+**/.env
+
+# Node modules
+**/node_modules
+
+# dist package
+**/dist
+
+# Dummy html pages
+**/dummy.html
