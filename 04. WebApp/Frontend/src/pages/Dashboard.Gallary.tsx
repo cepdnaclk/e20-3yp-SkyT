@@ -28,7 +28,7 @@ interface ErrorResponse {
   error: string;
 }
 
-const BASE_URL = import.meta.env.VITE_BACKEND;
+const BASE_URL = import.meta.env.VITE_IMAGE_BACKEND;
 
 export default function Gallary() {
   const path = useLocation().pathname;
@@ -42,7 +42,7 @@ export default function Gallary() {
   const getImages = async (lastId: number) => {
     setBtnLoading(true);
     const url = `lots/images/${user?.userId}/${lotId}/${lastId}`;
-    console.log("Fetching early images: " + lotId + "lastId: " + lastId);
+    console.log("Fetching early images: " + lotId + " lastId: " + lastId);
 
     try {
       const serverResponse = await getData(url);
