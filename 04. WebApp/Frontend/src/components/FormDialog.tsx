@@ -129,9 +129,13 @@ function FormDialog({
               onChange={handleChange}
               fullWidth
               required
-              disabled={!!initialValues.fName}
               error={error.fName}
               helperText={error.fName && "This field is required!"}
+              slotProps={{
+                input: {
+                  readOnly: !!initialValues.fName,
+                },
+              }}
             />
           </Grid>
 
@@ -142,7 +146,11 @@ function FormDialog({
               value={formValues.lName}
               onChange={handleChange}
               fullWidth
-              disabled={!!initialValues.lName}
+              slotProps={{
+                input: {
+                  readOnly: !!initialValues.lName,
+                },
+              }}
             />
           </Grid>
 
@@ -155,9 +163,13 @@ function FormDialog({
               onChange={handleChange}
               fullWidth
               required
-              disabled={!!initialValues.email}
               error={error.email}
               helperText={error.email && "Invalid email address!"}
+              slotProps={{
+                input: {
+                  readOnly: !!initialValues.email,
+                },
+              }}
             />
           </Grid>
 
@@ -168,7 +180,11 @@ function FormDialog({
               value={formValues.role}
               fullWidth
               required
-              disabled
+              slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }}
             />
           </Grid>
 
