@@ -34,8 +34,75 @@ async function getDBConnection() {
   });
 }
 
+// Authentication middleware
+const authenticateToken = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  
+  if (!authHeader) {
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Authorization header required' 
+    });
+  }
+
+  // Support "Bearer <token>" format
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Invalid authorization header format. Use "Bearer <token>"' 
+    });
+  }
+
+  const token = parts[1];
+  
+  let connection;
+  try {
+    // Query to validate the token
+    connection = await getDBConnection();
+    const [rows] = await connection.query(
+      'SELECT * FROM API_KEYS WHERE api_key = ? AND status = ? AND (expires_at IS NULL OR expires_at > NOW())',
+      [token, 'active']
+    );
+
+    if (rows.length === 0) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Invalid or expired API key' 
+      });
+    }
+
+    const apiKeyRecord = rows[0];
+    
+    // Update last_used timestamp
+    await connection.query(
+      'UPDATE API_KEYS SET last_used = NOW() WHERE api_key = ?',
+      [token]
+    );
+
+    // Attach API key info to request object
+    req.user = {
+      apiKeyId: apiKeyRecord.id,
+      apiKey: apiKeyRecord.api_key,
+      name: apiKeyRecord.name,
+      permissions: apiKeyRecord.permissions,
+      createdBy: apiKeyRecord.created_by
+    };
+    
+    next();
+  } catch (error) {
+    console.error('Authentication error:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Authentication service error' 
+    });
+  } finally {
+    if (connection) await connection.end();
+  }
+};
+
 // Endpoint to get images by nodeId
-app.get('/images/node/:nodeId', async (req, res) => {
+app.get('/images/node/:nodeId', authenticateToken, async (req, res) => {
   let connection;
   try {
     const nodeId = req.params.nodeId;
@@ -93,10 +160,10 @@ const upload = multer({
 });
 
 // Serve the uploads directory statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', authenticateToken, express.static(path.join(__dirname, 'uploads')));
 
 // Endpoint to handle file uploads
-app.post('/upload', upload.single('images'), async (req, res) => {
+app.post('/upload', authenticateToken, upload.single('images'), async (req, res) => {
   let connection;
   try {
     if (!req.file) {
@@ -146,7 +213,7 @@ app.post('/upload', upload.single('images'), async (req, res) => {
 });
 
 // Endpoint to get an image by ID
-app.get('/image/:id', async (req, res) => {
+app.get('/image/:id', authenticateToken, async (req, res) => {
   let connection;
   try {
     const imageId = req.params.id;
@@ -177,7 +244,7 @@ app.get('/image/:id', async (req, res) => {
 });
 
 // Endpoint to list all uploaded images
-app.get('/images', async (req, res) => {
+app.get('/images', authenticateToken, async (req, res) => {
   let connection;
   try {
     const nodeId = req.query.nodeId;
@@ -209,7 +276,7 @@ app.get('/images', async (req, res) => {
 });
 
 // Endpoint to get task for drone
-app.get('/task/:droneId', async (req, res) => {
+app.get('/task/:droneId', authenticateToken, async (req, res) => {
   let connection;
   try {
     const droneId = req.params.droneId;
@@ -340,7 +407,7 @@ app.get('/task/:droneId', async (req, res) => {
 });
 
 // Endpoint to save sensor readings
-app.post('/sensor-readings', async (req, res) => {
+app.post('/sensor-readings', authenticateToken, async (req, res) => {
   let connection;
   try {
     const {
