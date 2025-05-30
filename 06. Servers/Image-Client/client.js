@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 // Configuration
 const sourceFolder = path.join(__dirname, 'images-to-upload');
-const serverUrl = 'https://skytimages.pagekite.me/upload';
+const serverUrl = process.env.SERVER_URL;
 const processedLogFile = path.join(__dirname, 'processed-files.json');
 
 // Create source folder if it doesn't exist
@@ -133,12 +133,16 @@ async function uploadFile(filePath) {
     // Create form data
     const formData = new FormData();
     formData.append('images', fs.createReadStream(filePath));
-    
+    const APIToken = process.env.API_TOKEN; // Ensure you have your token set in environment variables
     // Upload file
     console.log(`Uploading ${filename}...`);
     const response = await axios.post(serverUrl, formData, {
       headers: {
-        ...formData.getHeaders()
+        ...formData.getHeaders(),
+        Authorization: `Bearer ${APIToken}`
+      },
+      params: {
+        nodeId: 4
       }
     });
     
