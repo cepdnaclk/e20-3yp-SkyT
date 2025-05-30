@@ -1,18 +1,2 @@
 {
-  "C:\\Users\\nishi\\OneDrive - University of Peradeniya\\Semester 6\\3YP\\image-client\\images-to-upload\\Screenshot 2025-04-11 010256.png": {
-    "uploadedAt": "2025-04-18T07:07:33.170Z",
-    "serverPath": "http://localhost:3000/uploads/1744960053150-135912556-Screenshot 2025-04-11 010256.png"
-  },
-  "C:\\Users\\nishi\\OneDrive - University of Peradeniya\\Semester 6\\3YP\\image-client\\images-to-upload\\Screenshot 2025-04-13 125643.png": {
-    "uploadedAt": "2025-04-18T07:15:44.035Z",
-    "serverPath": "http://localhost:3000/uploads/1744960544012-17990906-Screenshot 2025-04-13 125643.png"
-  },
-  "C:\\Users\\nishi\\OneDrive - University of Peradeniya\\Semester 6\\3YP\\image-client\\images-to-upload\\test.png": {
-    "uploadedAt": "2025-04-18T07:24:28.847Z",
-    "serverPath": "http://localhost:3000/uploads/1744961068831-804401466-test.png"
-  },
-  "C:\\Users\\nishi\\OneDrive - University of Peradeniya\\Semester 6\\3YP\\image-client\\images-to-upload\\Screenshot 2025-04-11 130908.png": {
-    "uploadedAt": "2025-04-18T07:26:42.375Z",
-    "serverPath": "http://localhost:3000/uploads/1744961202368-914980786-Screenshot 2025-04-11 130908.png"
-  }
 }
