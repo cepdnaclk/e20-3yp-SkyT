@@ -12,9 +12,6 @@ title: SkyT
 # SkyT - Drone Based Crop Management System
 
 ---
-# SkyT - Drone-Based Crop Management System
-
----
 
 ## Product Introduction
 [![Video Title](https://img.youtube.com/vi/4Rkz7F0_JOQ/0.jpg)](https://youtu.be/4Rkz7F0_JOQ)
@@ -66,6 +63,7 @@ Our architecture integrates hardware and cloud components:
 
 ## Hardware and Software Designs
 
+----
 ### Software Design
 
 - **Frontend:** React + TypeScript + Bootstrap, dynamic dashboard, role-based UI/UX.
@@ -79,17 +77,19 @@ _Recent improvements include:_
 - Improved API structure and error handling
 - Task lifecycle management and advanced permissioning
 - Gallery for drone image uploads
+
+----
   
 ### Hardware Design
 
 - ESP32 sensor node with Modbus RS485 soil sensor and DHT11
 - Drone integration with Pi 4 and camera module
 
-## Schematic Design
+#### Schematic Design
 
 ![Schematic Design](./images/schematic_design.png)
 
-## 3D Model
+#### 3D Model
 
 ![3D Model](./images/3d_model_1.png)
 
