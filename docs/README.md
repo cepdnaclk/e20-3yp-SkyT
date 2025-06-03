@@ -63,10 +63,10 @@ Our architecture integrates hardware and cloud components:
 
 ## Hardware and Software Designs
 
+---
+
 ### Software Design
 SkyT features a robust and scalable full-stack architecture with clearly separated concerns between the frontend, backend, and cloud integrations.
-
----
 
 #### Frontend
   - Built with React, TypeScript, and Vite for a fast, modular, and modern development experience.
