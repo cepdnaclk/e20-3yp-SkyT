@@ -101,7 +101,11 @@ SkyT features a robust and scalable full-stack architecture with clearly separat
   - Notification system for alerts (e.g., sensor out-of-range, new image uploads).
   - Fully documented REST API endpoints and test cases using Jest + Supertest.
   - Authentication-based image accessing method.
-    
+
+#### Screenshots
+
+![image](https://github.com/user-attachments/assets/aa56eacd-f77c-4d26-bf79-042adbf4df56)
+
  ----
   
 ### Hardware Design
