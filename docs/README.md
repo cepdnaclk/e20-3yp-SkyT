@@ -70,7 +70,7 @@ Our architecture integrates hardware and cloud components:
 
 - **Frontend:** React + TypeScript + Bootstrap, dynamic dashboard, role-based UI/UX.
 - **Backend:** Node.js + Express, TypeScript, REST API, MySQL2, JWT authentication, hosted on Vercel.
-- **Database:** MySQL (main), MongoDB (auxiliary).
+- **Database:** MySQL.
 - **Cloud:** AWS for backend services, Cloudflare for frontend hosting.
 
 _Recent improvements include:_
@@ -79,12 +79,19 @@ _Recent improvements include:_
 - Improved API structure and error handling
 - Task lifecycle management and advanced permissioning
 - Gallery for drone image uploads
-
+  
 ### Hardware Design
 
 - ESP32 sensor node with Modbus RS485 soil sensor and DHT11
-- Drone integration with Pi Zero/Pi 4 and camera module
-- Docking with LoRa and 4G connectivity
+- Drone integration with Pi 4 and camera module
+
+## Schematic Design
+
+![Schematic Design](./images/schematic_design.png)
+
+## 3D Model
+
+![3D Model](./images/3d_model_1.png)
 
 ---
 
@@ -136,8 +143,7 @@ SkyT has successfully reached the proof-of-concept stage, with the full data pip
 ## What's New
 
 - **June 2025:** Project page and documentation updated ([see commit](https://github.com/cepdnaclk/e20-3yp-SkyT/commit/b38a59c0c6514657151e68866f6a1156e4b10514))
-- **June 2025:** Image-based authentication and access control improvements
-- **June 2025:** New "Access Denied" and database status pages
+- **June 2025:** image and sensor data read/write access authentication and access control improvements
 - **May 2025:** Database schema and API restructuring, improved error handling
 - **May 2025:** Node packages updated, enhanced client authentication logic
 
