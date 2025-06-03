@@ -104,7 +104,10 @@ SkyT features a robust and scalable full-stack architecture with clearly separat
 
 #### Screenshots
 
-![image](https://github.com/user-attachments/assets/aa56eacd-f77c-4d26-bf79-042adbf4df56)
+<img src="https://github.com/user-attachments/assets/4b7a7567-52d0-4834-b182-4f1defc56411" alt="Dashboard" width="450"/>
+<img src="https://github.com/user-attachments/assets/2addff3d-caaa-41d4-ac60-fdc4804f07b2" alt="People Page" width="450"/>
+<img src="https://github.com/user-attachments/assets/78e08f5b-6887-4f1e-8d94-a0172cbb16f3" alt="Profile" width="450"/>
+<img src="https://github.com/user-attachments/assets/3bd32c29-45ac-4bcd-abe5-0e2f0706b932" alt="Task Manager" width="450"/>
 
  ----
   
