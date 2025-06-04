@@ -24,7 +24,13 @@ For detailed hardware specifications, including dimensions, performance, and com
 
 
 ________________________________________
-Software Specifications
+Firmware Specifications
 
 - Firmware: Ardupilot chibios V4.5.7 fmuv2
 - Flight Modes: Guided, Stabilize, Land
+
+
+________________________________________
+Softwarew Specifications - Raspi
+
+- OS: Raspberry pi os 64 bit ( Derbian Bookworm)
