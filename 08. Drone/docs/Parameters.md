@@ -1,11 +1,10 @@
-- Parameters for Flight controller Ardupilot chibiOS FMUv2 Quadcopter V4.5.7
+- Parameters for Flight controller Ardupilot chibiOS FMUv2 Multirotor V4.5.7
 
 # Onboard parameters for Vehicle 1
 #
 # Stack: ArduPilot
 # Vehicle: Multi-Rotor
 # Version: 4.5.7 
-# Git Revision: 2a3dc4b7
 #
 # Vehicle-Id Component-Id Name Value Type
 1	1	ACRO_BAL_PITCH	1.000000000000000000	9
