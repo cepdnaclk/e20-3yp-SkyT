@@ -21,3 +21,10 @@ For detailed hardware specifications, including dimensions, performance, and com
 -	Flight Computer: Raspberry Pi 4
 -	Camera: Raspberry Pi Camera V1.3 5MP
 -	Raspberry Battery - Xiaomi mi3 ultra compact powerbank - 1000mah
+
+
+________________________________________
+Software Specifications
+
+- Firmware: Ardupilot chibios V4.5.7 fmuv2
+- Flight Modes: Guided, Stabilize, Land
