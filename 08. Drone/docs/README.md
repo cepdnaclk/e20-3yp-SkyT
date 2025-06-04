@@ -3,6 +3,6 @@ All the documentation of the drone related information will be documented in thi
 - Hardware Documentation
 - Firmware Documentation
 - Software Documetation
-- Get Start
+- Get Started
 - Errors and solutions
 - Parameters
