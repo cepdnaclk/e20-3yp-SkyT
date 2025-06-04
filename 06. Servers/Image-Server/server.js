@@ -358,8 +358,10 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
       const { lat: lotLat, lng: lotLng } = lotRows[0];
 
-      // Get nodes in the lot
-      const [nodeRows] = await connection.query('SELECT nodeId, lat, lng FROM NODES WHERE lotId = ?', [lotId]);
+      const [nodeRows] = await connection.query(
+        'SELECT nodeId, lat, lng FROM NODES WHERE lotId = ? AND status = ?',
+        [lotId, 'Active']
+      );
       
       const nodeData = nodeRows.map(node => ({
         nodeId: node.nodeId,
@@ -393,14 +395,24 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
   }
 });
 
-app.post('/task/:taskId/complete', authenticateToken, async (req, res) => {
+// Endpoint to update task status
+app.post('/task/:taskId', authenticateToken, async (req, res) => {
   let connection;
   try {
     const taskId = req.params.taskId;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Missing task status in request body'
+      });
+    }
+
     connection = await getDBConnection();
 
     // Check if the task exists
-    const [taskRows] = await connection.query('SELECT status FROM TASKS WHERE taskId = ?', [taskId]);
+    const [taskRows] = await connection.query('SELECT taskId FROM TASKS WHERE taskId = ?', [taskId]);
 
     if (taskRows.length === 0) {
       return res.status(404).json({
@@ -409,16 +421,16 @@ app.post('/task/:taskId/complete', authenticateToken, async (req, res) => {
       });
     }
 
-    // Update task status to Completed
-    await connection.query('UPDATE TASKS SET status = ? WHERE taskId = ?', ['Completed', taskId]);
+    // Update task status
+    await connection.query('UPDATE TASKS SET status = ? WHERE taskId = ?', [status, taskId]);
 
     res.json({
       status: 'success',
-      message: `Task ID ${taskId} marked as Completed`
+      message: `Task ID ${taskId} updated with status '${status}'`
     });
 
   } catch (error) {
-    console.error('Complete task error:', error);
+    console.error('Update task status error:', error);
     res.status(500).json({
       status: 'error',
       message: error.message
