@@ -107,7 +107,7 @@
 
 ## 8. Software and Firmware
 - **Firmware**:
-  - ArduPilot quadcopter 4.5.7
+  - ArduPilot MultiRoter 4.5.7
   - Supported OS: Linux( Raspberry pi os), Windows (for ground control station)
 - **Ground Control Software**:
   - QGroundControl, Mission Planner
