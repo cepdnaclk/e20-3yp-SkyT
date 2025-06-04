@@ -14,6 +14,7 @@
   --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
   --contrast-color: #ffffff; 
   --btn-color: #059652;
+  --dark-color:  #f4f5fe;
   /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
 }
 
@@ -1277,7 +1278,7 @@ section,
   margin-bottom: 0;
 }
 .details .even{
-  background-color: #f4f5fe;
+  background-color:var(--dark-color);
   padding: 5%;
 }
 
