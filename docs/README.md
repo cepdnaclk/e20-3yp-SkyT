@@ -132,6 +132,10 @@ SkyT features a robust and scalable full-stack architecture with clearly separat
 - Manual API testing with Postman
 - Hardware: Sensor and communication integration tested in field conditions
 
+<img src="https://github.com/user-attachments/assets/1a62003a-b972-4a10-aa7f-3a2a3003bb8f" alt="Jest" width="135"/>
+<img src="https://github.com/user-attachments/assets/9de3b784-95ee-4063-8185-54ade2a8ac45" alt="Jest" width="150"/>
+<img src="https://github.com/user-attachments/assets/b347d55a-e4e0-4b70-a82c-7799dc762a00" alt="Jest" width="150"/>
+
 ---
 
 ## Detailed Budget
