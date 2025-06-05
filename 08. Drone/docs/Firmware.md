@@ -1,5 +1,5 @@
 ## Supported Firmware Flight Controller
-- Flight controller: Pixhawk PX4 (copu)
+- Flight controller: Pixhawk PX4 (clone)
 - Firmware: Ardupilot Multirotor fmuv2 v4.5.7
 
 
