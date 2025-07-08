@@ -75,277 +75,293 @@
    (shape (circ I14 76200 0 0))
    (shape (circ BOT 76200 0 0))
   )
-  (padstack PS11
-   (shape (circ TOP 457200 0 0))
-   (shape (circ I1 457200 0 0))
-   (shape (circ I2 457200 0 0))
-   (shape (circ I3 457200 0 0))
-   (shape (circ I4 457200 0 0))
-   (shape (circ I5 457200 0 0))
-   (shape (circ I6 457200 0 0))
-   (shape (circ I7 457200 0 0))
-   (shape (circ I8 457200 0 0))
-   (shape (circ I9 457200 0 0))
-   (shape (circ I10 457200 0 0))
-   (shape (circ I11 457200 0 0))
-   (shape (circ I12 457200 0 0))
-   (shape (circ I13 457200 0 0))
-   (shape (circ I14 457200 0 0))
-   (shape (circ BOT 457200 0 0))
-  )
-  (padstack PS12
-   (shape (circ TOP 76200 0 0))
-   (shape (circ I1 76200 0 0))
-   (shape (circ I2 76200 0 0))
-   (shape (circ I3 76200 0 0))
-   (shape (circ I4 76200 0 0))
-   (shape (circ I5 76200 0 0))
-   (shape (circ I6 76200 0 0))
-   (shape (circ I7 76200 0 0))
-   (shape (circ I8 76200 0 0))
-   (shape (circ I9 76200 0 0))
-   (shape (circ I10 76200 0 0))
-   (shape (circ I11 76200 0 0))
-   (shape (circ I12 76200 0 0))
-   (shape (circ I13 76200 0 0))
-   (shape (circ I14 76200 0 0))
-   (shape (circ BOT 76200 0 0))
-  )
   )
   (network_out
-   (Net #00026 
+   (Net 3V3 
    (rule
    )
-   (wire (path BOT 101600  -1373000 1060000 -1373235 1060235 -1373235 1838931
-     -808000 2404166 -808000 3940000)
-    (connect (terminal pin U1-1) (terminal pin DATA-1))
-    (type protect)
+   (wire (path TOP 88900  2159000 -1964000 2159000 -3652000 -1080000 -3652000)
+    (connect (terminal wire) (terminal pin ESP-0))
    )
+   (wire (path TOP 88900  2159000 -1964000 2159000 -1710000 2000000 -1710000)
+    (connect (terminal wire) (terminal pin CLK1-1))
    )
-   (Net #00027 
-   (rule
-   )
-   (wire (path BOT 101600  -1627000 1060000 -1627000 1429173 -2102500 1904673
-     -2102500 3129375 -1316000 3915875 -1316000 3940000)
-    (connect (terminal pin U1-2) (terminal pin DATA-2))
-    (type protect)
-   )
-   )
-   (Net #00055 
-   (rule
-   )
-   (wire (path TOP 101600  1240000 2420000 950000 2710000 820000 2710000)
-    (connect (terminal smd PWR-0) (terminal smd R4-0))
-    (type protect)
-   )
-   )
-   (Net +9V 
-   (rule
-   )
-   (wire (path TOP 88900  749000 3606000 749000 3424000 613000 3288000)
-    (connect (terminal smd REGULATOR-2) (terminal smd C1-0))
-    (type protect)
-   )
-   (wire (path TOP 101600  400000 2710000 160000 2950000 -50000 2950000
-     -300000 3200000 -300000 3940000)
-    (connect (terminal smd R2-0) (terminal pin DATA-0))
-    (type protect)
-   )
-   (wire (path TOP 101600  1280000 3940000 946000 3606000 749000 3606000)
-    (connect (terminal pin P-IN-0) (terminal smd REGULATOR-2))
-    (type protect)
-   )
-   (wire (path TOP 127000  -300000 3940000 1280000 3940000)
-    (connect (terminal pin DATA-0) (terminal pin P-IN-0))
-    (type protect)
+   (wire (path TOP 88900  4500000 -1964000 2159000 -1964000)
+    (connect (terminal pin CLK1-9) (terminal wire))
    )
    )
    (Net 5V 
    (rule
    )
-   (wire (path BOT 88900  2030000 902000 1524000 902000 1524000 1270000
-     -127000 1270000)
-    (connect (terminal pin U3-29) (terminal wire))
+   (wire (path BOT 88900  2858000 4440000 2858000 4191000 2921000 4191000
+     2921000 3302000)
+    (connect (terminal pin DHT11-0) (terminal wire))
    )
-   (wire (path BOT 88900  -1868000 -4140000 -1868000 -3683000 -2159000 -3683000
-     -2159000 635000 -1881000 635000 -1881000 1060000)
-    (connect (terminal pin U4-0) (terminal pin U1-3))
+   (wire (path BOT 88900  4475000 3281000 4475000 3302000 2921000 3302000)
+    (connect (terminal pin RS485-7) (terminal wire))
    )
-   (wire (path TOP 88900  635000 2794000 635000 2420000 820000 2420000)
-    (connect (terminal wire) (terminal smd R4-1))
+   (wire (path TOP 88900  2921000 2159000 -211000 2159000 -211000 1720000)
+    (connect (terminal via) (terminal pin BUCK1-0))
    )
-   (wire (path TOP 88900  635000 2794000 635000 3099315 391000 3099315
-     391000 3290000)
-    (connect (terminal wire) (terminal smd C2-0))
+   (wire (path BOT 88900  2921000 3302000 2921000 2159000)
+    (connect (terminal wire) (terminal via))
    )
-   (wire (path BOT 88900  -127000 2667000 -127000 1270000)
+   (via $VIA#0_SIGNAL 2921000 2159000)
+   )
+   (Net 9V 
+   (rule
+   )
+   (wire (path BOT 88900  -3620000 -3652000 -1397000 -3652000 -1397000 -3937000
+     381000 -3937000 381000 889000)
+    (connect (terminal pin ESP-29) (terminal wire))
+   )
+   (wire (path BOT 88900  1285000 995000 1285000 1270000 1397000 1270000
+     1397000 4699000 910000 4699000 910000 4440000)
+    (connect (terminal pin BOOST1-0) (terminal pin SOIL_SENSOR-0))
+   )
+   (wire (path BOT 88900  1285000 995000 762000 995000 762000 889000
+     381000 889000)
+    (connect (terminal pin BOOST1-0) (terminal wire))
+   )
+   (wire (path BOT 88900  297000 1720000 297000 1254487 381000 1254487
+     381000 889000)
+    (connect (terminal pin BUCK1-2) (terminal wire))
+   )
+   )
+   (Net CU_B+ 
+   (rule
+   )
+   (wire (path BOT 101600  -1204871 1060000 -1204871 3693928 -1092488 3806311
+     -1055126 3843673 -734099 3843673 -576000 4001772 -576000 4440000)
+    (connect (terminal wire) (terminal pin BATTERY-1))
+    (type protect)
+   )
+   (wire (path BOT 101600  -1204590 1050590 -1204000 1050000)
+    (connect (terminal wire) (terminal pin BP2-4))
+    (type protect)
+   )
+   (wire (path BOT 101600  -1204590 1050590 -1204871 1050871 -1204871 1060000)
     (connect (terminal wire) (terminal wire))
+    (type protect)
    )
-   (wire (path TOP 88900  -762000 508000 -1881000 508000 -1881000 1060000)
-    (connect (terminal via) (terminal pin U1-3))
+   (wire (path BOT 88900  -1204000 1050000 -1204871 1060000)
+    (connect (terminal pin BP2-4) (terminal wire))
+    (type protect)
    )
-   (wire (path BOT 88900  -127000 1270000 -762000 1270000 -762000 508000)
-    (connect (terminal wire) (terminal via))
+   (wire (path BOT 88900  -1204590 1050590 -1204590 1059719 -1204871 1060000)
+    (connect (terminal wire) (terminal wire))
+    (type protect)
    )
-   (wire (path TOP 88900  -127000 3429000 -127000 3683000 0 3683000
-     0 3774000 517949 3774000 517949 3606000 520000 3606000)
-    (connect (terminal via) (terminal smd REGULATOR-1))
+   (wire (path BOT 101600  -3284000 1050000 -3284000 991080 -3058606 765686
+     -1331505 765686 -1204590 892601 -1204590 1050590)
+    (connect (terminal pin BP1-4) (terminal wire))
+    (type protect)
    )
-   (wire (path BOT 88900  -127000 2667000 -127000 3429000)
-    (connect (terminal wire) (terminal via))
    )
-   (wire (path BOT 88900  635000 2667000 -127000 2667000)
-    (connect (terminal via) (terminal wire))
-   )
-   (wire (path TOP 88900  635000 2667000 635000 2794000)
-    (connect (terminal via) (terminal wire))
-   )
-   (via $VIA#0_SIGNAL -762000 508000)
-   (via $VIA#0_SIGNAL -127000 3429000)
-   (via $VIA#0_SIGNAL 635000 2667000)
-   )
-   (Net B- 
+   (Net CU_B- 
    (rule
    )
-   (wire (path TOP 88900  -1440000 2590000 -1440000 2664755 -1135448 2969307
-     -1054812 2969307 -269307 2969307 -10000 2710000)
-    (connect (terminal pin Q1-1) (terminal smd R3-0))
+   (wire (path BOT 101600  -4176000 1050000 -4176000 1527774 -3909106 1794668
+     -2344669 1794668 -2096000 1545999 -2096000 1050000)
+    (connect (terminal pin BP1-3) (terminal pin BP2-3))
     (type protect)
    )
-   (wire (path TOP 127000  -1824000 3940000 -1824000 3402229 -1442262 3020491
-     -1442262 2592262 -1440000 2590000)
-    (connect (terminal pin DATA-3) (terminal pin Q1-1))
+   (wire (path BOT 101600  -2096000 1050000 -1700000 1446000 -1700000 4100000
+     -1360000 4440000 -830000 4440000)
+    (connect (terminal pin BP2-3) (terminal pin BATTERY-0))
     (type protect)
    )
    )
-   (Net D19 
+   (Net CU_OUT+ 
    (rule
    )
-   (wire (path BOT 101600  -1614000 -4140000 -1614000 -4436000 -1450000 -4600000
-     -550000 -4600000 39157 -4010843 39157 -1639157 -216000 -1384000
-     -510000 -1384000)
-    (connect (terminal pin U4-1) (terminal pin U3-9))
+   (wire (path TOP 101600  -950000 1050000 -764170 1235830 2824993 1235830
+     3894441 166382 4652354 166382 4763757 277785 4763757 566243
+     4335000 995000)
+    (connect (terminal pin BP2-5) (terminal pin BOOST1-3))
+    (type protect)
+   )
+   (wire (path TOP 101600  -3030000 1050000 -2753000 773000 -1127000 773000
+     -950000 950000 -950000 1050000)
+    (connect (terminal pin BP2-5) (terminal pin BP1-5))
     (type protect)
    )
    )
-   (Net D2 
+   (Net CU_OUT- 
    (rule
    )
-   (wire (path TOP 88900  -510000 140000 91766 741766 91766 1908234
-     -420000 2420000)
-    (connect (terminal pin U3-3) (terminal smd R1-1))
+   (wire (path TOP 101600  -4430000 1050000 -4430000 1460471 -4066194 1824277
+     -2665666 1824277 -2658611 1817222 -2350000 1508611 -2350000 1250000)
+    (connect (terminal pin BP1-2) (terminal wire))
     (type protect)
    )
-   (wire (path TOP 101600  -420000 2420000 -1016000 2420000 -1186000 2590000)
-    (connect (terminal smd R1-1) (terminal pin Q1-0))
+   (wire (path TOP 101600  -2350000 1250000 -2183802 1416198 2943675 1416198
+     4014873 345000 4335000 345000)
+    (connect (terminal wire) (terminal pin BOOST1-2))
+    (type protect)
+   )
+   (wire (path TOP 88900  -2350000 1250000 -2350000 1111570)
+    (connect (terminal wire) (terminal wire))
+    (type protect)
+   )
+   (wire (path TOP 88900  -2350000 1111570 -2350000 1050000)
+    (connect (terminal wire) (terminal pin BP2-2))
     (type protect)
    )
    )
-   (Net D36 
+   (Net DHT_DATA 
    (rule
    )
-   (wire (path TOP 101600  400000 2420000 400000 -1110857 1688282 -2399139
-     2029139 -2399139 2030000 -2400000)
-    (connect (terminal smd R2-1) (terminal pin U3-16))
-    (type protect)
+   (wire (path BOT 88900  889000 127000 889000 635000 1651000 635000
+     1651000 4191000 2604000 4191000 2604000 4440000)
+    (connect (terminal via) (terminal pin DHT11-1))
    )
-   (wire (path TOP 101600  400000 2420000 -10000 2420000)
-    (connect (terminal smd R2-1) (terminal smd R3-1))
-    (type protect)
+   (wire (path TOP 88900  -889000 127000 889000 127000)
+    (connect (terminal via) (terminal via))
    )
+   (wire (path BOT 88900  -1080000 -1874000 -889000 -1874000 -889000 127000)
+    (connect (terminal pin ESP-7) (terminal via))
    )
-   (Net D4 
+   (via $VIA#0_SIGNAL 889000 127000)
+   (via $VIA#0_SIGNAL -889000 127000)
+   )
+   (Net DI 
    (rule
    )
-   (wire (path TOP 88900  -1627000 -3062000 -1373000 -3062000)
-    (connect (terminal pin U1-5) (terminal pin U1-6))
+   (wire (path BOT 88900  -1080000 -2128000 -635000 -2128000 -635000 2519000
+     325000 2519000)
+    (connect (terminal pin ESP-6) (terminal pin RS485-3))
    )
-   (wire (path BOT 101600  -1373000 -3062000 -1373000 -977000 -510000 -114000)
-    (connect (terminal pin U1-6) (terminal pin U3-4))
+   )
+   (Net EN 
+   (rule
+   )
+   (wire (path BOT 88900  -1080000 -2636000 -508000 -2636000 -508000 2032000
+     635000 2032000 635000 2773000 325000 2773000)
+    (connect (terminal pin ESP-4) (terminal pin RS485-2))
+   )
+   (wire (path TOP 88900  325000 3027000 325000 2780173 317270 2772443
+     325000 2773000)
+    (connect (terminal pin RS485-1) (terminal pin RS485-2))
     (type protect)
    )
    )
    (Net GND 
    (rule
    )
-   (wire (path TOP 88900  -1694000 2590000 -1694000 2159000 -1119000 2159000
-     -1119000 1060000)
-    (connect (terminal pin Q1-2) (terminal pin U1-0))
+   (wire (path BOT 88900  43000 1720000 43000 1905000 1164000 1905000
+     1164000 4440000)
+    (connect (terminal pin BUCK1-1) (terminal pin SOIL_SENSOR-1))
    )
-   (wire (path TOP 88900  -1119000 1060000 -1119000 648000 -510000 648000)
-    (connect (terminal pin U1-0) (terminal pin U3-1))
+   (wire (path TOP 88900  4500000 -1710000 2998119 -1710000 2998119 -1456000
+     2000000 -1456000)
+    (connect (terminal pin CLK1-10) (terminal pin CLK1-0))
    )
-   (wire (path BOT 88900  -1106000 -4140000 -1106000 -3556000 -2032000 -3556000
-     -2032000 -381000 -1119000 -381000 -1119000 1060000)
-    (connect (terminal pin U4-3) (terminal pin U1-0))
+   (wire (path TOP 88900  1164000 4440000 1651000 4440000 1651000 4191000
+     2032000 4191000)
+    (connect (terminal pin SOIL_SENSOR-1) (terminal wire))
    )
-   (wire (path TOP 88900  -1016000 2794000 -889000 2794000 -889000 2565000
-     -420000 2565000 -420000 2710000)
-    (connect (terminal via) (terminal smd R1-0))
+   (wire (path BOT 88900  4475000 2519000 4475000 1905000 2667000 1905000
+     2667000 2413000 2032000 2413000)
+    (connect (terminal pin RS485-4) (terminal wire))
    )
-   (wire (path BOT 88900  -1694000 2590000 -1694000 2794000 -1016000 2794000)
-    (connect (terminal pin Q1-2) (terminal via))
+   (wire (path BOT 88900  2000000 -1456000 1651000 -1456000 1651000 -1524000
+     1524000 -1524000)
+    (connect (terminal pin CLK1-0) (terminal wire))
    )
-   (wire (path TOP 88900  254000 3175000 254000 3290000 91000 3290000)
-    (connect (terminal via) (terminal smd C2-1))
+   (wire (path TOP 88900  -3620000 -3398000 -1080000 -3398000)
+    (connect (terminal pin ESP-28) (terminal pin ESP-1))
    )
-   (wire (path BOT 88900  1788000 3940000 1788000 3175000 254000 3175000)
-    (connect (terminal pin P-IN-1) (terminal via))
+   (wire (path BOT 88900  1524000 -1524000 1524000 345000)
+    (connect (terminal wire) (terminal wire))
    )
-   (wire (path BOT 88900  1788000 3940000 1788000 4131690 1509200 4410490
-     496881 4410490 -546727 3366882 -546727 2842178)
-    (connect (terminal pin P-IN-1) (terminal via))
-    (type protect)
+   (wire (path TOP 88900  2032000 4064000 2032000 4191000)
+    (connect (terminal via) (terminal wire))
    )
-   (wire (path TOP 88900  -546727 2842178 -546727 2836727 -420000 2710000)
-    (connect (terminal via) (terminal smd R1-0))
-    (type protect)
+   (wire (path BOT 88900  2032000 2413000 2032000 4064000)
+    (connect (terminal wire) (terminal via))
    )
-   (wire (path TOP 88900  91000 3290000 91000 3406000 291000 3606000)
-    (connect (terminal smd C2-1) (terminal smd REGULATOR-0))
-    (type protect)
+   (wire (path BOT 88900  2032000 2413000 2032000 345000 1524000 345000)
+    (connect (terminal wire) (terminal wire))
    )
-   (wire (path TOP 101600  1788000 3940000 1136000 3288000 913000 3288000)
-    (connect (terminal pin P-IN-1) (terminal smd C1-1))
-    (type protect)
+   (wire (path TOP 88900  889000 -1524000 889000 -3398000 -1080000 -3398000)
+    (connect (terminal via) (terminal pin ESP-1))
    )
-   (wire (path TOP 101600  913000 3288000 1240000 2961000 1240000 2720000)
-    (connect (terminal smd C1-1) (terminal smd PWR-1))
-    (type protect)
+   (wire (path BOT 88900  1524000 -1524000 889000 -1524000)
+    (connect (terminal wire) (terminal via))
    )
-   (via $VIA#0_POWER -1016000 2794000)
-   (via $VIA#0_POWER 254000 3175000)
-   (via PS12 -546727 2842178)
+   (wire (path BOT 88900  1285000 345000 1285000 345001 1524000 345001
+     1524000 345000)
+    (connect (terminal pin BOOST1-1) (terminal wire))
    )
-   (Net RX2 
+   (wire (path TOP 88900  2350000 4440000 2032000 4440000 2032000 4191000)
+    (connect (terminal pin DHT11-2) (terminal wire))
+   )
+   (via $VIA#0_SIGNAL 2032000 4064000)
+   (via $VIA#0_SIGNAL 889000 -1524000)
+   )
+   (Net RO 
    (rule
    )
-   (wire (path TOP 101600  -510000 -368000 -510844 -367156 -1117156 -367156
-     -1881000 -1131000 -1881000 -3062000)
-    (connect (terminal pin U3-5) (terminal pin U1-4))
-    (type protect)
+   (wire (path BOT 88900  -1080000 -2382000 -1397000 -2382000 -1397000 508000
+     -762000 508000 -762000 3281000 325000 3281000)
+    (connect (terminal pin ESP-5) (terminal pin RS485-0))
    )
    )
-   (Net TX2 
+   (Net S+ 
    (rule
    )
-   (wire (path BOT 101600  -1119000 -3062000 -1119000 -1068999 -672013 -622012
-     -510000 -622000)
-    (connect (terminal pin U1-7) (terminal pin U3-6))
-    (type protect)
+   (wire (path BOT 88900  -2310000 4440000 -2310000 4021423 -1905000 4021423
+     -1905000 3175000)
+    (connect (terminal pin SOLA_PANEL-0) (terminal via))
+   )
+   (wire (path TOP 88900  -1905000 3175000 -2032000 3175000)
+    (connect (terminal via) (terminal wire))
+    (attr bus)
+   )
+   (wire (path TOP 88900  -2032000 3175000 -2159000 3175000)
+    (connect (terminal wire) (terminal wire))
+    (attr bus)
+   )
+   (wire (path TOP 88900  -2159000 3175000 -2855000 3175000 -3030000 3350000)
+    (connect (terminal wire) (terminal pin BP1-0))
+    (attr bus)
+   )
+   (wire (path TOP 88900  -950000 3350000 -1143000 3350000 -1318000 3175000
+     -1905000 3175000)
+    (connect (terminal pin BP2-0) (terminal via))
+    (attr bus)
+   )
+   (via $VIA#0_SIGNAL -1905000 3175000)
+   )
+   (Net S- 
+   (rule
+   )
+   (wire (path BOT 88900  -2564000 4440000 -2564000 3350000 -2350000 3350000)
+    (connect (terminal pin SOLA_PANEL-1) (terminal pin BP2-1))
+   )
+   (wire (path TOP 88900  -2350000 3350000 -2540000 3350000 -2746000 3556000
+     -4224000 3556000 -4430000 3350000)
+    (connect (terminal pin BP2-1) (terminal pin BP1-1))
+    (attr bus)
    )
    )
-   (Net {NC-1} 
-   (via PS11 -1500000 0 (net {NC-1} )
-    (type protect))
+   (Net SCL 
+   (rule
    )
-   (Net {NC-2} 
-   (via PS11 1000000 -2700000 (net {NC-2} )
-    (type protect))
+   (wire (path TOP 88900  2000000 -2218000 1397000 -2218000 1397000 -350000
+     -1080000 -350000)
+    (connect (terminal pin CLK1-3) (terminal pin ESP-13))
    )
-   (Net {NC-3} 
-   (via PS11 1700000 2500000 (net {NC-3} )
-    (type protect))
+   )
+   (Net SDA 
+   (rule
+   )
+   (wire (path TOP 88900  2000000 -1964000 1651000 -1964000 1651000 -127000
+     1016000 -127000 1016000 508000 -1397000 508000 -1397000 -1112000
+     -1080000 -1112000)
+    (connect (terminal pin CLK1-2) (terminal pin ESP-10))
+   )
    )
   )
  )
