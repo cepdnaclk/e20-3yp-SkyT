@@ -2,19 +2,19 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <DHT.h>   // Include DHT library
+#include <DHT.h>
 
 // Pin definitions
 #define RE_DE 4     // RS485 Direction control pin
 #define RX_PIN 16   // ESP32 RX2 pin
 #define TX_PIN 17   // ESP32 TX2 pin
-#define DHT_PIN 23  // DHT11 data pin
+#define DHT_PIN 5  // DHT11 data pin
 #define DHT_TYPE DHT11  // Define the DHT sensor type
 
 // Modbus frame to read 7 registers starting from address 0x0000
 byte readData[] = {0x01, 0x03, 0x00, 0x00, 0x00, 0x07, 0x04, 0x08};
 byte receivedData[20];
-byte transmitData[12]; // Increased to 12 bytes to include DHT11 humidity
+byte transmitData[12];
 
 // BLE related variables
 BLEServer* pServer = NULL;
@@ -26,12 +26,11 @@ uint32_t value = 0;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID_2 "b4b6b8a6-5286-4b49-9074-a89f96a0637e"
+#define SERVICE_UUID        "PUT_YOUR_SERVICE_UUID"
+#define CHARACTERISTIC_UUID "PUT_YOUR_CHARACTERISTIC_UUID"
 
 HardwareSerial sensorSerial(2); // UART2
-DHT dht(DHT_PIN, DHT_TYPE);  // Initialize DHT sensor
+DHT dht(DHT_PIN, DHT_TYPE);
 
 class MyServerCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -78,16 +77,8 @@ void setup() {
                       BLECharacteristic::PROPERTY_NOTIFY
                     );
 
-  // Create a second BLE Characteristic (for additional data if needed)
-  qCharacteristic = pService->createCharacteristic(
-                      CHARACTERISTIC_UUID_2,
-                      BLECharacteristic::PROPERTY_READ   |
-                      BLECharacteristic::PROPERTY_NOTIFY
-                    );
-
   // Add descriptors
   pCharacteristic->addDescriptor(new BLE2902());
-  qCharacteristic->addDescriptor(new BLE2902());
 
   // Start the service
   pService->start();
@@ -104,21 +95,15 @@ void setup() {
 }
 
 void loop() {
-  // Step 1: Read sensor data
+  //Read sensor data
   readSensorData();
   
-  // Step 2: Transmit data via BLE if connected
+  //Transmit data via BLE if connected
   if (deviceConnected) {
     // Send sensor data through the first characteristic
     pCharacteristic->setValue(transmitData, 12);
     pCharacteristic->notify();
     Serial.println("Soil sensor data transmitted via BLE");
-    
-    // Optional: Send additional information through the second characteristic
-    // For example, a counter or status code
-    qCharacteristic->setValue((uint8_t*)&value, 4);
-    qCharacteristic->notify();
-    value++;
   }
   
   // Handle BLE connection changes
