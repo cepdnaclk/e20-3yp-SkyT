@@ -317,12 +317,31 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
       return dueDate;
     }
 
-    // Select closest task
-    const closestTask = taskRows.reduce((closest, current) => {
-      const currentDiff = Math.abs(combinedDueDateTime(current) - now);
-      const closestDiff = Math.abs(combinedDueDateTime(closest) - now);
-      return currentDiff < closestDiff ? current : closest;
+    // Helper function to check if two dates are on the same day
+    function isSameDate(date1, date2) {
+      return date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate();
+    }
+
+    // Filter tasks to only include those due today
+    const todayTasks = taskRows.filter(task => {
+      const taskDueDate = new Date(task.dueDate);
+      return isSameDate(taskDueDate, now);
     });
+
+    // Select closest task from today's tasks only
+    if (todayTasks.length > 0) {
+      const closestTask = todayTasks.reduce((closest, current) => {
+        const currentDiff = Math.abs(combinedDueDateTime(current) - now);
+        const closestDiff = Math.abs(combinedDueDateTime(closest) - now);
+        return currentDiff < closestDiff ? current : closest;
+      });
+      
+      console.log("Closest task for today:", closestTask);
+    } else {
+      console.log("No tasks due today");
+    }
 
     const lotsJson = closestTask.lots;
 
