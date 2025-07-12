@@ -1,0 +1,57 @@
+import request from "supertest";
+import app from "../src/app";
+
+describe("DELETE /tasks", () => {
+  it("Should return a error (invalid user)", async () => {
+    const res = await request(app)
+      .delete("/tasks")
+      .send({ userId: "abc", taskId: 5 });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Required fields missing");
+  });
+});
+
+describe("DELETE /tasks", () => {
+  it("Should return a error (invalid task)", async () => {
+    const res = await request(app)
+      .delete("/tasks")
+      .send({ userId: 2, taskId: "pqr" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Required fields missing");
+  });
+});
+
+describe("DELETE /tasks", () => {
+  it("Should return a error (invalid user & task)", async () => {
+    const res = await request(app)
+      .delete("/tasks")
+      .send({ userId: "abc", taskId: "pqr" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Required fields missing");
+  });
+});
+
+describe("DELETE /tasks", () => {
+  it("Should return a error (access denied)", async () => {
+    const res = await request(app)
+      .delete("/tasks")
+      .send({ userId: 10, taskId: 5 });
+
+    expect(res.status).toBe(403);
+    expect(res.body.error).toBe("Access denied");
+  });
+});
+
+/* describe("DELETE /tasks", () => {
+  it("Should return a succes", async () => {
+    const res = await request(app)
+      .delete("/tasks")
+      .send({ userId: 2, taskId: 5 });
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("Task removed successfully");
+  });
+}); */

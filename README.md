@@ -1,76 +1,201 @@
-# ESP32 Soil Sensor with BLE
+# **SkyT: Smart Tea Plantation Management**
 
-This project combines RS-485 soil sensors with a DHT11 humidity sensor and transmits readings via Bluetooth Low Energy (BLE). It creates a complete IoT solution for agricultural monitoring that bridges industrial sensors with modern wireless connectivity.
+**SkyT** is a cutting-edge automation solution designed to revolutionize tea plantation management in Sri Lanka. By combining drone technology, advanced sensors, and a centralized dashboard, SkyT simplifies operations, enhances efficiency, and ensures the consistent quality of tea leaves, all while promoting sustainable practices.
+
+#### **Key Features**
+- **Smart Estate Mapping**:  
+  Drones equipped with sensors map and measure tea plantations, capturing critical data with precision.  
+- **Automated Decision Support**:  
+  Real-time data analysis helps determine leaf plucking readiness, reducing guesswork.  
+- **Centralized Monitoring**:  
+  A user-friendly dashboard displays actionable insights for estate supervisors and workers.  
+- **Sustainability-Focused**:  
+  Optimizes resources and minimizes environmental impact through precision agriculture.
+
+#### **Core Components**
+1. **Drone Operations**: SkyT drones gather vital data from the estate, such as plant health, soil conditions, and growth stages.  
+2. **Sensor Integration**: Sensors track key parameters like soil moisture, sunlight, and pest activity.  
+3. **Docking Stations**: Smart stations automate drone launch, recovery, and recharging.  
+4. **Interactive Dashboard**: Supervisors and workers access lot-specific insights for informed decision-making.  
+
+#### **Our Mission with SkyT**  
+To empower tea estate stakeholders with innovative tools that:  
+- Improve productivity and efficiency.  
+- Ensure high and consistent tea quality.  
+- Promote eco-friendly practices for a sustainable future.  
+
+#### **Why SkyT Matters**  
+SkyT bridges the gap between tradition and technology, offering a future-ready solution to address the challenges of modern tea farming. By leveraging automation, SkyT transforms tea estates into smart, sustainable, and efficient operations that benefit all stakeholders—from workers to estate owners.  
+
+---
+
+# SkyT - Web Application
+
+This project is a full-stack smart crop management system for tea plantations designed to help estate owners and admins monitor estate data, manage tasks, control drones, and visualize environmental metrics in real-time.
+
+---
+
+## Tech Stack
+
+### Frontend
+- React + TypeScript
+- Vite
+- Material UI (MUI)
+- React Router DOM
+- Leaflet & Google Maps
+- MUI X Charts
+
+### Backend
+- Node.js + Express
+- TypeScript
+- MySQL2 + Connection Pooling
+- JWT Authentication
+- REST API Architecture
+
+### Other
+- GitHub Actions (CI/CD)
+- Cloudflare (Frontend Hosting)
+- Vercel (Backend Hosting)
+- EmailJS (for email verification)
+
+---
 
 ## Features
 
-- Reads soil data (temperature, humidity, pH, NPK) from an RS-485 Modbus soil sensor
-- Collects ambient humidity data from a DHT11 sensor
-- Transmits all sensor readings wirelessly via BLE
-- Includes Python decoder for processing received data
-- Built for ESP32 microcontroller
+### Core Functionalities
+- User authentication and role-based access control (Owner, Assistant, Developer)
+- Real-time dashboard for estate data visualization
+- Profile management with email verification and image upload
+- Task manager for drone-based operations (monitoring, fertilizing, memos)
+- Employee management with permission handling
+- Drone location visualization on the map with signal stats
+- Sensor data ingestion & visualization (NPK, humidity, temperature)
+- Notification system (task alerts, sensor thresholds)
+- Gallery for daily drone image uploads
 
-## Hardware Requirements
+### Advanced Implementations
+- Task lifecycle handling with concurrency control
+- Estate and lot-based permission verification
+- JSON storage optimization for task-to-lot mapping
+- Time-series charting with filters (date range, node, value range)
+- Drone control hooks (external service integration)
+- Database-level access validation and relational integrity
+- Custom middleware for token validation and error handling
 
-- ESP32 development board
-- RS-485 to TTL converter module
-- Soil sensor with RS-485/Modbus RTU interface
-- DHT11 temperature and humidity sensor
-- Power supply (3.3V)
-- Connecting wires
+---
 
-## Data Collected
+## Setup Instructions
 
-The system collects and transmits the following data:
+### 1. Clone the Repository
+```cmd
+git clone https://github.com/cepdnaclk/e20-3yp-SkyT.git
+cd '04. WebApp'
+```
 
-| Parameter     | Unit     | Source       |
-|---------------|----------|--------------|
-| Temperature   | °C       | DHT11 Sensor |
-| Soil Humidity | %RH      | Soil Sensor  |
-| Conductivity  | us/cm    | Soil Sensor  |
-| pH            | pH       | Soil Sensor  |
-| Nitrogen      | mg/kg    | Soil Sensor  |
-| Phosphorus    | mg/kg    | Soil Sensor  |
-| Potassium     | mg/kg    | Soil Sensor  |
-| Air Humidity  | %RH      | DHT11 Sensor |
+### 2. Setup Environment Variables
+Create `.env` files in `Frontend` and `Backend` folders.
 
-## Communication Protocols
+Backend `.env` sample
+```cmd
+# Frontend
+FRONTEND_URL=frontend_url
 
-This project demonstrates using multiple communication protocols:
+# Backend
+PORT=backend_port
+IMAGE_DIR=image_dir
 
-- **RS-485**: Industrial serial protocol used for soil sensor communication
-- **UART**: Serial communication between ESP32 and RS-485 converter
-- **BLE**: Wireless protocol for transmitting data to mobile devices
+# Database
+DB_HOST=host_name
+DB_PORT=port_number
+DB_USER=user_name
+DB_PASSWORD=password
+DB_NAME=database_name
 
-## Wiring Diagram
+# Mailer
+EMAIL_SERVICE=email_service
+EMAIL_USER=company_email_address
+EMAIL_PASS=app_password
 
-- GPIO16 (RX2) --- TX
-- GPIO17 (TX2) --- RX
-- GPIO4        --- RE/DE
-- A            --- A
-- B            --- B
-- GPIO23       --- DATA
-- 3.3V         --- VCC
-- GND          --- GND
+# Hashing
+JWT_SECRET=jwt_secret
 
-## Installation
+# Weather Channel
+ACCUWEATHER_API_KEY=api_key
+ACCUWEATHER_BASE_URL=weather_channel_url
+```
 
-1. Install the Arduino IDE and add ESP32 board support
-2. Install the required libraries:
-   - BLEDevice (included with ESP32 board package)
-   - DHT sensor library by Adafruit
-3. Compile and upload the ESP32 code to your device
+### 3. Start Backend
+```cmd
+cd Backend
+npm install
+npm run build
+npm start
+```
 
-## Connecting to the Device
+### 3. Start Frontend
+```cmd
+cd Frontend
+npm install
+npm run build
+npm start
+```
 
-Once the code is running on your ESP32, the device will advertise itself via BLE as "Soil Sensor". You can connect to it using:
+---
 
-- A mobile app that supports BLE
-- A Python script using a library like `bleak` (included in this repo)
-- Any BLE scanner/client application
+## Testing
+- Jest + Supertest for backend unit and integration tests
+- Manual API testing via Postman
+- Frontend E2E testing via cypress
+---
 
-## Troubleshooting
+## Project Structure
+```cmd
+.
+├── Frontend/           # React frontend
+│   ├── public/
+│   ├── reference/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── asserts/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── utils/
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── .env
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── Backend/            # Express backend
+│   ├── images/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── database/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── service/
+│   │   ├── util/
+│   │   ├── app.ts
+│   │   └── index.ts
+│   ├── test/
+│   ├── .env
+│   ├── eslint.config.json
+│   ├── jest.config.json
+│   ├── package-lock.json
+│   ├── package.json
+│   └── tsconfig.json
+├── Database            # MySQL database queries
+├── Gallary             # Project images
+└── README.md
+```
 
-- No data from soil sensor: Check RS-485 wiring and ensure correct baud rate (typically 4800)
-- DHT11 readings not appearing: Verify DHT11 wiring and library installation
-- BLE not advertising: Check that BLE is properly initialized in setup()
