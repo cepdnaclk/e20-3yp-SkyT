@@ -331,8 +331,10 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
     });
 
     // Select closest task from today's tasks only
+    let closestTask = null;
+    
     if (todayTasks.length > 0) {
-      const closestTask = todayTasks.reduce((closest, current) => {
+        closestTask = todayTasks.reduce((closest, current) => {
         const currentDiff = Math.abs(combinedDueDateTime(current) - now);
         const closestDiff = Math.abs(combinedDueDateTime(closest) - now);
         return currentDiff < closestDiff ? current : closest;
@@ -340,7 +342,10 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
       
       console.log("Closest task for today:", closestTask);
     } else {
-      console.log("No tasks due today");
+      return res.status(404).json({
+      status: 'error',
+      message: 'No tasks due today'
+      });
     }
 
     const lotsJson = closestTask.lots;
