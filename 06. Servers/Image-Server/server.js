@@ -280,9 +280,9 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     const { type: droneType, estateId } = droneRows[0];
 
-    // Get matching tasks
+    // Get matching tasks (add taskId to SELECT)
     const [taskRows] = await connection.query(`
-      SELECT lots, dueDate, dueTime
+      SELECT taskId, lots, dueDate, dueTime
       FROM TASKS
       WHERE tag = ? AND status = 'Pending' AND estateId = ?
     `, [droneType, estateId]);
@@ -296,12 +296,10 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     const now = new Date();
 
-    // Function to combine due date and time
     function combinedDueDateTime(task) {
       const dueDate = new Date(task.dueDate);
       const dueTime = task.dueTime;
       
-      // Handle different time formats
       let hours = 0, minutes = 0, seconds = 0;
       
       if (typeof dueTime === 'string') {
@@ -319,7 +317,7 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
       return dueDate;
     }
 
-    // Select closest task by due date + time
+    // Select closest task
     const closestTask = taskRows.reduce((closest, current) => {
       const currentDiff = Math.abs(combinedDueDateTime(current) - now);
       const closestDiff = Math.abs(combinedDueDateTime(closest) - now);
@@ -328,7 +326,6 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     const lotsJson = closestTask.lots;
 
-    // Parse lot IDs
     let lotIds;
     try {
       lotIds = typeof lotsJson === 'string' ? JSON.parse(lotsJson) : lotsJson;
@@ -349,24 +346,22 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
     const lotInfoList = [];
 
     for (const lotId of lotIds) {
-      // Get lot location
       const [lotRows] = await connection.query('SELECT lat, lng FROM LOTS WHERE lotId = ?', [lotId]);
-      
-      if (lotRows.length === 0) {
-        continue;
-      }
+      if (lotRows.length === 0) continue;
 
       const { lat: lotLat, lng: lotLng } = lotRows[0];
 
       const [nodeRows] = await connection.query(
-        'SELECT nodeId, lat, lng FROM NODES WHERE lotId = ? AND status = ?',
+        'SELECT nodeId, lat, lng, mac_address, char_uuid FROM NODES WHERE lotId = ? AND status = ?',
         [lotId, 'Active']
       );
-      
+
       const nodeData = nodeRows.map(node => ({
         nodeId: node.nodeId,
         lat: node.lat,
-        lng: node.lng
+        lng: node.lng,
+        mac_address: node.mac_address,
+        char_UUID: node.char_uuid
       }));
 
       lotInfoList.push({
@@ -379,8 +374,8 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     res.json({
       status: 'success',
-      taskId: closestTask.taskId,
       droneId: droneId,
+      taskId: closestTask.taskId,
       lots: lotInfoList
     });
 
