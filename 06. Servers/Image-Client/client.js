@@ -91,6 +91,12 @@ async function cleanupProcessedFiles() {
   }
 }
 
+// Function to extract node ID from filename
+function extractNodeId(filename) {
+  const match = filename.match(/^node_(\d+)_.*\.(jpg|jpeg|png|gif)$/i);
+  return match ? parseInt(match[1]) : null;
+}
+
 // Upload a single file
 async function uploadFile(filePath) {
   const filename = path.basename(filePath);
@@ -100,8 +106,11 @@ async function uploadFile(filePath) {
     await fs.promises.access(filePath, fs.constants.R_OK);
     
     // Calculate file hash for content-based deduplication
+    const nodeId = extractNodeId(filename) || 55;
+
+    console.log(`Extracted node ID: ${nodeId} from ${filename}`);
     const fileHash = await calculateFileHash(filePath);
-    
+
     // Check if file with same hash was already processed
     if (fileHashes[fileHash]) {
       const duplicatePath = fileHashes[fileHash][0];
@@ -113,7 +122,8 @@ async function uploadFile(filePath) {
         uploadedAt: new Date().toISOString(),
         isDuplicate: true,
         originalFile: duplicatePath,
-        serverPath: processedFiles[duplicatePath].serverPath
+        serverPath: processedFiles[duplicatePath].serverPath,
+        nodeId: nodeId
       };
       
       // Add this path to the hash entry
@@ -129,7 +139,7 @@ async function uploadFile(filePath) {
       return;
     }
     
-    console.log(`Preparing to upload: ${filename}`);
+    console.log(`Preparing to upload: ${filename} for node ${nodeId}`);
     
     // Create form data
     const formData = new FormData();
@@ -144,7 +154,7 @@ async function uploadFile(filePath) {
         authorization: `Bearer ${APIToken}`
       },
       params: {
-        nodeId: 55
+        nodeId: nodeId
       }
     });
     
@@ -156,7 +166,8 @@ async function uploadFile(filePath) {
       processedFiles[filePath] = {
         uploadedAt: new Date().toISOString(),
         serverPath: response.data.file.url,
-        imageId: response.data.imageId
+        imageId: response.data.imageId,
+        nodeId: nodeId
       };
       
       // Store file hash for content-based deduplication
