@@ -534,6 +534,138 @@ app.post('/sensor-readings', authenticateToken, async (req, res) => {
   }
 });
 
+// Endpoint to save sensor readings
+app.post('/drone-status', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const {
+      droneId,
+      lat,
+      lng,
+      battery,
+      signalStrength,
+      altitude,
+      speed
+    } = req.body;
+
+    // Validate required fields
+    if (!droneId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'droneId is required' 
+      });
+    }
+
+    connection = await getDBConnection();
+    
+    const updateQuery = `
+      UPDATE DRONE_STATUS 
+      SET lat = ?, lng = ?, battery = ?, signalStrength = ?, altitude = ?, speed = ?
+      WHERE droneId = ?
+    `;
+
+    const [result] = await connection.execute(updateQuery, [
+      lat,
+      lng,
+      battery || 75,
+      signalStrength || 67,
+      altitude || null,
+      speed || null,
+      droneId 
+    ]);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Drone not found' });
+    }
+    
+
+    res.json({ success: true, message: 'Drone status updated successfully' });
+
+  } catch (error) {
+    console.error('Error updating drone status:', error);
+    res.status(500).json({ success: false, message: 'Database error' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
+// Endpoint to create notifications for employees
+app.post('/notifications', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    let { droneId, title, message, type } = req.body;
+
+    // Validate required fields
+    if (!droneId || !title || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'droneId, title, and message are required'
+      });
+    }
+
+    // Default type to droneId is present
+    if (!type && droneId) {
+      type = 'Drone';
+    }
+
+    connection = await getDBConnection();
+
+    // Get estateId from DRONES table
+    const [droneRows] = await connection.query(
+      'SELECT estateId FROM DRONES WHERE droneId = ?',
+      [droneId]
+    );
+
+    if (droneRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `Drone with ID ${droneId} not found`
+      });
+    }
+
+    const estateId = droneRows[0].estateId;
+
+    // Get employeeIds from EMPLOYEE table
+    const [employeeRows] = await connection.query(
+      'SELECT employeeId FROM EMPLOYEES WHERE estateId = ?',
+      [estateId]
+    );
+
+    if (employeeRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No employees found for estateId ${estateId}`
+      });
+    }
+
+    // Insert notification for each employee
+    const insertQuery = `
+      INSERT INTO NOTIFICATIONS (userId, title, message, type)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    for (const employee of employeeRows) {
+      await connection.query(insertQuery, [
+        employee.employeeId,
+        title,
+        message,
+        type
+      ]);
+    }
+
+    res.json({
+      success: true,
+      message: `Notification sent to ${employeeRows.length} employee(s) for estateId ${estateId}`
+    });
+
+  } catch (error) {
+    console.error('Notification creation error:', error);
+    res.status(500).json({ success: false, message: 'Database error' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
 // Health check endpoint
 app.get('/health', async (req, res) => {
   try {
