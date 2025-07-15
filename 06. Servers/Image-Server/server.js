@@ -280,9 +280,9 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     const { type: droneType, estateId } = droneRows[0];
 
-    // Get matching tasks
+    // Get matching tasks (add taskId to SELECT)
     const [taskRows] = await connection.query(`
-      SELECT lots, dueDate, dueTime
+      SELECT taskId, lots, dueDate, dueTime
       FROM TASKS
       WHERE tag = ? AND status = 'Pending' AND estateId = ?
     `, [droneType, estateId]);
@@ -296,12 +296,10 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     const now = new Date();
 
-    // Function to combine due date and time
     function combinedDueDateTime(task) {
       const dueDate = new Date(task.dueDate);
       const dueTime = task.dueTime;
       
-      // Handle different time formats
       let hours = 0, minutes = 0, seconds = 0;
       
       if (typeof dueTime === 'string') {
@@ -319,16 +317,39 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
       return dueDate;
     }
 
-    // Select closest task by due date + time
-    const closestTask = taskRows.reduce((closest, current) => {
-      const currentDiff = Math.abs(combinedDueDateTime(current) - now);
-      const closestDiff = Math.abs(combinedDueDateTime(closest) - now);
-      return currentDiff < closestDiff ? current : closest;
+    // Helper function to check if two dates are on the same day
+    function isSameDate(date1, date2) {
+      return date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getDate() === date2.getDate();
+    }
+
+    // Filter tasks to only include those due today
+    const todayTasks = taskRows.filter(task => {
+      const taskDueDate = new Date(task.dueDate);
+      return isSameDate(taskDueDate, now);
     });
+
+    // Select closest task from today's tasks only
+    let closestTask = null;
+    
+    if (todayTasks.length > 0) {
+        closestTask = todayTasks.reduce((closest, current) => {
+        const currentDiff = Math.abs(combinedDueDateTime(current) - now);
+        const closestDiff = Math.abs(combinedDueDateTime(closest) - now);
+        return currentDiff < closestDiff ? current : closest;
+      });
+      
+      console.log("Closest task for today:", closestTask);
+    } else {
+      return res.status(404).json({
+      status: 'error',
+      message: 'No tasks due today'
+      });
+    }
 
     const lotsJson = closestTask.lots;
 
-    // Parse lot IDs
     let lotIds;
     try {
       lotIds = typeof lotsJson === 'string' ? JSON.parse(lotsJson) : lotsJson;
@@ -349,22 +370,22 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
     const lotInfoList = [];
 
     for (const lotId of lotIds) {
-      // Get lot location
       const [lotRows] = await connection.query('SELECT lat, lng FROM LOTS WHERE lotId = ?', [lotId]);
-      
-      if (lotRows.length === 0) {
-        continue;
-      }
+      if (lotRows.length === 0) continue;
 
       const { lat: lotLat, lng: lotLng } = lotRows[0];
 
-      // Get nodes in the lot
-      const [nodeRows] = await connection.query('SELECT nodeId, lat, lng FROM NODES WHERE lotId = ?', [lotId]);
-      
+      const [nodeRows] = await connection.query(
+        'SELECT nodeId, lat, lng, mac_address, char_uuid FROM NODES WHERE lotId = ? AND status = ?',
+        [lotId, 'Active']
+      );
+
       const nodeData = nodeRows.map(node => ({
         nodeId: node.nodeId,
         lat: node.lat,
-        lng: node.lng
+        lng: node.lng,
+        mac_address: node.mac_address,
+        char_UUID: node.char_uuid
       }));
 
       lotInfoList.push({
@@ -377,8 +398,8 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     res.json({
       status: 'success',
-      taskId: closestTask.taskId,
       droneId: droneId,
+      taskId: closestTask.taskId,
       lots: lotInfoList
     });
 
@@ -393,14 +414,24 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
   }
 });
 
-app.post('/task/:taskId/complete', authenticateToken, async (req, res) => {
+// Endpoint to update task status
+app.post('/task/:taskId', authenticateToken, async (req, res) => {
   let connection;
   try {
     const taskId = req.params.taskId;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Missing task status in request body'
+      });
+    }
+
     connection = await getDBConnection();
 
     // Check if the task exists
-    const [taskRows] = await connection.query('SELECT status FROM TASKS WHERE taskId = ?', [taskId]);
+    const [taskRows] = await connection.query('SELECT taskId FROM TASKS WHERE taskId = ?', [taskId]);
 
     if (taskRows.length === 0) {
       return res.status(404).json({
@@ -409,16 +440,16 @@ app.post('/task/:taskId/complete', authenticateToken, async (req, res) => {
       });
     }
 
-    // Update task status to Completed
-    await connection.query('UPDATE TASKS SET status = ? WHERE taskId = ?', ['Completed', taskId]);
+    // Update task status
+    await connection.query('UPDATE TASKS SET status = ? WHERE taskId = ?', [status, taskId]);
 
     res.json({
       status: 'success',
-      message: `Task ID ${taskId} marked as Completed`
+      message: `Task ID ${taskId} updated with status '${status}'`
     });
 
   } catch (error) {
-    console.error('Complete task error:', error);
+    console.error('Update task status error:', error);
     res.status(500).json({
       status: 'error',
       message: error.message
@@ -498,6 +529,138 @@ app.post('/sensor-readings', authenticateToken, async (req, res) => {
       success: false, 
       message: error.message 
     });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
+// Endpoint to save sensor readings
+app.post('/drone-status', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const {
+      droneId,
+      lat,
+      lng,
+      battery,
+      signalStrength,
+      altitude,
+      speed
+    } = req.body;
+
+    // Validate required fields
+    if (!droneId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'droneId is required' 
+      });
+    }
+
+    connection = await getDBConnection();
+    
+    const updateQuery = `
+      UPDATE DRONE_STATUS 
+      SET lat = ?, lng = ?, battery = ?, signalStrength = ?, altitude = ?, speed = ?
+      WHERE droneId = ?
+    `;
+
+    const [result] = await connection.execute(updateQuery, [
+      lat,
+      lng,
+      battery || 75,
+      signalStrength || 67,
+      altitude || null,
+      speed || null,
+      droneId 
+    ]);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Drone not found' });
+    }
+    
+
+    res.json({ success: true, message: 'Drone status updated successfully' });
+
+  } catch (error) {
+    console.error('Error updating drone status:', error);
+    res.status(500).json({ success: false, message: 'Database error' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
+// Endpoint to create notifications for employees
+app.post('/notifications', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    let { droneId, title, message, type } = req.body;
+
+    // Validate required fields
+    if (!droneId || !title || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'droneId, title, and message are required'
+      });
+    }
+
+    // Default type to droneId is present
+    if (!type && droneId) {
+      type = 'Drone';
+    }
+
+    connection = await getDBConnection();
+
+    // Get estateId from DRONES table
+    const [droneRows] = await connection.query(
+      'SELECT estateId FROM DRONES WHERE droneId = ?',
+      [droneId]
+    );
+
+    if (droneRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `Drone with ID ${droneId} not found`
+      });
+    }
+
+    const estateId = droneRows[0].estateId;
+
+    // Get employeeIds from EMPLOYEE table
+    const [employeeRows] = await connection.query(
+      'SELECT employeeId FROM EMPLOYEES WHERE estateId = ?',
+      [estateId]
+    );
+
+    if (employeeRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No employees found for estateId ${estateId}`
+      });
+    }
+
+    // Insert notification for each employee
+    const insertQuery = `
+      INSERT INTO NOTIFICATIONS (userId, title, message, type)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    for (const employee of employeeRows) {
+      await connection.query(insertQuery, [
+        employee.employeeId,
+        title,
+        message,
+        type
+      ]);
+    }
+
+    res.json({
+      success: true,
+      message: `Notification sent to ${employeeRows.length} employee(s) for estateId ${estateId}`
+    });
+
+  } catch (error) {
+    console.error('Notification creation error:', error);
+    res.status(500).json({ success: false, message: 'Database error' });
   } finally {
     if (connection) await connection.end();
   }

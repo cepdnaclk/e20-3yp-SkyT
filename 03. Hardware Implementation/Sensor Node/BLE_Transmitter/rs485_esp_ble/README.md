@@ -2,6 +2,10 @@
 
 This project combines RS-485 soil sensors with a DHT11 humidity sensor and transmits readings via Bluetooth Low Energy (BLE). It creates a complete IoT solution for agricultural monitoring that bridges industrial sensors with modern wireless connectivity.
 
+## Schematic Diagram
+
+![component layout](circuit_layout.png)
+
 ## Features
 
 - Reads soil data (temperature, humidity, pH, NPK) from an RS-485 Modbus soil sensor
@@ -16,6 +20,7 @@ This project combines RS-485 soil sensors with a DHT11 humidity sensor and trans
 - RS-485 to TTL converter module
 - Soil sensor with RS-485/Modbus RTU interface
 - DHT11 temperature and humidity sensor
+- DS1307 RTC module
 - Power supply (3.3V)
 - Connecting wires
 
@@ -40,18 +45,8 @@ This project demonstrates using multiple communication protocols:
 
 - **RS-485**: Industrial serial protocol used for soil sensor communication
 - **UART**: Serial communication between ESP32 and RS-485 converter
+- **I2C**:  Synchronous serial communication between ESP32 and RTC module
 - **BLE**: Wireless protocol for transmitting data to mobile devices
-
-## Wiring Diagram
-
-- GPIO16 (RX2) --- TX
-- GPIO17 (TX2) --- RX
-- GPIO4        --- RE/DE
-- A            --- A
-- B            --- B
-- GPIO23       --- DATA
-- 3.3V         --- VCC
-- GND          --- GND
 
 ## Installation
 
@@ -59,6 +54,7 @@ This project demonstrates using multiple communication protocols:
 2. Install the required libraries:
    - BLEDevice (included with ESP32 board package)
    - DHT sensor library by Adafruit
+   - uRTCLib library by Naguissa.
 3. Compile and upload the ESP32 code to your device
 
 ## Connecting to the Device
