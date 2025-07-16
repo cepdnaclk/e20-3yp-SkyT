@@ -69,7 +69,7 @@ function App() {
               />
             </Route>
 
-            <Route path="taskManager/:estId" element={<TaskManager />} />
+            <Route path="taskManager/*" element={<TaskManager />} />
             <Route path="notifications" element={<Message />} />
             <Route path="profile" element={<Profile />} />
 
