@@ -829,6 +829,13 @@
   <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        document.getElementById('preloader').style.display = 'none';
+      }, 500); // 0.5 seconds delay
+    });
+  </script>
+  <script>
     window.addEventListener('scroll', function () {
       const img = document.querySelector('.parallax-image');
       let scroll = window.scrollY;
