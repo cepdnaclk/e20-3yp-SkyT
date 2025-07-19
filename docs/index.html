@@ -830,9 +830,35 @@
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
+      var heroImg = document.querySelector('.hero-img img');
+      var heroVideo = document.querySelector('.hero-bg');
+      var readyCount = 0;
+
+      function hidePreloader() {
         document.getElementById('preloader').style.display = 'none';
-      }, 500); // 0.5 seconds delay
+      }
+
+      function checkReady() {
+        readyCount++;
+        if (readyCount >= 2) hidePreloader();
+      }
+
+      // Wait for hero image
+      if (heroImg && !heroImg.complete) {
+        heroImg.addEventListener('load', checkReady);
+      } else {
+        checkReady();
+      }
+
+      // Wait for hero video
+      if (heroVideo && heroVideo.readyState < 2) {
+        heroVideo.addEventListener('loadeddata', checkReady);
+      } else {
+        checkReady();
+      }
+
+      // Fallback: hide after 1.5s if either takes too long
+      setTimeout(hidePreloader, 1500);
     });
   </script>
   <script>
