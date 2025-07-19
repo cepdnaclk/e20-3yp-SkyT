@@ -840,7 +840,6 @@
 
       function checkReady() {
         readyCount++;
-        if (readyCount >= 2) hidePreloader();
       }
 
       // Wait for hero image
@@ -856,9 +855,6 @@
       } else {
         checkReady();
       }
-
-      // Fallback: hide after 1.5s if either takes too long
-      setTimeout(hidePreloader, 1500);
     });
   </script>
   <script>
