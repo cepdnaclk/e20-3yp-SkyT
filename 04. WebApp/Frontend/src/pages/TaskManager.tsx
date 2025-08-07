@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import TaskList from "../components/TaskList";
 import { useAuth } from "../context/AuthContext";
 import { getData } from "../api/NodeBackend";
+import { useLocation } from "react-router-dom";
 
 interface EstateProps {
   id: number;
@@ -38,7 +39,12 @@ export default function TaskManager() {
   const estates: EstateProps[] = ests ? JSON.parse(ests) : null;
   const { user } = useAuth();
 
-  const [estate, setEstate] = useState<EstateProps>(estates[0]);
+  const path = useLocation().pathname;
+  const parts = path.split("/");
+  const estId = parts.length > 1 ? parseInt(parts[2]) : null;
+  const srcState = estates.find((est) => est.id === estId);
+
+  const [estate, setEstate] = useState<EstateProps>(srcState || estates[0]);
   const [lots, setLots] = useState<LotProps[]>();
   const [office, setOffice] = useState<OfficeProps>();
   const [drones, setDrones] = useState<DroneStatusProps[]>();
