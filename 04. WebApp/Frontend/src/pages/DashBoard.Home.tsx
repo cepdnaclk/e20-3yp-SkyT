@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import { getData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
-import defaultImage from "../assets/dashboard_asserts/Estate.jpg";
+import defaultImage from "../assets/dashboard_asserts/Estate.jpeg";
 import { useLoading } from "../context/LoadingContext";
 
 interface estateProps {

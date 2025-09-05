@@ -69,6 +69,7 @@ interface serverResponse {
 export function Lot() {
   const path = useLocation().pathname;
   const lotId = path.split("/")[5];
+  const estId = path.split("/")[3];
   const { user } = useAuth();
   const { setLoading } = useLoading();
 
@@ -239,7 +240,7 @@ export function Lot() {
         display={"flex"}
         justifyContent={"center"}
       >
-        <TaskSummaryCard tasks={tasks} />
+        <TaskSummaryCard tasks={tasks} path={`/taskmanager/${estId}`} />
       </Grid>
 
       {/* PH Analysis Card */}
