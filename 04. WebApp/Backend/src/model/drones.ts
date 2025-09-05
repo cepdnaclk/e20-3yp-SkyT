@@ -41,7 +41,7 @@ class DroneModel {
       // Verify access
       const authQuery = `
         SELECT 1 FROM EMPLOYEES
-        WHERE employeeId = ? AND estateId = ?
+        WHERE employeeId = ? AND estateId = ? 
       `;
 
       const [authResult] = await conn.query<RowDataPacket[]>(authQuery, [

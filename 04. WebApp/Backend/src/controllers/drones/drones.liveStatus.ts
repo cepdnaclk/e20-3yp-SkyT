@@ -11,7 +11,7 @@ export const liveStatus: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Required fields missing");
     }
 
-    const drones = await DroneModel.getDroneStatusByEstate(userId, estateId);
+    const drones = await DroneModel.getDroneStatusByEstate(estateId, userId);
 
     console.log("Drone Status: ", drones);
 
